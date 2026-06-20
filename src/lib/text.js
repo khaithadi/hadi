@@ -1,32 +1,34 @@
 // Plain-text rendering of a quote/invoice for sharing on WhatsApp.
-// Generalizes the original buildInvoiceText to both document kinds.
+// In French, to match the printed Facture/Devis.
 
-import { formatMoney, formatDate } from './format.js';
+import { formatMoneyFr, formatDate } from './format.js';
 import { docTotals, invoiceState } from './calc.js';
 
 export function buildDocText(kind, doc, customer, settings) {
   const lines = [];
-  lines.push(settings.businessName || 'ميثاق');
-  const title = kind === 'quote' ? 'عرض سعر' : 'فاتورة';
+  lines.push(settings.businessName || 'Mithaq');
+  const title = kind === 'quote' ? 'Devis' : 'Facture';
   lines.push(`${title} ${doc.number} — ${formatDate(doc.date)}`);
-  lines.push(`العميل: ${customer ? customer.name : ''}`);
+  lines.push(`Client : ${customer ? customer.name : ''}`);
   lines.push('—'.repeat(20));
   (doc.items || []).forEach((it) => {
-    lines.push(`${it.desc} × ${it.qty} = ${formatMoney(it.qty * it.price)}`);
+    lines.push(`${it.desc} × ${it.qty} = ${formatMoneyFr(it.qty * it.price)}`);
   });
   lines.push('—'.repeat(20));
   const t = docTotals(doc);
-  if (doc.applyTax) {
-    lines.push(`المجموع الفرعي: ${formatMoney(t.subtotal)}`);
-    lines.push(`الضريبة (${doc.taxRate}%): ${formatMoney(t.tax)}`);
+  if (t.discount > 0) {
+    lines.push(`Sous-total : ${formatMoneyFr(t.subtotal)}`);
+    lines.push(`Remise : -${formatMoneyFr(t.discount)}`);
   }
-  lines.push(`الإجمالي: ${formatMoney(t.total)}`);
+  if (doc.applyTax) lines.push(`TVA (${doc.taxRate}%) : ${formatMoneyFr(t.tax)}`);
+  lines.push(`Total : ${formatMoneyFr(t.total)}`);
   if (kind === 'invoice') {
     const st = invoiceState(doc);
-    lines.push(`المدفوع: ${formatMoney(st.paid)}`);
-    if (st.remaining > 0) lines.push(`المتبقّي: ${formatMoney(st.remaining)}`);
+    if (st.paid > 0) lines.push(`Versement : ${formatMoneyFr(st.paid)}`);
+    if (st.remaining > 0) lines.push(`Reste à payer : ${formatMoneyFr(st.remaining)}`);
   }
-  if (doc.notes) lines.push(`ملاحظات: ${doc.notes}`);
-  if (settings.phone) lines.push(`الهاتف: ${settings.phone}`);
+  if (settings.invoiceFooter) lines.push(settings.invoiceFooter);
+  if (doc.notes) lines.push(`Note : ${doc.notes}`);
+  if (settings.phone) lines.push(`Tél : ${settings.phone}`);
   return lines.join('\n');
 }

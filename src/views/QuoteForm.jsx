@@ -12,6 +12,8 @@ export default function QuoteForm({ initial, presetCustomerId, data, onCancel, o
   const [items, setItems] = useState(q.items?.length ? q.items : [{ id: uid(), desc: '', qty: 1, price: 0 }]);
   const [applyTax, setApplyTax] = useState(!!q.applyTax);
   const [taxRate, setTaxRate] = useState(q.taxRate ?? defaultRate);
+  const [discountType, setDiscountType] = useState(q.discountType || null);
+  const [discountValue, setDiscountValue] = useState(q.discountValue ?? 0);
   const [notes, setNotes] = useState(q.notes || '');
 
   if (data.customers.length === 0) {
@@ -26,6 +28,7 @@ export default function QuoteForm({ initial, presetCustomerId, data, onCancel, o
       ...(initial ? { id: initial.id, number: initial.number } : {}),
       customerId, date, status,
       items: clean, applyTax, taxRate: Number(taxRate) || 0,
+      discountType: discountType || null, discountValue: Number(discountValue) || 0,
       notes: notes.trim(),
     });
   }
@@ -45,7 +48,13 @@ export default function QuoteForm({ initial, presetCustomerId, data, onCancel, o
         {QUOTE_STATUSES.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
       </select>
 
-      <ItemsEditor items={items} setItems={setItems} applyTax={applyTax} setApplyTax={setApplyTax} taxRate={taxRate} setTaxRate={setTaxRate} />
+      <ItemsEditor
+        items={items} setItems={setItems}
+        applyTax={applyTax} setApplyTax={setApplyTax} taxRate={taxRate} setTaxRate={setTaxRate}
+        discountType={discountType} setDiscountType={setDiscountType}
+        discountValue={discountValue} setDiscountValue={setDiscountValue}
+        services={data.services}
+      />
 
       <label className="label">ملاحظات (اختياري)</label>
       <textarea className="input" rows={2} value={notes} onChange={(e) => setNotes(e.target.value)} />

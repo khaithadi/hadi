@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Copy, ClipboardPaste, RotateCcw, Trash2, Check, X } from 'lucide-react';
-import { copyText } from '../lib/format.js';
+import { Copy, ClipboardPaste, RotateCcw, Trash2, Check, X, Plus } from 'lucide-react';
+import { copyText, formatMoney } from '../lib/format.js';
 import { exportBackup } from '../lib/storage.js';
 
 export default function Settings({ data, actions, onCancel }) {
@@ -9,10 +9,20 @@ export default function Settings({ data, actions, onCancel }) {
   const [ownerName, setOwnerName] = useState(s.ownerName || '');
   const [phone, setPhone] = useState(s.phone || '');
   const [defaultTaxRate, setDefaultTaxRate] = useState(s.defaultTaxRate ?? 19);
+  const [invoiceFooter, setInvoiceFooter] = useState(s.invoiceFooter || '');
+  const [svcName, setSvcName] = useState('');
+  const [svcPrice, setSvcPrice] = useState('');
   const [copied, setCopied] = useState(false);
   const [restoreText, setRestoreText] = useState('');
   const [restoreMsg, setRestoreMsg] = useState('');
   const [confirmClear, setConfirmClear] = useState(false);
+
+  function addService() {
+    if (!svcName.trim()) return;
+    actions.addService({ name: svcName.trim(), price: Number(svcPrice) || 0 });
+    setSvcName('');
+    setSvcPrice('');
+  }
 
   async function handleCopyBackup() {
     const ok = await copyText(exportBackup(data));
@@ -43,9 +53,33 @@ export default function Settings({ data, actions, onCancel }) {
       <label className="label">نسبة الضريبة الافتراضية (%)</label>
       <input className="input" type="number" min="0" inputMode="decimal" value={defaultTaxRate} onChange={(e) => setDefaultTaxRate(e.target.value)} />
 
+      <label className="label">نص أسفل الفاتورة (يظهر فوق الملاحظات)</label>
+      <textarea className="input" rows={2} placeholder="مثال: شروط الدفع، معلومات الحساب البنكي…" value={invoiceFooter} onChange={(e) => setInvoiceFooter(e.target.value)} />
+
       <div className="form-actions">
         <button className="btn-secondary" onClick={onCancel}>إلغاء</button>
-        <button className="btn-primary" onClick={() => { actions.saveSettings({ businessName, ownerName, phone, defaultTaxRate: Number(defaultTaxRate) || 0 }); onCancel(); }}>حفظ</button>
+        <button className="btn-primary" onClick={() => { actions.saveSettings({ businessName, ownerName, phone, defaultTaxRate: Number(defaultTaxRate) || 0, invoiceFooter: invoiceFooter.trim() }); onCancel(); }}>حفظ</button>
+      </div>
+
+      <div className="section-title" style={{ marginTop: 18 }}>قائمة الخدمات</div>
+      <div className="hint-text">خدمات جاهزة بأسعارها، تختارها بسرعة عند إنشاء عرض أو فاتورة.</div>
+      {data.services.length > 0 && (
+        <div className="cat-list">
+          {data.services.map((sv) => (
+            <div className="cat-item" key={sv.id}>
+              <span className="ci-name">{sv.name}</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span className="ci-price">{formatMoney(sv.price)}</span>
+                <button className="btn-ghost-sm" onClick={() => actions.deleteService(sv.id)} aria-label="حذف"><X size={14} /></button>
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+      <div className="cat-add">
+        <input className="input ci-name-in" placeholder="اسم الخدمة" value={svcName} onChange={(e) => setSvcName(e.target.value)} />
+        <input className="input ci-price-in" type="number" min="0" inputMode="decimal" placeholder="السعر" value={svcPrice} onChange={(e) => setSvcPrice(e.target.value)} />
+        <button className="btn-secondary sm" onClick={addService}><Plus size={16} /></button>
       </div>
 
       <div className="section-title" style={{ marginTop: 18 }}>البيانات</div>

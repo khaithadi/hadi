@@ -55,6 +55,15 @@ export const LEAD_SOURCES = [
 
 export const PAYMENT_METHODS = ['نقداً', 'تحويل بنكي', 'شيك', 'أخرى'];
 
+// Worker types: project-based (per job) or monthly salary (general overhead).
+export const WORKER_TYPES = [
+  { id: 'project', label: 'بالمشروع' },
+  { id: 'monthly', label: 'شهري (راتب)' },
+];
+
+// Units for a "measured" labor due (quantity × unit price).
+export const LABOR_UNITS = ['ساعة', 'يوم', 'متر', 'متر²', 'قطعة', 'مخصّص'];
+
 export const DEFAULT_TAX_RATE = 19;
 
 // Look up a reference entry by id, with a safe fallback to the first item.

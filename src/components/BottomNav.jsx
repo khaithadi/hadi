@@ -13,7 +13,7 @@ function tabFor(view) {
   if (view.startsWith('customer')) return 'customers';
   if (view.startsWith('quote')) return 'quotes';
   if (view.startsWith('invoice')) return 'invoices';
-  if (view.startsWith('expense')) return 'expenses';
+  if (view.startsWith('expense') || view.startsWith('worker') || view.startsWith('labor')) return 'expenses';
   return view;
 }
 

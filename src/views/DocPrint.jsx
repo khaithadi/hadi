@@ -1,11 +1,12 @@
 import { useRef, useState } from 'react';
 import { X, Printer, FileDown, Copy } from 'lucide-react';
 import { docTotals, invoiceState } from '../lib/calc.js';
-import { formatMoney, formatDate, copyText } from '../lib/format.js';
+import { formatMoneyFr, formatDate, copyText } from '../lib/format.js';
 import { buildDocText } from '../lib/text.js';
 import { exportPdf } from '../lib/pdf.js';
 
-// Full-screen printable + PDF-exportable document for a quote or invoice.
+// Full-screen printable + PDF-exportable document for a quote or invoice,
+// rendered in French (LTR). The app UI controls stay in Arabic.
 export default function DocPrint({ kind, id, data, onClose }) {
   const docRef = useRef(null);
   const [busy, setBusy] = useState(false);
@@ -17,8 +18,8 @@ export default function DocPrint({ kind, id, data, onClose }) {
   const settings = data.settings;
   const totals = docTotals(doc);
   const st = kind === 'invoice' ? invoiceState(doc) : null;
-  const titleAr = kind === 'invoice' ? 'فاتورة' : 'عرض سعر';
-  const fileName = `${kind === 'invoice' ? 'Invoice' : 'Quote'}-${String(doc.number).replace(/[#\s]/g, '')}`;
+  const titleFr = kind === 'invoice' ? 'FACTURE' : 'DEVIS';
+  const fileName = `${kind === 'invoice' ? 'Facture' : 'Devis'}-${String(doc.number).replace(/[#\s]/g, '')}`;
 
   async function savePdf() {
     setBusy(true);
@@ -42,61 +43,69 @@ export default function DocPrint({ kind, id, data, onClose }) {
         </div>
       </div>
       <div className="no-print print-hint">
-        "حفظ PDF" ينزّل ملفاً يمكنك مشاركته في واتساب. أو استعمل "نسخ" لإرسال التفاصيل كنص.
+        "حفظ PDF" ينزّل ملفاً بالفرنسية يمكنك مشاركته في واتساب. أو استعمل "نسخ" لإرسال التفاصيل كنص.
       </div>
 
-      <div className="invoice-doc" dir="rtl" ref={docRef}>
+      <div className="invoice-doc fr" dir="ltr" ref={docRef}>
         <div className="invoice-doc-head">
           <div>
-            <div className="invoice-biz">{settings.businessName || 'ميثاق'}</div>
+            <div className="invoice-biz">{settings.businessName || 'Mithaq'}</div>
             {settings.ownerName && <div className="invoice-biz-sub">{settings.ownerName}</div>}
-            {settings.phone && <div className="invoice-biz-sub">{settings.phone}</div>}
+            {settings.phone && <div className="invoice-biz-sub">Tél : {settings.phone}</div>}
           </div>
           <div className="invoice-meta">
-            <div className="invoice-meta-title">{titleAr}</div>
+            <div className="invoice-meta-title">{titleFr}</div>
             <div>{doc.number}</div>
             <div>{formatDate(doc.date)}</div>
           </div>
         </div>
         <div className="invoice-rule" />
-        <div className="invoice-client"><span className="muted">العميل: </span><strong>{customer ? customer.name : ''}</strong></div>
+        <div className="invoice-client">
+          <span className="muted">Client : </span><strong>{customer ? customer.name : ''}</strong>
+          {customer && customer.phone ? <div className="muted">{customer.phone}</div> : null}
+          {customer && customer.address ? <div className="muted">{customer.address}</div> : null}
+        </div>
 
         <table className="invoice-table">
           <thead>
-            <tr><th>الوصف</th><th>الكمية</th><th>سعر الوحدة</th><th>المجموع</th></tr>
+            <tr><th>Description</th><th>Qté</th><th>Prix unitaire</th><th>Montant</th></tr>
           </thead>
           <tbody>
             {doc.items.map((it) => (
               <tr key={it.id}>
                 <td>{it.desc}</td>
                 <td>{it.qty}</td>
-                <td>{formatMoney(it.price)}</td>
-                <td>{formatMoney(it.qty * it.price)}</td>
+                <td>{formatMoneyFr(it.price)}</td>
+                <td>{formatMoneyFr(it.qty * it.price)}</td>
               </tr>
             ))}
           </tbody>
         </table>
 
         <div className="invoice-totals">
-          <div className="invoice-total-line"><span>المجموع الفرعي</span><span>{formatMoney(totals.subtotal)}</span></div>
-          {doc.applyTax && <div className="invoice-total-line"><span>الضريبة ({doc.taxRate}%)</span><span>{formatMoney(totals.tax)}</span></div>}
-          <div className="invoice-total-box"><span>الإجمالي</span><span>{formatMoney(totals.total)}</span></div>
+          <div className="invoice-total-line"><span>Sous-total</span><span>{formatMoneyFr(totals.subtotal)}</span></div>
+          {totals.discount > 0 && <div className="invoice-total-line"><span>Remise</span><span>-{formatMoneyFr(totals.discount)}</span></div>}
+          {doc.applyTax && <div className="invoice-total-line"><span>TVA ({doc.taxRate}%)</span><span>{formatMoneyFr(totals.tax)}</span></div>}
+          <div className="invoice-total-box"><span>Total</span><span>{formatMoneyFr(totals.total)}</span></div>
         </div>
 
         {kind === 'invoice' && (doc.payments || []).length > 0 && (
           <div className="invoice-pay">
             {doc.payments.map((p) => (
-              <div className="invoice-pay-row" key={p.id}><span>{formatDate(p.date)} · {p.method}</span><span>{formatMoney(p.amount)}</span></div>
+              <div className="invoice-pay-row" key={p.id}>
+                <span>Versement — {formatDate(p.date)}</span><span>{formatMoneyFr(p.amount)}</span>
+              </div>
             ))}
             <div className="invoice-pay-row" style={{ fontWeight: 700, color: st.remaining > 0 ? '#B23A2E' : '#4F7942' }}>
-              <span>{st.remaining > 0 ? 'المتبقّي' : 'مدفوعة بالكامل'}</span>
-              <span>{formatMoney(st.remaining)}</span>
+              <span>{st.remaining > 0 ? 'Reste à payer' : 'Payé en totalité'}</span>
+              <span>{formatMoneyFr(st.remaining)}</span>
             </div>
           </div>
         )}
 
-        {doc.notes && <div className="invoice-notes"><span className="muted">ملاحظات: </span>{doc.notes}</div>}
-        <div className="invoice-footer">شكراً لتعاملكم معنا</div>
+        {settings.invoiceFooter ? <div className="invoice-footer-note">{settings.invoiceFooter}</div> : null}
+        {doc.notes && <div className="invoice-notes"><span className="muted">Note : </span>{doc.notes}</div>}
+        <div className="invoice-footer">Merci pour votre confiance</div>
       </div>
     </div>
   );

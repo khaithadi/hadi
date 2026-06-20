@@ -4,19 +4,37 @@ import { EXPENSE_CATEGORIES, meta } from '../lib/constants.js';
 import { formatMoney, formatDate } from '../lib/format.js';
 import Ticket, { EmptyState } from '../components/Ticket.jsx';
 import StatusBadge from '../components/StatusBadge.jsx';
+import Workers from './Workers.jsx';
 
-export default function Expenses({ data, nav, actions }) {
+export default function Expenses({ data, nav, actions, subtab = 'expenses', setSubtab }) {
   const [filter, setFilter] = useState('all');
   const [confirmId, setConfirmId] = useState(null);
-  const nameOf = (id) => (data.customers.find((c) => c.id === id) || {}).name || '—';
+  const nameOf = (id) => (data.customers.find((c) => c.id === id) || {}).name || 'عام';
 
   const list = (filter === 'all' ? data.expenses : data.expenses.filter((e) => e.category === filter))
     .slice()
     .sort((a, b) => new Date(b.date) - new Date(a.date));
   const total = list.reduce((s, e) => s + Number(e.amount), 0);
 
+  const tabs = (
+    <div className="subtabs">
+      <button className={'subtab' + (subtab === 'expenses' ? ' active' : '')} onClick={() => setSubtab && setSubtab('expenses')}>المصاريف</button>
+      <button className={'subtab' + (subtab === 'workers' ? ' active' : '')} onClick={() => setSubtab && setSubtab('workers')}>العمّال</button>
+    </div>
+  );
+
+  if (subtab === 'workers') {
+    return (
+      <div className="page">
+        {tabs}
+        <Workers data={data} nav={nav} />
+      </div>
+    );
+  }
+
   return (
     <div className="page">
+      {tabs}
       <div className="total-preview">
         <span>المجموع</span>
         <span style={{ color: 'var(--indigo)' }}>{formatMoney(total)}</span>
