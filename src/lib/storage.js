@@ -102,12 +102,12 @@ export function loadData() {
     const v1 = localStorage.getItem(LEGACY_KEY);
     if (v1) return normalize(JSON.parse(v1));
   } catch (e) {
-    /* corrupt storage — fall through to demo seed */
+    /* corrupt storage — fall through to an empty app */
   }
-  // First run: seed with demo data so the app isn't empty.
-  const seeded = seedDemo();
-  saveData(seeded);
-  return seeded;
+  // First run: start empty. Demo data is available on demand from Settings.
+  const fresh = defaultData();
+  saveData(fresh);
+  return fresh;
 }
 
 export function saveData(data) {

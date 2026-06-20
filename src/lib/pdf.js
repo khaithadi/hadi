@@ -2,11 +2,13 @@
 // html2pdf.js (html2canvas + jsPDF). Capturing the real DOM means Arabic text
 // and the Cairo/Tajawal fonts render correctly (no Arabic-shaping issues that
 // plague text-mode PDF libraries).
+//
+// The library is imported dynamically so its ~880 kB only downloads the first
+// time the user actually exports a PDF — keeping the initial app load light.
 
-import html2pdf from 'html2pdf.js';
-
-export function exportPdf(node, filename) {
-  if (!node) return Promise.resolve(false);
+export async function exportPdf(node, filename) {
+  if (!node) return false;
+  const { default: html2pdf } = await import('html2pdf.js');
   const opt = {
     margin: 0,
     filename: filename.endsWith('.pdf') ? filename : `${filename}.pdf`,
@@ -15,5 +17,10 @@ export function exportPdf(node, filename) {
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
     pagebreak: { mode: ['avoid-all', 'css'] },
   };
-  return html2pdf().set(opt).from(node).save().then(() => true).catch(() => false);
+  try {
+    await html2pdf().set(opt).from(node).save();
+    return true;
+  } catch (e) {
+    return false;
+  }
 }
