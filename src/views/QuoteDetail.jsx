@@ -38,6 +38,7 @@ export default function QuoteDetail({ quote, data, nav, actions }) {
         ))}
         <div className="ticket-dash" />
         <div className="item-row subtle"><span>المجموع الفرعي</span><span>{formatMoney(totals.subtotal)}</span></div>
+        {totals.discount > 0 && <div className="item-row subtle"><span>التخفيض</span><span>− {formatMoney(totals.discount)}</span></div>}
         {quote.applyTax && <div className="item-row subtle"><span>الضريبة ({quote.taxRate}%)</span><span>{formatMoney(totals.tax)}</span></div>}
         <div className="item-row total"><span>الإجمالي</span><span>{formatMoney(totals.total)}</span></div>
         {quote.notes && <div className="doc-notes">{quote.notes}</div>}

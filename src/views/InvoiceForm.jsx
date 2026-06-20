@@ -11,6 +11,8 @@ export default function InvoiceForm({ initial, presetCustomerId, data, onCancel,
   const [items, setItems] = useState(inv.items?.length ? inv.items : [{ id: uid(), desc: '', qty: 1, price: 0 }]);
   const [applyTax, setApplyTax] = useState(!!inv.applyTax);
   const [taxRate, setTaxRate] = useState(inv.taxRate ?? defaultRate);
+  const [discountType, setDiscountType] = useState(inv.discountType || null);
+  const [discountValue, setDiscountValue] = useState(inv.discountValue ?? 0);
   const [notes, setNotes] = useState(inv.notes || '');
 
   if (data.customers.length === 0) {
@@ -25,6 +27,7 @@ export default function InvoiceForm({ initial, presetCustomerId, data, onCancel,
       ...(initial ? { id: initial.id, number: initial.number, payments: initial.payments, quoteId: initial.quoteId } : {}),
       customerId, date,
       items: clean, applyTax, taxRate: Number(taxRate) || 0,
+      discountType: discountType || null, discountValue: Number(discountValue) || 0,
       notes: notes.trim(),
     });
   }
@@ -39,7 +42,13 @@ export default function InvoiceForm({ initial, presetCustomerId, data, onCancel,
       <label className="label">التاريخ</label>
       <input className="input" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
 
-      <ItemsEditor items={items} setItems={setItems} applyTax={applyTax} setApplyTax={setApplyTax} taxRate={taxRate} setTaxRate={setTaxRate} />
+      <ItemsEditor
+        items={items} setItems={setItems}
+        applyTax={applyTax} setApplyTax={setApplyTax} taxRate={taxRate} setTaxRate={setTaxRate}
+        discountType={discountType} setDiscountType={setDiscountType}
+        discountValue={discountValue} setDiscountValue={setDiscountValue}
+        services={data.services}
+      />
 
       <label className="label">ملاحظات (اختياري)</label>
       <textarea className="input" rows={2} value={notes} onChange={(e) => setNotes(e.target.value)} />

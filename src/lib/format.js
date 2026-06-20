@@ -6,6 +6,13 @@ export function formatMoney(n) {
   return num.toLocaleString('en-US') + ' دج';
 }
 
+// French/Latin variant used on the printed Facture/Devis (DA = Dinar Algérien),
+// e.g. 300000 -> "300 000 DA".
+export function formatMoneyFr(n) {
+  const num = Number(n) || 0;
+  return num.toLocaleString('fr-FR').replace(/ | /g, ' ') + ' DA';
+}
+
 export function formatDate(iso) {
   if (!iso) return '';
   const d = new Date(iso);

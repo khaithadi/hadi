@@ -11,6 +11,8 @@ export function convertQuoteToInvoice(quote, makeId, nextNumber) {
     date: todayISO(),
     applyTax: !!quote.applyTax,
     taxRate: quote.taxRate,
+    discountType: quote.discountType || null,
+    discountValue: quote.discountValue || 0,
     items: (quote.items || []).map((it) => ({ ...it, id: makeId() })),
     payments: [],
     notes: quote.notes || '',

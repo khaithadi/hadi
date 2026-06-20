@@ -20,6 +20,10 @@ import InvoiceDetail from './views/InvoiceDetail.jsx';
 import PaymentForm from './views/PaymentForm.jsx';
 import Expenses from './views/Expenses.jsx';
 import ExpenseForm from './views/ExpenseForm.jsx';
+import WorkerForm from './views/WorkerForm.jsx';
+import WorkerDetail from './views/WorkerDetail.jsx';
+import LaborForm from './views/LaborForm.jsx';
+import LaborPaymentForm from './views/LaborPaymentForm.jsx';
 import Settings from './views/Settings.jsx';
 import DocPrint from './views/DocPrint.jsx';
 
@@ -37,12 +41,17 @@ const TITLES = {
   paymentForm: () => 'تسجيل دفعة',
   expenses: () => 'المصاريف',
   expenseForm: (d, e) => (e ? 'تعديل مصروف' : 'مصروف جديد'),
+  workerDetail: () => 'ملف العامل',
+  workerForm: (d, e) => (e ? 'تعديل العامل' : 'عامل جديد'),
+  laborForm: () => 'مستحق جديد',
+  laborPayment: () => 'دفعة لعامل',
   settings: () => 'الإعدادات',
 };
 
 const TAB_VIEWS = ['dashboard', 'customers', 'quotes', 'invoices', 'expenses'];
 // Views where the bottom nav is hidden to protect unsaved form input.
-const FORM_VIEWS = ['customerForm', 'quoteForm', 'invoiceForm', 'expenseForm', 'paymentForm', 'settings'];
+const FORM_VIEWS = ['customerForm', 'quoteForm', 'invoiceForm', 'expenseForm', 'paymentForm',
+  'workerForm', 'laborForm', 'laborPayment', 'settings'];
 
 export default function App() {
   const [data, setData] = useState(defaultData());
@@ -53,6 +62,7 @@ export default function App() {
   const [preset, setPreset] = useState(null); // preset customerId for new docs
   const [returnTo, setReturnTo] = useState('dashboard');
   const [print, setPrint] = useState(null); // { kind, id }
+  const [expTab, setExpTab] = useState('expenses'); // expenses screen sub-tab: 'expenses' | 'workers'
 
   useEffect(() => {
     setData(loadData());
@@ -95,6 +105,8 @@ export default function App() {
         quotes: data.quotes.filter((q) => q.customerId !== id),
         invoices: data.invoices.filter((i) => i.customerId !== id),
         expenses: data.expenses.filter((e) => e.customerId !== id),
+        // keep worker dues, just detach them from the removed project
+        labor: data.labor.map((l) => (l.customerId === id ? { ...l, customerId: null } : l)),
       });
     },
 
@@ -185,6 +197,68 @@ export default function App() {
       persist({ ...data, expenses: data.expenses.filter((e) => e.id !== id) });
     },
 
+    // ---- services catalog ----
+    addService(svc) {
+      persist({ ...data, services: [...data.services, { ...svc, id: uid() }] });
+    },
+    deleteService(id) {
+      persist({ ...data, services: data.services.filter((s) => s.id !== id) });
+    },
+
+    // ---- workers ----
+    saveWorker(worker) {
+      let next;
+      let saved = worker;
+      if (worker.id) {
+        next = { ...data, workers: data.workers.map((w) => (w.id === worker.id ? { ...w, ...worker } : w)) };
+      } else {
+        saved = { ...worker, id: uid(), createdAt: new Date().toISOString() };
+        next = { ...data, workers: [saved, ...data.workers] };
+      }
+      persist(next);
+      return saved;
+    },
+    deleteWorker(id) {
+      persist({
+        ...data,
+        workers: data.workers.filter((w) => w.id !== id),
+        labor: data.labor.filter((l) => l.workerId !== id),
+      });
+    },
+
+    // ---- labor (worker dues) ----
+    saveLabor(entry) {
+      let next;
+      let saved = entry;
+      if (entry.id) {
+        next = { ...data, labor: data.labor.map((l) => (l.id === entry.id ? { ...l, ...entry } : l)) };
+      } else {
+        saved = { ...entry, id: uid(), payments: [] };
+        next = { ...data, labor: [saved, ...data.labor] };
+      }
+      persist(next);
+      return saved;
+    },
+    deleteLabor(id) {
+      persist({ ...data, labor: data.labor.filter((l) => l.id !== id) });
+    },
+    addLaborPayment(laborId, payment) {
+      persist({
+        ...data,
+        labor: data.labor.map((l) =>
+          l.id === laborId ? { ...l, payments: [...(l.payments || []), { ...payment, id: uid() }] } : l
+        ),
+      });
+    },
+    deleteLaborPayment(laborId, paymentId) {
+      persist({
+        ...data,
+        labor: data.labor.map((l) =>
+          l.id === laborId ? { ...l, payments: (l.payments || []).filter((p) => p.id !== paymentId) } : l
+        ),
+      });
+    },
+
     saveSettings(settings) {
       persist({ ...data, settings: { ...data.settings, ...settings } });
     },
@@ -223,6 +297,13 @@ export default function App() {
     editExpense(e, ret) { setEditing(e); setReturnTo(ret || 'expenses'); setView('expenseForm'); },
 
     payment(invoiceId) { setActive((a) => ({ ...a, invoiceId })); setReturnTo('invoiceDetail'); setView('paymentForm'); },
+
+    openWorker(id) { setActive((a) => ({ ...a, workerId: id })); setReturnTo('expenses'); setView('workerDetail'); },
+    newWorker() { setEditing(null); setReturnTo('expenses'); setView('workerForm'); },
+    editWorker(w) { setEditing(w); setReturnTo('workerDetail'); setView('workerForm'); },
+    newLabor(workerId) { setActive((a) => ({ ...a, workerId })); setEditing(null); setReturnTo('workerDetail'); setView('laborForm'); },
+    laborPayment(laborId) { setActive((a) => ({ ...a, laborId })); setReturnTo('workerDetail'); setView('laborPayment'); },
+
     print(kind, id) { setPrint({ kind, id }); },
     closePrint() { setPrint(null); },
     settings() { setReturnTo('dashboard'); setView('settings'); },
@@ -238,7 +319,7 @@ export default function App() {
     if (view === 'customers') return nav.newCustomer();
     if (view === 'quotes') return nav.newQuote();
     if (view === 'invoices') return nav.newInvoice();
-    if (view === 'expenses') return nav.newExpense();
+    if (view === 'expenses') return expTab === 'workers' ? nav.newWorker() : nav.newExpense();
     return nav.newInvoice(); // dashboard default
   }
 
@@ -262,6 +343,8 @@ export default function App() {
   const activeCustomer = data.customers.find((c) => c.id === active.customerId);
   const activeQuote = data.quotes.find((q) => q.id === active.quoteId);
   const activeInvoice = data.invoices.find((i) => i.id === active.invoiceId);
+  const activeWorker = data.workers.find((w) => w.id === active.workerId);
+  const activeLabor = data.labor.find((l) => l.id === active.laborId);
 
   const showBack = !TAB_VIEWS.includes(view);
   const titleFn = TITLES[view] || (() => 'ميثاق');
@@ -339,7 +422,9 @@ export default function App() {
             />
           )}
 
-          {view === 'expenses' && <Expenses data={data} nav={nav} actions={actions} />}
+          {view === 'expenses' && (
+            <Expenses data={data} nav={nav} actions={actions} subtab={expTab} setSubtab={setExpTab} />
+          )}
           {view === 'expenseForm' && (
             <ExpenseForm
               initial={editing}
@@ -348,6 +433,42 @@ export default function App() {
               onCancel={nav.back}
               onSave={(e) => {
                 actions.saveExpense(e);
+                nav.back();
+              }}
+            />
+          )}
+
+          {view === 'workerDetail' && activeWorker && (
+            <WorkerDetail worker={activeWorker} data={data} nav={nav} actions={actions} />
+          )}
+          {view === 'workerForm' && (
+            <WorkerForm
+              initial={editing}
+              onCancel={nav.back}
+              onSave={(w) => {
+                const saved = actions.saveWorker(w);
+                if (editing) nav.back();
+                else nav.openWorker(saved.id);
+              }}
+            />
+          )}
+          {view === 'laborForm' && activeWorker && (
+            <LaborForm
+              worker={activeWorker}
+              data={data}
+              onCancel={nav.back}
+              onSave={(entry) => {
+                actions.saveLabor(entry);
+                nav.back();
+              }}
+            />
+          )}
+          {view === 'laborPayment' && activeLabor && (
+            <LaborPaymentForm
+              entry={activeLabor}
+              onCancel={nav.back}
+              onSave={(p) => {
+                actions.addLaborPayment(activeLabor.id, p);
                 nav.back();
               }}
             />

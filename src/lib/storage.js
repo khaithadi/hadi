@@ -13,7 +13,16 @@ export function defaultData() {
     quotes: [],
     invoices: [],
     expenses: [],
-    settings: { businessName: 'ورشتي', ownerName: '', phone: '', defaultTaxRate: DEFAULT_TAX_RATE },
+    services: [],
+    workers: [],
+    labor: [],
+    settings: {
+      businessName: 'ورشتي',
+      ownerName: '',
+      phone: '',
+      defaultTaxRate: DEFAULT_TAX_RATE,
+      invoiceFooter: '',
+    },
     seq: { quote: 0, invoice: 0 },
   };
 }
@@ -72,6 +81,9 @@ export function normalize(raw) {
       quotes: [],
       invoices,
       expenses,
+      services: [],
+      workers: [],
+      labor: [],
       settings: { ...base.settings, ...(raw.settings || {}) },
       seq: { quote: 0, invoice: Number(raw.seq) || invoices.length },
     };
@@ -85,11 +97,21 @@ export function normalize(raw) {
 
   return {
     customers: Array.isArray(raw.customers) ? raw.customers : [],
-    quotes: Array.isArray(raw.quotes) ? raw.quotes : [],
+    quotes: Array.isArray(raw.quotes)
+      ? raw.quotes.map((q) => ({ discountType: null, discountValue: 0, ...q }))
+      : [],
     invoices: Array.isArray(raw.invoices)
-      ? raw.invoices.map((inv) => ({ payments: [], applyTax: false, taxRate: DEFAULT_TAX_RATE, ...inv }))
+      ? raw.invoices.map((inv) => ({
+          payments: [], applyTax: false, taxRate: DEFAULT_TAX_RATE,
+          discountType: null, discountValue: 0, ...inv,
+        }))
       : [],
     expenses: Array.isArray(raw.expenses) ? raw.expenses : [],
+    services: Array.isArray(raw.services) ? raw.services : [],
+    workers: Array.isArray(raw.workers) ? raw.workers : [],
+    labor: Array.isArray(raw.labor)
+      ? raw.labor.map((l) => ({ payments: [], ...l }))
+      : [],
     settings: { ...base.settings, ...(raw.settings || {}) },
     seq,
   };

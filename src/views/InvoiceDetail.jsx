@@ -39,6 +39,7 @@ export default function InvoiceDetail({ invoice, data, nav, actions }) {
         ))}
         <div className="ticket-dash" />
         <div className="item-row subtle"><span>المجموع الفرعي</span><span>{formatMoney(st.subtotal)}</span></div>
+        {st.discount > 0 && <div className="item-row subtle"><span>التخفيض</span><span>− {formatMoney(st.discount)}</span></div>}
         {invoice.applyTax && <div className="item-row subtle"><span>الضريبة ({invoice.taxRate}%)</span><span>{formatMoney(st.tax)}</span></div>}
         <div className="item-row total"><span>الإجمالي</span><span>{formatMoney(st.total)}</span></div>
         <ProgressBar state={st} />
