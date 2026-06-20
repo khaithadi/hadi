@@ -1,63 +1,69 @@
 # ميثاق · Mithaq
 
-A lightweight **CRM & invoicing app for craftsmen and small service businesses** in Algeria
-— plasterboard contractors, electricians, plumbers, painters, aluminum installers, decorators,
-and independent tradespeople.
+تطبيق بسيط لإدارة الزبائن والفواتير، مصمَّم للحرفيين وأصحاب المهن الصغيرة في الجزائر
+(جبس بلاكو، ديكور، كهرباء، سباكة، دهن، ألمنيوم، بناء…).
 
-> **Philosophy: simplicity first.** Every screen is understandable in under 10 seconds.
-> Mobile-first, touch-friendly, no ERP complexity.
-
-## What it answers
-
-- Who are my customers? Which are still in progress?
-- Which quotes were accepted? Which invoices are paid?
-- How much have I received, and how much have I spent?
-- **How much profit did I make from each customer?**
+A lightweight **CRM & invoicing app for Algerian craftsmen**, built as a mobile-first
+web app. *Simplicity first* — every screen is understandable in seconds.
 
 ## Modules
 
-1. **Dashboard** — revenue, expenses, net profit, outstanding, and counts at a glance.
-2. **Customers** — the central entity (a customer *is* a project). Status journey
-   (New → Site Visit → Quote Sent → Approved → In Progress → Completed), full financial
-   summary, and a prominent **profitability** card per customer.
-3. **Quotes** — create, edit, duplicate, generate/share PDF, and one-click convert to invoice.
-4. **Invoices** — partial payments with a visual payment-progress bar and Paid / Partially Paid
-   / Unpaid status.
-5. **Expenses** — linked to a customer, with categories (Materials, Labor, Food, Fuel,
-   Transportation, Tools & Equipment, Other).
+1. **الرئيسية / Dashboard** — collected revenue, total expenses, net profit, outstanding
+   balance, counts, and recent activity.
+2. **العملاء / Customers** — the central entity (a customer *is* a project): status journey
+   (جديد → زيارة → عرض مُرسل → مقبول → قيد التنفيذ → مكتمل), financial summary, and a
+   prominent **profitability** card (قيمة المشروع − المصاريف = الربح). Call/WhatsApp shortcuts.
+3. **العروض / Quotes** — create, edit, **duplicate**, save **PDF**, and one-click **convert
+   to invoice**. Statuses: مسودة / مُرسل / مقبول / مرفوض.
+4. **الفواتير / Invoices** — **partial payments** with a progress bar; status derived
+   automatically (غير مدفوعة / مدفوعة جزئياً / مدفوعة).
+5. **المصاريف / Expenses** — linked to a customer, 7 categories, optional receipt photo.
 
-All money is calculated automatically — revenue, expenses, net profit, outstanding balances,
-and per-customer profitability — so the user never does the math.
+All money is computed automatically (`src/lib/calc.js`). A configurable **Tax** (toggle +
+editable rate %, default set in Settings) can be applied per quote/invoice. Quotes and
+invoices export to a real **downloadable PDF** that renders Arabic correctly.
 
 ## Design
 
-- **Theme:** Earthy Terracotta · clean & minimal · light mode.
-- **Language:** English primary (LTR) with Arabic secondary labels throughout.
-- **Currency:** Algerian Dinar (DZD), Latin numerals.
-- **Tax:** optional TVA 19% toggle per quote/invoice (off by default).
+Faithful to the original MVP identity — **RTL Arabic**, **Cairo + Tajawal** fonts, the copper
+`#C1622D` / cream `#F6F3EC` palette, and the signature notched **"ticket" cards**. No redesign.
 
-## Running it
+## Tech
 
-No build step, no server, no dependencies. Just open `index.html` in any modern browser
-(or serve the folder statically). On a phone, "Add to Home Screen" for an app-like experience.
+Plain **React + Vite**, web-friendly. Data is saved in the browser via `localStorage`
+(`craftsman-billing-data-v2`); old v1 data is auto-migrated. Settings includes text
+backup/restore, demo data, and clear-all. The app ships with Arabic demo data on first run.
 
-Data is stored locally in the browser (`localStorage`). The app ships with **sample demo
-data**; use the ⚙ settings menu to **restore demo data** or **clear all data**.
+```bash
+npm install
+npm run dev          # local dev server
+npm run build        # production build → dist/
+npm run preview      # serve the production build
+npm run test:calc    # assertions for the calculation layer
+```
 
 ## Structure
 
 ```
-index.html              app shell + script load order
-assets/css/styles.css   design system (terracotta, mobile-first)
-assets/js/
-  format.js   currency / date helpers (pure)
-  store.js    data layer + all financial calculations + seed data
-  ui.js       vanilla DOM toolkit (elements, bottom-sheet, toast, forms)
-  pdf.js      printable quote / invoice documents (Save as PDF / share)
-  views.js    screens & forms
-  app.js      hash router, bottom nav, bootstrap
+index.html               RTL shell + Google Fonts (Cairo, Tajawal)
+src/
+  main.jsx  App.jsx       app shell: state, navigation, data mutations
+  styles.css             design system, ported 1:1 from the MVP
+  lib/
+    format.js  text.js    money/date/id helpers, WhatsApp text
+    constants.js          statuses, categories, service types, lead sources
+    calc.js               docTotals, invoiceState, customerFinance, dashboardMetrics
+    convert.js            quote → invoice
+    storage.js            localStorage + v1→v2 migration + demo seed
+    pdf.js                downloadable PDF via html2pdf.js
+  components/             TopBar, BottomNav, Fab, Ticket, StatusBadge, Journey,
+                          ProgressBar, ItemsEditor
+  views/                  Dashboard, Customers, CustomerProfile, CustomerForm,
+                          Quotes, QuoteForm, QuoteDetail, Invoices, InvoiceForm,
+                          InvoiceDetail, PaymentForm, Expenses, ExpenseForm,
+                          Settings, DocPrint
+scripts/calc.test.mjs    calculation-layer tests
 ```
 
-The data layer (`store.js`, `format.js`) is intentionally free of DOM code and holds all
-business logic, so the app can later be ported to **Flutter / React Native** with the
-screens rebuilt on top of the same model and calculations.
+The pure logic in `src/lib` is DOM-free, so it can be reused when porting to a native
+mobile app (Flutter / React Native) later.
