@@ -1,0 +1,22 @@
+{
+  "name": "forest-rental",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "غابتي — تطبيق كراء يومي للغابات والفلل (Airbnb-style daily rental for forests & villas)",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test:calc": "node scripts/calc.test.mjs"
+  },
+  "dependencies": {
+    "lucide-react": "^0.460.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^5.4.11"
+  }
+}
