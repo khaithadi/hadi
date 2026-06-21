@@ -17,10 +17,11 @@ export default function ListingCard({ listing, onClick, favorite, onToggleFav })
         {onToggleFav && (
           <button
             className={'fav-btn' + (favorite ? ' on' : '')}
+            style={{ top: 8, left: 8, width: 30, height: 30 }}
             onClick={(e) => { e.stopPropagation(); onToggleFav(); }}
             aria-label="مفضّلة"
           >
-            <Heart size={18} fill={favorite ? 'currentColor' : 'none'} />
+            <Heart size={15} fill={favorite ? 'currentColor' : 'none'} />
           </button>
         )}
       </div>

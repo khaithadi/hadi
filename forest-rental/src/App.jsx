@@ -16,32 +16,36 @@ import HostDashboard from './views/HostDashboard.jsx';
 import HostListings from './views/HostListings.jsx';
 import ListingForm from './views/ListingForm.jsx';
 import HostBookings from './views/HostBookings.jsx';
+import HostExpenses from './views/HostExpenses.jsx';
+import ExpenseForm from './views/ExpenseForm.jsx';
 import Account from './views/Account.jsx';
 
 const TITLES = {
-  explore: () => 'استكشف',
   favorites: () => 'المفضّلة',
   bookings: () => 'حجوزاتي',
   account: () => 'حسابي',
-  listing: () => 'تفاصيل العقار',
   bookingConfirm: () => 'تأكيد الحجز',
   hostDashboard: () => 'لوحة المالك',
   hostListings: () => 'عقاراتي',
   hostBookings: () => 'الحجوزات الواردة',
+  hostExpenses: () => 'المصاريف',
   listingForm: (e) => (e ? 'تعديل العقار' : 'عقار جديد'),
+  expenseForm: (e) => (e ? 'تعديل مصروف' : 'مصروف جديد'),
 };
 
 const GUEST_TABS = ['explore', 'favorites', 'bookings', 'account'];
-const HOST_TABS = ['hostDashboard', 'hostListings', 'hostBookings', 'account'];
-// Views where the bottom nav is hidden (full-screen / form context).
-const FULLSCREEN_VIEWS = ['listing', 'listingForm', 'bookingConfirm'];
+const HOST_TABS = ['hostDashboard', 'hostListings', 'hostBookings', 'hostExpenses', 'account'];
+// Views with no bottom nav (full-screen / form context).
+const FULLSCREEN_VIEWS = ['listing', 'listingForm', 'bookingConfirm', 'expenseForm'];
+// Views that render their own header instead of the shared TopBar.
+const NO_TOPBAR = ['explore', 'listing'];
 
 export default function App() {
   const [data, setData] = useState(defaultData());
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState('explore');
   const [active, setActive] = useState({}); // { listingId }
-  const [editing, setEditing] = useState(null); // listing being edited
+  const [editing, setEditing] = useState(null); // listing / expense being edited
   const [draft, setDraft] = useState(null); // pending booking { checkIn, checkOut, guests }
   const [returnTo, setReturnTo] = useState('explore');
 
@@ -80,6 +84,7 @@ export default function App() {
         ...data,
         listings: data.listings.filter((l) => l.id !== id),
         bookings: data.bookings.filter((b) => b.listingId !== id),
+        expenses: (data.expenses || []).filter((e) => e.listingId !== id),
         favorites: data.favorites.filter((f) => f !== id),
       });
     },
@@ -99,6 +104,18 @@ export default function App() {
     },
     setBookingStatus(id, status) {
       persist({ ...data, bookings: data.bookings.map((b) => (b.id === id ? { ...b, status } : b)) });
+    },
+    saveExpense(expense) {
+      let next;
+      if (expense.id) {
+        next = { ...data, expenses: data.expenses.map((e) => (e.id === expense.id ? { ...e, ...expense } : e)) };
+      } else {
+        next = { ...data, expenses: [{ ...expense, id: uid(), ownerId: data.settings.userId }, ...(data.expenses || [])] };
+      }
+      persist(next);
+    },
+    deleteExpense(id) {
+      persist({ ...data, expenses: (data.expenses || []).filter((e) => e.id !== id) });
     },
     toggleFavorite(id) {
       const favorites = data.favorites.includes(id)
@@ -127,10 +144,7 @@ export default function App() {
 
   /* --------------------------- navigation -------------------------- */
   const nav = {
-    go(v) {
-      setEditing(null);
-      setView(v);
-    },
+    go(v) { setEditing(null); setView(v); },
     openListing(id) {
       setActive((a) => ({ ...a, listingId: id }));
       if (view !== 'listing') setReturnTo(view);
@@ -142,20 +156,11 @@ export default function App() {
       setReturnTo('listing');
       setView('bookingConfirm');
     },
-    newListing() {
-      setEditing(null);
-      setReturnTo('hostListings');
-      setView('listingForm');
-    },
-    editListing(l) {
-      setEditing(l);
-      setReturnTo('hostListings');
-      setView('listingForm');
-    },
-    back() {
-      setEditing(null);
-      setView(returnTo || 'explore');
-    },
+    newListing() { setEditing(null); setReturnTo('hostListings'); setView('listingForm'); },
+    editListing(l) { setEditing(l); setReturnTo('hostListings'); setView('listingForm'); },
+    newExpense() { setEditing(null); setReturnTo('hostExpenses'); setView('expenseForm'); },
+    editExpense(e) { setEditing(e); setReturnTo('hostExpenses'); setView('expenseForm'); },
+    back() { setEditing(null); setView(returnTo || 'explore'); },
   };
 
   if (loading) {
@@ -171,11 +176,12 @@ export default function App() {
   const activeListing = data.listings.find((l) => l.id === active.listingId);
   const showBack = !TAB_VIEWS.includes(view);
   const titleFn = TITLES[view] || (() => 'غابتي');
+  const showFab = role === 'host' && (view === 'hostListings' || view === 'hostExpenses');
 
   return (
     <div className="app-root">
       <div className="shell">
-        <TopBar title={titleFn(editing)} showBack={showBack} onBack={nav.back} />
+        {!NO_TOPBAR.includes(view) && <TopBar title={titleFn(editing)} showBack={showBack} onBack={nav.back} />}
         <div className="content">
           {view === 'explore' && <Explore data={data} nav={nav} actions={actions} />}
           {view === 'favorites' && <Favorites data={data} nav={nav} actions={actions} />}
@@ -210,6 +216,7 @@ export default function App() {
           {view === 'hostDashboard' && <HostDashboard data={data} nav={nav} />}
           {view === 'hostListings' && <HostListings data={data} nav={nav} />}
           {view === 'hostBookings' && <HostBookings data={data} actions={actions} />}
+          {view === 'hostExpenses' && <HostExpenses data={data} nav={nav} />}
           {view === 'listingForm' && (
             <ListingForm
               initial={editing}
@@ -218,9 +225,18 @@ export default function App() {
               onDelete={editing ? () => { actions.deleteListing(editing.id); nav.back(); } : null}
             />
           )}
+          {view === 'expenseForm' && (
+            <ExpenseForm
+              initial={editing}
+              listings={data.listings.filter((l) => l.ownerId === data.settings.userId)}
+              onCancel={nav.back}
+              onSave={(e) => { actions.saveExpense(e); nav.back(); }}
+              onDelete={editing ? () => { actions.deleteExpense(editing.id); nav.back(); } : null}
+            />
+          )}
         </div>
 
-        {role === 'host' && view === 'hostListings' && <Fab onClick={nav.newListing} />}
+        {showFab && <Fab onClick={view === 'hostExpenses' ? nav.newExpense : nav.newListing} />}
         {!FULLSCREEN_VIEWS.includes(view) && <BottomNav role={role} active={view} onChange={nav.go} />}
       </div>
     </div>

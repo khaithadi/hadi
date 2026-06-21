@@ -5,11 +5,11 @@ export const ROLES = { GUEST: 'guest', HOST: 'host' };
 // Property types. `g1`/`g2` are the gradient colors used for the placeholder
 // cover when a listing has no uploaded photos (avoids relying on remote images).
 export const PROPERTY_TYPES = [
-  { id: 'forest', label: 'غابة',  g1: '#2F5D3A', g2: '#1E3D26' },
-  { id: 'villa',  label: 'فيلا',  g1: '#3A6B8A', g2: '#27506B' },
-  { id: 'chalet', label: 'شاليه', g1: '#8B5E3C', g2: '#5E3C24' },
-  { id: 'farm',   label: 'مزرعة', g1: '#7A8B3C', g2: '#56632A' },
-  { id: 'cabin',  label: 'كوخ',   g1: '#6B6F76', g2: '#444A52' },
+  { id: 'forest', label: 'غابة',  g1: '#3C6E71', g2: '#16242A' },
+  { id: 'villa',  label: 'فيلا',  g1: '#4A6B8A', g2: '#1C2A36' },
+  { id: 'chalet', label: 'شاليه', g1: '#6D6875', g2: '#2B2B30' },
+  { id: 'farm',   label: 'مزرعة', g1: '#5B6B3A', g2: '#262E18' },
+  { id: 'cabin',  label: 'كوخ',   g1: '#7A5C4A', g2: '#2E2018' },
 ];
 
 export const REGIONS = [
@@ -31,10 +31,20 @@ export const AMENITIES = [
 ];
 
 export const BOOKING_STATUSES = [
-  { id: 'pending',   label: 'بانتظار التأكيد', color: '#B8862F' },
-  { id: 'confirmed', label: 'مؤكّد',           color: 'var(--success)' },
-  { id: 'cancelled', label: 'ملغى',            color: 'var(--danger)' },
-  { id: 'completed', label: 'مكتمل',           color: 'var(--ink-soft)' },
+  { id: 'pending',   label: 'بانتظار التأكيد', color: '#E0A82E' },
+  { id: 'confirmed', label: 'مؤكّد',           color: '#2E9E5B' },
+  { id: 'cancelled', label: 'ملغى',            color: '#D9534F' },
+  { id: 'completed', label: 'مكتمل',           color: '#6C757D' },
+];
+
+// Expense categories for the host's per-property expense tracking.
+export const EXPENSE_CATEGORIES = [
+  { id: 'maintenance', label: 'صيانة',    color: '#8C6D4F' },
+  { id: 'cleaning',    label: 'تنظيف',    color: '#2E9E5B' },
+  { id: 'utilities',   label: 'فواتير',   color: '#3A6B8A' },
+  { id: 'supplies',    label: 'مستلزمات', color: '#7A5C9E' },
+  { id: 'taxes',       label: 'ضرائب',    color: '#C0492F' },
+  { id: 'other',       label: 'أخرى',     color: '#6C757D' },
 ];
 
 // Lookup helper — returns the matching entry or a safe fallback.

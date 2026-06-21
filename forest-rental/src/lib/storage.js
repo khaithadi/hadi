@@ -9,6 +9,7 @@ export function defaultData() {
   return {
     listings: [],
     bookings: [],
+    expenses: [],
     favorites: [],
     settings: { role: 'guest', userId: 'me', userName: 'ضيف' },
     seq: { booking: 0 },
@@ -22,6 +23,7 @@ export function normalize(raw) {
   return {
     listings: Array.isArray(raw.listings) ? raw.listings : [],
     bookings: Array.isArray(raw.bookings) ? raw.bookings : [],
+    expenses: Array.isArray(raw.expenses) ? raw.expenses : [],
     favorites: Array.isArray(raw.favorites) ? raw.favorites : [],
     settings: { ...base.settings, ...(raw.settings || {}) },
     seq:
@@ -126,6 +128,13 @@ export function seedDemo() {
     checkIn: day(14), checkOut: day(16), guests: 3,
     nights: 2, total: 2 * 3500 + Math.round(2 * 3500 * 0.05), status: 'pending',
   });
+
+  // Demo expenses on the user's own listing (host side).
+  d.expenses.push(
+    { id: uid(), listingId: mine.id, ownerId: 'me', category: 'cleaning', amount: 2500, description: 'تنظيف بعد المغادرة', date: day(-3), receipt: null },
+    { id: uid(), listingId: mine.id, ownerId: 'me', category: 'utilities', amount: 1800, description: 'فاتورة كهرباء وماء', date: day(-8), receipt: null },
+    { id: uid(), listingId: mine.id, ownerId: 'me', category: 'maintenance', amount: 6000, description: 'إصلاح موقد النار', date: day(-15), receipt: null }
+  );
 
   return d;
 }

@@ -12,21 +12,23 @@ and books, **مالك (host)** lists properties and manages reservations.
 
 ## الوظائف
 
-- **استكشف** — تصفّح العقارات مع بحث وفلترة حسب النوع (غابة/فيلا/شاليه/مزرعة/كوخ).
-- **تفاصيل العقار** — صور، مرافق، سعر/ليلة، اختيار تواريخ مع حساب فوري للمجموع
-  وفحص التوفّر (لا تداخل مع حجوزات قائمة).
-- **الحجز** — تأكيد بالتواريخ وعدد الضيوف والاسم؛ يبدأ الحجز "بانتظار التأكيد".
+- **استكشف** — ترويسة ترحيب + بحث وفلترة حسب النوع (غابة/فيلا/شاليه/مزرعة/كوخ)،
+  مع **بطاقة مميّزة** وقائمة العقارات.
+- **تفاصيل العقار** — تبويبات (التفاصيل/المرافق/الحجز)، صورة هيرو، وتقييم.
+- **التقويم** — المستأجر يختار تواريخه من تقويم بصري (الأيام المحجوزة معطّلة)، والمالك
+  يرى حجوزاته ملوّنة على تقويم شهري (مؤكّد/معلّق).
+- **الحجز** — حساب فوري للمجموع + رسوم الخدمة وفحص التوفّر؛ يبدأ "بانتظار التأكيد".
 - **حجوزاتي / المفضّلة** — متابعة حجوزات المستأجر وقائمة رغباته.
-- **وضع المالك** — لوحة بالأرباح والإحصاءات، إضافة/تعديل/حذف عقارات (مع رفع صور)،
-  وقبول/رفض الحجوزات الواردة.
+- **وضع المالك** — لوحة بصافي الربح والإحصاءات، إضافة/تعديل/حذف عقارات (مع رفع صور)،
+  قبول/رفض الحجوزات، و**تتبّع مصاريف كل عقار** (فئات + إيصال) مع صافي الربح.
 - **حسابي** — تبديل الدور (مستأجر/مالك)، الاسم، تحميل بيانات تجريبية، ومسح الكل.
 
 ## التقنية
 
-**React + Vite**، عربي RTL، خطوط Cairo + Tajawal، ثيم طبيعي (أخضر/خشبي/كريمي).
-كل البيانات تُحفظ محلياً في المتصفح عبر `localStorage` (مفتاح
-`forest-rental-data-v1`). المنطق الصِّرف في `src/lib` خالٍ من DOM ليسهُل اختباره
-وإعادة استخدامه لاحقاً عند النقل إلى تطبيق جوال أصلي.
+**React + Vite**، عربي RTL، خطوط Instrument Sans + IBM Plex Sans Arabic، ثيم أحادي
+أنيق (أبيض/رمادي/أسود) مع شريط سفلي داكن عائم. كل البيانات تُحفظ محلياً في المتصفح
+عبر `localStorage` (مفتاح `forest-rental-data-v1`). المنطق الصِّرف في `src/lib` خالٍ
+من DOM ليسهُل اختباره وإعادة استخدامه لاحقاً عند النقل إلى تطبيق جوال أصلي.
 
 ```bash
 cd forest-rental
@@ -43,16 +45,17 @@ npm run test:calc    # اختبارات طبقة الحساب
 index.html               قشرة RTL + خطوط Google
 src/
   main.jsx  App.jsx       قشرة التطبيق: الحالة، التنقّل، الطفرات
-  styles.css             نظام التصميم (ثيم الطبيعة)
+  styles.css             نظام التصميم (ثيم TripVibe الأحادي)
   lib/
     format.js            دوال المال/التاريخ/المعرّفات
-    constants.js         أنواع العقارات، المرافق، المناطق، حالات الحجز
-    calc.js              nightsBetween, bookingTotal, isRangeAvailable, hostMetrics
+    constants.js         أنواع العقارات، المرافق، المناطق، حالات الحجز، فئات المصاريف
+    calc.js              nightsBetween, bookingTotal, isRangeAvailable,
+                         eachNight, occupiedDates, listingExpenses, hostMetrics
     storage.js           localStorage + البيانات التجريبية
   components/             TopBar, BottomNav, Fab, Ticket, StatusBadge,
-                         ListingCard, Gallery, Stars, AmenityPicker, DateRangeFields
+                         ListingCard, Stars, AmenityPicker, Calendar
   views/                 Explore, ListingDetail, BookingConfirm, Bookings,
                          Favorites, HostDashboard, HostListings, ListingForm,
-                         HostBookings, Account
+                         HostBookings, HostExpenses, ExpenseForm, Account
 scripts/calc.test.mjs    اختبارات طبقة الحساب
 ```

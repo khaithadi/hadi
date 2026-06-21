@@ -1,4 +1,4 @@
-import { Compass, Heart, CalendarDays, User, LayoutDashboard, Home, Inbox } from 'lucide-react';
+import { Compass, Heart, CalendarDays, User, LayoutDashboard, Home, Inbox, Receipt } from 'lucide-react';
 
 const GUEST_TABS = [
   { key: 'explore', label: 'استكشف', icon: Compass },
@@ -11,12 +11,14 @@ const HOST_TABS = [
   { key: 'hostDashboard', label: 'لوحتي', icon: LayoutDashboard },
   { key: 'hostListings', label: 'عقاراتي', icon: Home },
   { key: 'hostBookings', label: 'الحجوزات', icon: Inbox },
+  { key: 'hostExpenses', label: 'المصاريف', icon: Receipt },
   { key: 'account', label: 'حسابي', icon: User },
 ];
 
 // Maps a sub-view to its owning tab so it stays highlighted.
 function tabFor(view) {
   if (view === 'listingForm') return 'hostListings';
+  if (view === 'expenseForm') return 'hostExpenses';
   return view;
 }
 
@@ -29,12 +31,8 @@ export default function BottomNav({ role, active, onChange }) {
         const Icon = t.icon;
         const isActive = activeKey === t.key;
         return (
-          <button
-            key={t.key}
-            className={'nav-item' + (isActive ? ' active' : '')}
-            onClick={() => onChange(t.key)}
-          >
-            <Icon size={20} strokeWidth={isActive ? 2.4 : 1.8} />
+          <button key={t.key} className={'nav-item' + (isActive ? ' active' : '')} onClick={() => onChange(t.key)}>
+            <span className="nav-ic"><Icon size={20} strokeWidth={isActive ? 2.4 : 1.8} /></span>
             <span>{t.label}</span>
           </button>
         );
