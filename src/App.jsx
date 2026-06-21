@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { loadData, saveData, normalize, seedDemo, defaultData } from './lib/storage.js';
-import { uid } from './lib/format.js';
+import { uid, todayISO } from './lib/format.js';
 import { convertQuoteToInvoice } from './lib/convert.js';
+import { laborState, workerRates, periodSummary } from './lib/calc.js';
 
 import TopBar from './components/TopBar.jsx';
 import BottomNav from './components/BottomNav.jsx';
@@ -24,6 +25,8 @@ import WorkerForm from './views/WorkerForm.jsx';
 import WorkerDetail from './views/WorkerDetail.jsx';
 import LaborForm from './views/LaborForm.jsx';
 import LaborPaymentForm from './views/LaborPaymentForm.jsx';
+import TimesheetForm from './views/TimesheetForm.jsx';
+import PeriodPayForm from './views/PeriodPayForm.jsx';
 import Settings from './views/Settings.jsx';
 import DocPrint from './views/DocPrint.jsx';
 
@@ -45,13 +48,15 @@ const TITLES = {
   workerForm: (d, e) => (e ? 'تعديل العامل' : 'عامل جديد'),
   laborForm: () => 'مستحق جديد',
   laborPayment: () => 'دفعة لعامل',
+  timesheetForm: () => 'تسجيل يوم',
+  periodPay: () => 'دفع فترة',
   settings: () => 'الإعدادات',
 };
 
 const TAB_VIEWS = ['dashboard', 'customers', 'quotes', 'invoices', 'expenses'];
 // Views where the bottom nav is hidden to protect unsaved form input.
 const FORM_VIEWS = ['customerForm', 'quoteForm', 'invoiceForm', 'expenseForm', 'paymentForm',
-  'workerForm', 'laborForm', 'laborPayment', 'settings'];
+  'workerForm', 'laborForm', 'laborPayment', 'timesheetForm', 'periodPay', 'settings'];
 
 export default function App() {
   const [data, setData] = useState(defaultData());
@@ -223,6 +228,7 @@ export default function App() {
         ...data,
         workers: data.workers.filter((w) => w.id !== id),
         labor: data.labor.filter((l) => l.workerId !== id),
+        timesheet: data.timesheet.filter((t) => t.workerId !== id),
       });
     },
 
@@ -256,6 +262,47 @@ export default function App() {
         labor: data.labor.map((l) =>
           l.id === laborId ? { ...l, payments: (l.payments || []).filter((p) => p.id !== paymentId) } : l
         ),
+      });
+    },
+    // Quick "fully paid": record a payment equal to the remaining balance.
+    payLaborInFull(laborId) {
+      const entry = data.labor.find((l) => l.id === laborId);
+      if (!entry) return;
+      const remaining = laborState(entry).remaining;
+      if (remaining <= 0) return;
+      persist({
+        ...data,
+        labor: data.labor.map((l) =>
+          l.id === laborId ? { ...l, payments: [...(l.payments || []), { id: uid(), amount: remaining, date: todayISO() }] } : l
+        ),
+      });
+    },
+
+    // ---- monthly worker timesheet ----
+    addTimesheet(entry) {
+      persist({ ...data, timesheet: [{ ...entry, id: uid() }, ...data.timesheet] });
+    },
+    deleteTimesheet(id) {
+      persist({ ...data, timesheet: data.timesheet.filter((t) => t.id !== id) });
+    },
+    // Settle a date range: create a fully-paid (general) labor entry and lock the days.
+    payWorkerPeriod(workerId, from, to) {
+      const worker = data.workers.find((w) => w.id === workerId);
+      if (!worker) return;
+      const rates = workerRates(worker);
+      const summary = periodSummary(data.timesheet, workerId, from, to, rates, { unpaidOnly: true });
+      if (summary.amount <= 0) return;
+      const payId = uid();
+      const laborEntry = {
+        id: payId, workerId, customerId: null, basis: 'amount', due: summary.amount,
+        date: to, note: `فترة ${from} → ${to}`,
+        payments: [{ id: uid(), amount: summary.amount, date: todayISO() }],
+      };
+      const paidIds = new Set(summary.days.map((d) => d.id));
+      persist({
+        ...data,
+        labor: [laborEntry, ...data.labor],
+        timesheet: data.timesheet.map((t) => (paidIds.has(t.id) ? { ...t, paid: true, paymentId: payId } : t)),
       });
     },
 
@@ -303,6 +350,8 @@ export default function App() {
     editWorker(w) { setEditing(w); setReturnTo('workerDetail'); setView('workerForm'); },
     newLabor(workerId) { setActive((a) => ({ ...a, workerId })); setEditing(null); setReturnTo('workerDetail'); setView('laborForm'); },
     laborPayment(laborId) { setActive((a) => ({ ...a, laborId })); setReturnTo('workerDetail'); setView('laborPayment'); },
+    newTimesheet(workerId) { setActive((a) => ({ ...a, workerId })); setReturnTo('workerDetail'); setView('timesheetForm'); },
+    payPeriod(workerId) { setActive((a) => ({ ...a, workerId })); setReturnTo('workerDetail'); setView('periodPay'); },
 
     print(kind, id) { setPrint({ kind, id }); },
     closePrint() { setPrint(null); },
@@ -469,6 +518,27 @@ export default function App() {
               onCancel={nav.back}
               onSave={(p) => {
                 actions.addLaborPayment(activeLabor.id, p);
+                nav.back();
+              }}
+            />
+          )}
+          {view === 'timesheetForm' && activeWorker && (
+            <TimesheetForm
+              worker={activeWorker}
+              onCancel={nav.back}
+              onSave={(entry) => {
+                actions.addTimesheet(entry);
+                nav.back();
+              }}
+            />
+          )}
+          {view === 'periodPay' && activeWorker && (
+            <PeriodPayForm
+              worker={activeWorker}
+              data={data}
+              onCancel={nav.back}
+              onSave={({ from, to }) => {
+                actions.payWorkerPeriod(activeWorker.id, from, to);
                 nav.back();
               }}
             />

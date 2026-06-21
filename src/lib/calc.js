@@ -24,18 +24,80 @@ export function docTotals(doc) {
   return { subtotal, discount, tax, total: taxedBase + tax };
 }
 
+// Total due for a labor entry. Measured entries may carry a multi-line `items`
+// array (preferred); otherwise the legacy single quantity×unitPrice; otherwise
+// a fixed `due` amount.
+export function laborDue(entry) {
+  if (!entry) return 0;
+  if (entry.basis === 'measured') {
+    if (Array.isArray(entry.items) && entry.items.length) {
+      return entry.items.reduce((s, it) => s + (Number(it.quantity) || 0) * (Number(it.price) || 0), 0);
+    }
+    return (Number(entry.quantity) || 0) * (Number(entry.unitPrice) || 0);
+  }
+  return Number(entry.due) || 0;
+}
+
 // Due / paid / remaining for a worker labor entry (mirrors invoiceState).
 export function laborState(entry) {
-  const due =
-    entry && entry.basis === 'measured'
-      ? (Number(entry.quantity) || 0) * (Number(entry.unitPrice) || 0)
-      : Number(entry && entry.due) || 0;
+  const due = laborDue(entry);
   const paid = ((entry && entry.payments) || []).reduce(
     (s, p) => s + (Number(p.amount) || 0),
     0
   );
   const remaining = Math.max(0, due - paid);
   return { due, paid, remaining, progress: due > 0 ? Math.min(1, paid / due) : 0 };
+}
+
+/* ----------------------- monthly worker timesheet ---------------------- */
+
+export function workerRates(worker) {
+  const dh = Number(worker && worker.dailyHours) || 0;
+  const hourly = dh > 0 ? (Number(worker.dailySalary) || 0) / dh : 0;
+  return { hourly, overtime: hourly * 1.5 };
+}
+
+function toMinutes(t) {
+  if (!t || typeof t !== 'string') return 0;
+  const [h, m] = t.split(':').map((x) => Number(x) || 0);
+  return h * 60 + m;
+}
+
+// Hours for a single timesheet day: regular span (end − start) + overtime.
+export function dayHours(entry) {
+  const regular = Math.max(0, (toMinutes(entry.end) - toMinutes(entry.start)) / 60);
+  const overtime = Number(entry.overtime) || 0;
+  return { regular, overtime, total: regular + overtime };
+}
+
+export function dayAmount(entry, rates) {
+  const { regular, overtime } = dayHours(entry);
+  return regular * rates.hourly + overtime * rates.overtime;
+}
+
+// Summary over a date range; set unpaidOnly to settle only what's still owed.
+export function periodSummary(timesheet, workerId, from, to, rates, opts) {
+  const unpaidOnly = opts && opts.unpaidOnly;
+  const days = (timesheet || []).filter((d) =>
+    d.workerId === workerId &&
+    (!from || d.date >= from) &&
+    (!to || d.date <= to) &&
+    (!unpaidOnly || !d.paid)
+  );
+  let regular = 0, overtime = 0, amount = 0;
+  days.forEach((d) => {
+    const h = dayHours(d);
+    regular += h.regular;
+    overtime += h.overtime;
+    amount += dayAmount(d, rates);
+  });
+  return { days, regular, overtime, totalHours: regular + overtime, amount: Math.round(amount) };
+}
+
+// Accrued, not-yet-paid hours/amount for a monthly worker (page summary).
+export function workerUnpaid(timesheet, workerId, rates) {
+  const s = periodSummary(timesheet, workerId, null, null, rates, { unpaidOnly: true });
+  return { hours: s.totalHours, amount: s.amount };
 }
 
 // Sum of payments actually made across a set of labor entries (cash basis).

@@ -10,6 +10,8 @@ export default function WorkerForm({ initial, onCancel, onSave }) {
   const [idNumber, setIdNumber] = useState(w.idNumber || '');
   const [payType, setPayType] = useState(w.payType || 'project');
   const [rate, setRate] = useState(w.rate ?? '');
+  const [dailySalary, setDailySalary] = useState(w.dailySalary ?? '');
+  const [dailyHours, setDailyHours] = useState(w.dailyHours ?? 8);
   const [note, setNote] = useState(w.note || '');
 
   function handleSave() {
@@ -23,6 +25,8 @@ export default function WorkerForm({ initial, onCancel, onSave }) {
       idNumber: idNumber.trim(),
       payType,
       rate: Number(rate) || 0,
+      dailySalary: Number(dailySalary) || 0,
+      dailyHours: Number(dailyHours) || 0,
       note: note.trim(),
     });
   }
@@ -49,8 +53,19 @@ export default function WorkerForm({ initial, onCancel, onSave }) {
         {WORKER_TYPES.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}
       </select>
 
-      <label className="label">سعر الوحدة الافتراضي (اختياري)</label>
-      <input className="input" type="number" min="0" inputMode="decimal" value={rate} onChange={(e) => setRate(e.target.value)} placeholder="مثال: سعر الساعة أو المتر" />
+      {payType === 'monthly' ? (
+        <>
+          <label className="label">الراتب اليومي (دج)</label>
+          <input className="input" type="number" min="0" inputMode="decimal" value={dailySalary} onChange={(e) => setDailySalary(e.target.value)} placeholder="مثال: 2200" />
+          <label className="label">ساعات العمل اليومية</label>
+          <input className="input" type="number" min="0" inputMode="decimal" value={dailyHours} onChange={(e) => setDailyHours(e.target.value)} placeholder="مثال: 8" />
+        </>
+      ) : (
+        <>
+          <label className="label">سعر الوحدة الافتراضي (اختياري)</label>
+          <input className="input" type="number" min="0" inputMode="decimal" value={rate} onChange={(e) => setRate(e.target.value)} placeholder="مثال: سعر المتر" />
+        </>
+      )}
 
       <label className="label">ملاحظات</label>
       <textarea className="input" rows={2} value={note} onChange={(e) => setNote(e.target.value)} />

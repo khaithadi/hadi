@@ -16,6 +16,7 @@ export function defaultData() {
     services: [],
     workers: [],
     labor: [],
+    timesheet: [],
     settings: {
       businessName: 'ورشتي',
       ownerName: '',
@@ -84,6 +85,7 @@ export function normalize(raw) {
       services: [],
       workers: [],
       labor: [],
+      timesheet: [],
       settings: { ...base.settings, ...(raw.settings || {}) },
       seq: { quote: 0, invoice: Number(raw.seq) || invoices.length },
     };
@@ -112,6 +114,7 @@ export function normalize(raw) {
     labor: Array.isArray(raw.labor)
       ? raw.labor.map((l) => ({ payments: [], ...l }))
       : [],
+    timesheet: Array.isArray(raw.timesheet) ? raw.timesheet : [],
     settings: { ...base.settings, ...(raw.settings || {}) },
     seq,
   };
