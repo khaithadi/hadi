@@ -62,7 +62,10 @@ export const WORKER_TYPES = [
 ];
 
 // Units for a "measured" labor due (quantity × unit price).
-export const LABOR_UNITS = ['ساعة', 'يوم', 'متر', 'متر²', 'قطعة', 'مخصّص'];
+export const LABOR_UNITS = ['م²', 'م.ط', 'متر', 'ساعة', 'يوم', 'قطعة', 'مخصّص'];
+
+// Overtime is paid at this multiple of the normal hourly rate.
+export const OVERTIME_MULTIPLIER = 1.5;
 
 export const DEFAULT_TAX_RATE = 19;
 

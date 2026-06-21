@@ -1,5 +1,5 @@
 // Lightweight assertions for the pure calculation layer (run: npm run test:calc).
-import { docTotals, invoiceState, customerFinance, dashboardMetrics, laborState } from '../src/lib/calc.js';
+import { docTotals, invoiceState, customerFinance, dashboardMetrics, laborState, laborDue, workerRates, dayHours, dayAmount, periodSummary } from '../src/lib/calc.js';
 
 let fails = 0;
 const ok = (name, cond) => { console.log((cond ? 'OK  ' : 'XX  ') + name); if (!cond) fails++; };
@@ -80,6 +80,34 @@ const lm = dashboardMetrics(ld);
 eq('dashboard expenses = all labor payments', lm.expenses, 70000); // 20k + 50k
 eq('dashboard net profit', lm.profit, 30000); // revenue 100k - 70k
 eq('workers owed (remaining)', lm.workersOwed, 10000); // only project entry has 10k remaining
+
+// ---- project labor: measured multi-line items ----
+const measured = { basis: 'measured', items: [
+  { quantity: 25, unit: 'م²', price: 800 },
+  { quantity: 12.5, unit: 'م.ط', price: 1200 },
+], payments: [] };
+eq('labor due from items (25×800 + 12.5×1200)', laborDue(measured), 35000);
+eq('labor remaining from items', laborState(measured).remaining, 35000);
+
+// ---- monthly worker timesheet ----
+const worker = { dailySalary: 2200, dailyHours: 8 };
+const rates = workerRates(worker);
+eq('hourly rate = salary/hours', rates.hourly, 275);
+eq('overtime rate = 1.5× hourly', rates.overtime, 412.5);
+eq('day hours 08:00->14:30 = 6.5', dayHours({ start: '08:00', end: '14:30', overtime: 0 }).regular, 6.5);
+eq('day total with overtime', dayHours({ start: '08:00', end: '16:00', overtime: 2 }).total, 10);
+// amount: 8 regular ×275 + 2 OT ×412.5 = 2200 + 825 = 3025
+eq('day amount regular + OT×1.5', dayAmount({ start: '08:00', end: '16:00', overtime: 2 }, rates), 3025);
+
+const ts = [
+  { id: 't1', workerId: 'w1', date: '2026-06-01', start: '08:00', end: '16:00', overtime: 0, paid: false },   // 8h -> 2200
+  { id: 't2', workerId: 'w1', date: '2026-06-02', start: '08:00', end: '14:30', overtime: 0, paid: false },   // 6.5h -> 1787.5 ->round
+  { id: 't3', workerId: 'w1', date: '2026-05-30', start: '08:00', end: '16:00', overtime: 0, paid: true },    // out of range / paid
+];
+const ps = periodSummary(ts, 'w1', '2026-06-01', '2026-06-30', rates, { unpaidOnly: true });
+eq('period days (unpaid in range)', ps.days.length, 2);
+eq('period regular hours', ps.regular, 14.5);
+eq('period amount rounded', ps.amount, Math.round(14.5 * 275)); // 3988
 
 console.log(fails === 0 ? '\nALL CALC TESTS PASSED' : `\n${fails} FAILURES`);
 process.exit(fails ? 1 : 0);
