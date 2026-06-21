@@ -1,6 +1,9 @@
 name: Deploy to GitHub Pages
 
-# Build the Vite app and publish it to GitHub Pages on every push to main.
+# Build both Vite apps and publish them to GitHub Pages on every push to main:
+#   /                → ميثاق Mithaq   (root app)
+#   /forest-rental/  → غابتي Ghabti   (forest & villa rental app)
+# Both apps use `base: './'`, so their assets resolve correctly under any subpath.
 on:
   push:
     branches: [main]
@@ -30,11 +33,31 @@ jobs:
           node-version: 20
           cache: npm
 
-      - name: Install dependencies
+      # ---- Mithaq (root app) → site root ----
+      - name: Install dependencies (Mithaq)
         run: npm ci
 
-      - name: Build
+      - name: Build Mithaq
         run: npm run build
+
+      - name: Stage Mithaq at site root
+        run: |
+          mkdir -p _site
+          cp -r dist/. _site/
+
+      # ---- Ghabti (forest-rental) → /forest-rental ----
+      - name: Install dependencies (Ghabti)
+        run: npm ci
+        working-directory: forest-rental
+
+      - name: Build Ghabti
+        run: npm run build
+        working-directory: forest-rental
+
+      - name: Stage Ghabti at /forest-rental
+        run: |
+          mkdir -p _site/forest-rental
+          cp -r forest-rental/dist/. _site/forest-rental/
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
@@ -44,7 +67,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: _site
 
   deploy:
     needs: build
