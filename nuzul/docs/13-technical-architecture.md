@@ -39,7 +39,7 @@ listings), `robots.ts`. Targets Lighthouse ≥ 90.
 
 ## Environments & deploy
 Vercel/Node host + managed Postgres (region near EU/MENA), S3/R2 media, CDN. CI:
-`.github/workflows/ci.yml` (Postgres service → migrate → seed → lint → typecheck → test →
+`.github/workflows/nuzul-ci.yml` (Postgres service → migrate → seed → lint → typecheck → test →
 build). Secrets via env (`AUTH_SECRET`, `DATABASE_URL`, VAPID, gateway creds).
 
 ## Scaling path

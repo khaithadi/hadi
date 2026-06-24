@@ -1,10 +1,12 @@
 name: Nuzul CI
 
+# Lives at the repo root so GitHub Actions discovers it; path-filtered to the
+# nuzul/ app so it only runs when Nuzul changes.
 on:
   push:
-    paths: ['nuzul/**']
+    paths: ['nuzul/**', '.github/workflows/nuzul-ci.yml']
   pull_request:
-    paths: ['nuzul/**']
+    paths: ['nuzul/**', '.github/workflows/nuzul-ci.yml']
 
 defaults:
   run:
