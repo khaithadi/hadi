@@ -1,0 +1,45 @@
+name: Nuzul CI
+
+on:
+  push:
+    paths: ['nuzul/**']
+  pull_request:
+    paths: ['nuzul/**']
+
+defaults:
+  run:
+    working-directory: nuzul
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: nuzul
+          POSTGRES_PASSWORD: nuzul
+          POSTGRES_DB: nuzul
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready --health-interval 10s
+          --health-timeout 5s --health-retries 5
+    env:
+      DATABASE_URL: postgresql://nuzul:nuzul@localhost:5432/nuzul?schema=public
+      AUTH_SECRET: ci-secret-0123456789abcdef0123456789abcdef
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: nuzul/package-lock.json
+      - run: npm ci
+      - run: npx prisma generate
+      - run: npx prisma migrate deploy
+      - run: npm run db:seed
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
