@@ -1,0 +1,41 @@
+{
+  "brand": { "name": "Nuzul", "tagline": "Des séjours de confiance partout en Algérie" },
+  "nav": {
+    "explore": "Explorer", "trips": "Mes voyages", "favorites": "Favoris", "account": "Compte",
+    "host": "Devenir hôte", "dashboard": "Tableau de bord", "login": "Connexion", "register": "Inscription", "logout": "Déconnexion", "admin": "Admin"
+  },
+  "home": {
+    "heroTitle": "Trouvez votre prochain séjour en Algérie",
+    "heroSubtitle": "Appartements, villas, chalets et maisons — réservés en toute sécurité, en dinars",
+    "searchCta": "Rechercher", "destination": "Destination", "destinationPh": "Wilaya ou ville",
+    "checkIn": "Arrivée", "checkOut": "Départ", "guests": "Voyageurs", "featured": "Séjours en vedette",
+    "exploreByWilaya": "Explorer par wilaya", "whyTitle": "Pourquoi Nuzul ?",
+    "why1": "Logements vérifiés", "why1d": "Chaque annonce est validée avant publication.",
+    "why2": "Paiement local", "why2d": "Acompte en ligne, le solde à l’arrivée.",
+    "why3": "Support en arabe & français", "why3d": "Une équipe locale, aussi sur WhatsApp."
+  },
+  "search": { "results": "résultats", "noResults": "Aucun résultat", "filters": "Filtres", "sort": "Trier", "perNight": "/ nuit", "anyType": "Tous types", "price": "Prix", "apply": "Appliquer" },
+  "listing": {
+    "perNight": "par nuit", "reserve": "Réserver", "request": "Demander à réserver", "guests": "Voyageurs", "nights": "nuits",
+    "amenities": "Équipements", "rules": "Règlement intérieur", "reviews": "Avis", "location": "Emplacement", "host": "Hôte",
+    "checkIn": "Arrivée", "checkOut": "Départ", "total": "Total", "deposit": "Acompte (payé maintenant)", "balance": "Solde à l’arrivée",
+    "serviceFee": "Frais de service", "cleaning": "Frais de ménage", "capacity": "Capacité", "rooms": "chambres", "beds": "lits", "baths": "SdB"
+  },
+  "booking": {
+    "title": "Confirmation", "paymentMethod": "Mode de paiement", "pay": "Payer l’acompte", "success": "Demande envoyée",
+    "pending": "En attente de l’hôte", "confirmed": "Réservation confirmée", "myTrips": "Mes voyages", "upcoming": "À venir", "past": "Passés", "cancelled": "Annulés",
+    "empty": "Aucune réservation pour l’instant", "reference": "Référence"
+  },
+  "auth": {
+    "loginTitle": "Connexion", "registerTitle": "Créer un compte", "identifier": "Email ou téléphone", "password": "Mot de passe",
+    "fullName": "Nom complet", "email": "Email", "phone": "Téléphone", "asGuest": "Voyageur", "asHost": "Hôte",
+    "submit": "Continuer", "haveAccount": "Déjà un compte ?", "noAccount": "Pas de compte ?", "orOtp": "Ou par code SMS", "demo": "Comptes démo"
+  },
+  "host": {
+    "dashboard": "Espace hôte", "earnings": "Revenus", "occupancy": "Taux d’occupation", "listings": "Mes annonces", "incoming": "Réservations reçues",
+    "newListing": "Ajouter un logement", "accept": "Accepter", "decline": "Refuser", "publish": "Publier", "pendingReview": "En attente de validation"
+  },
+  "admin": { "dashboard": "Administration", "moderation": "Modération", "users": "Utilisateurs", "approve": "Approuver", "reject": "Rejeter", "kpis": "Indicateurs" },
+  "account": { "title": "Mon compte", "language": "Langue", "becomeHost": "Publiez votre logement et gagnez", "favorites": "Destinations favorites", "transactions": "Mes transactions", "security": "Compte et mot de passe", "terms": "Conditions générales" },
+  "common": { "install": "Installer l’app", "offline": "Vous êtes hors ligne", "loading": "Chargement…", "back": "Retour", "save": "Enregistrer", "cancel": "Annuler" }
+}

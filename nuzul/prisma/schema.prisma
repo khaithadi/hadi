@@ -1,0 +1,650 @@
+// Nuzul — Prisma schema
+// Short-term rental marketplace for Algeria. See docs/03-database-schema.md for the ERD.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ----------------------------------------------------------------------------
+// Enums
+// ----------------------------------------------------------------------------
+
+enum Role {
+  guest
+  host
+  admin
+}
+
+enum VerificationStatus {
+  unverified
+  pending
+  verified
+  rejected
+}
+
+enum PropertyType {
+  apartment
+  studio
+  villa
+  house
+  farm
+  guesthouse
+  chalet
+}
+
+enum PropertyStatus {
+  draft
+  pending
+  approved
+  rejected
+  suspended
+}
+
+enum BookingStatus {
+  pending // request awaiting host action
+  confirmed // host accepted (instant-book skips straight here)
+  declined
+  cancelled
+  completed
+  expired
+}
+
+enum BookingMode {
+  request
+  instant
+}
+
+enum PaymentType {
+  deposit
+  balance
+  refund
+  payout
+  fee
+}
+
+enum PaymentStatus {
+  pending
+  succeeded
+  failed
+  refunded
+}
+
+enum PaymentMethod {
+  mock
+  satim_cib
+  edahabia
+  baridimob
+  bank_transfer
+  cash
+}
+
+enum PayoutStatus {
+  scheduled
+  paid
+  on_hold
+  failed
+}
+
+enum DisputeStatus {
+  open
+  under_review
+  resolved
+  rejected
+}
+
+enum TicketStatus {
+  open
+  pending
+  closed
+}
+
+enum NotificationType {
+  booking_requested
+  booking_confirmed
+  booking_declined
+  booking_cancelled
+  payment_received
+  payout_sent
+  message_received
+  review_received
+  listing_approved
+  listing_rejected
+  promotion
+}
+
+enum ReviewDirection {
+  guest_to_host // guest reviews the stay/property
+  host_to_guest // host reviews the guest
+}
+
+// ----------------------------------------------------------------------------
+// Identity
+// ----------------------------------------------------------------------------
+
+model User {
+  id           String   @id @default(cuid())
+  role         Role     @default(guest)
+  fullName     String
+  email        String?  @unique
+  phone        String?  @unique
+  passwordHash String
+  avatarUrl    String?
+  locale       String   @default("ar")
+  phoneVerified Boolean @default(false)
+  emailVerified Boolean @default(false)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  hostProfile   HostProfile?
+  identity      IdentityVerification?
+  properties    Property[]       @relation("HostProperties")
+  bookings      Booking[]        @relation("GuestBookings")
+  reviewsWritten Review[]        @relation("ReviewAuthor")
+  reviewsAbout  Review[]         @relation("ReviewSubject")
+  favorites     Favorite[]
+  wishlists     Wishlist[]
+  messages      Message[]
+  notifications Notification[]
+  payments      Payment[]
+  payouts       Payout[]
+  disputesRaised Dispute[]       @relation("DisputeRaisedBy")
+  tickets       SupportTicket[]
+  reportsMade   Report[]         @relation("ReportReporter")
+  pushSubs      PushSubscription[]
+  otpCodes      OtpCode[]
+  adminActions  AdminAction[]    @relation("AdminActor")
+  auditLogs     AuditLog[]
+
+  @@index([role])
+}
+
+model HostProfile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bio         String?
+  responseRate Int?    // percentage 0..100
+  isSuperhost Boolean  @default(false)
+  payoutMethod PaymentMethod @default(baridimob)
+  payoutDetail String?  // RIB / wallet number (encrypted at rest in prod)
+  createdAt   DateTime @default(now())
+
+  subscription HostSubscription?
+}
+
+model IdentityVerification {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status    VerificationStatus @default(unverified)
+  docType   String?  // national_id | passport | driver_license
+  docFrontUrl String?
+  docBackUrl  String?
+  selfieUrl   String?
+  reviewedById String?
+  reviewedAt  DateTime?
+  createdAt   DateTime @default(now())
+}
+
+model OtpCode {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  channel   String   // phone | email
+  target    String   // phone number or email
+  codeHash  String
+  purpose   String   // login | register | recover
+  expiresAt DateTime
+  consumedAt DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([target, purpose])
+}
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
+}
+
+// ----------------------------------------------------------------------------
+// Geography
+// ----------------------------------------------------------------------------
+
+model Wilaya {
+  id        Int     @id // official wilaya code 1..58
+  nameAr    String
+  nameFr    String
+  nameEn    String
+  slug      String  @unique
+  lat       Float?
+  lng       Float?
+
+  municipalities Municipality[]
+  properties     Property[]
+}
+
+model Municipality {
+  id        String  @id @default(cuid())
+  wilayaId  Int
+  wilaya    Wilaya  @relation(fields: [wilayaId], references: [id])
+  nameAr    String
+  nameFr    String
+  nameEn    String
+
+  properties Property[]
+
+  @@index([wilayaId])
+}
+
+// ----------------------------------------------------------------------------
+// Catalog
+// ----------------------------------------------------------------------------
+
+model Amenity {
+  id        String  @id @default(cuid())
+  key       String  @unique // wifi, ac, pool, parking, kitchen...
+  labelAr   String
+  labelFr   String
+  labelEn   String
+  icon      String?
+  category  String  @default("general")
+
+  properties PropertyAmenity[]
+}
+
+model Property {
+  id          String         @id @default(cuid())
+  hostId      String
+  host        User           @relation("HostProperties", fields: [hostId], references: [id], onDelete: Cascade)
+  title       String
+  slug        String         @unique
+  description String
+  type        PropertyType
+  status      PropertyStatus @default(pending)
+
+  wilayaId       Int
+  wilaya         Wilaya        @relation(fields: [wilayaId], references: [id])
+  municipalityId String?
+  municipality   Municipality? @relation(fields: [municipalityId], references: [id])
+  addressLine    String?
+  lat            Float?
+  lng            Float?
+
+  capacity   Int     @default(2)
+  rooms      Int     @default(1)
+  beds       Int     @default(1)
+  bathrooms  Int     @default(1)
+
+  pricePerNight Int    // DZD, integer dinars
+  cleaningFee   Int    @default(0)
+  securityDeposit Int  @default(0)
+  currency      String @default("DZD")
+
+  checkInTime  String @default("14:00")
+  checkOutTime String @default("11:00")
+  minNights    Int    @default(1)
+  bookingMode  BookingMode @default(request)
+
+  ratingAvg    Float  @default(0)
+  reviewsCount Int    @default(0)
+
+  isFeatured   Boolean @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  images     PropertyImage[]
+  videos     PropertyVideo[]
+  amenities  PropertyAmenity[]
+  houseRules HouseRule[]
+  availability AvailabilityDay[]
+  seasonalRates SeasonalRate[]
+  bookings   Booking[]
+  reviews    Review[]
+  favorites  Favorite[]
+  wishlistItems WishlistItem[]
+  featured   FeaturedListing[]
+  conversations Conversation[]
+  reports    Report[]
+
+  @@index([wilayaId, status])
+  @@index([type, status])
+  @@index([status, pricePerNight])
+}
+
+model PropertyImage {
+  id         String   @id @default(cuid())
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  url        String
+  alt        String?
+  sortOrder  Int      @default(0)
+}
+
+model PropertyVideo {
+  id         String   @id @default(cuid())
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  url        String
+}
+
+model PropertyAmenity {
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  amenityId  String
+  amenity    Amenity  @relation(fields: [amenityId], references: [id], onDelete: Cascade)
+
+  @@id([propertyId, amenityId])
+}
+
+model HouseRule {
+  id         String   @id @default(cuid())
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  text       String
+}
+
+model AvailabilityDay {
+  id          String   @id @default(cuid())
+  propertyId  String
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  date        DateTime @db.Date
+  isBlocked   Boolean  @default(false)
+  priceOverride Int?
+
+  @@unique([propertyId, date])
+  @@index([propertyId, date])
+}
+
+model SeasonalRate {
+  id         String   @id @default(cuid())
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  label      String   // "Summer", "Eid", ...
+  startDate  DateTime @db.Date
+  endDate    DateTime @db.Date
+  pricePerNight Int
+}
+
+// ----------------------------------------------------------------------------
+// Bookings & money
+// ----------------------------------------------------------------------------
+
+model Booking {
+  id         String        @id @default(cuid())
+  reference  String        @unique // human ref e.g. NZ-000123
+  propertyId String
+  property   Property      @relation(fields: [propertyId], references: [id])
+  guestId    String
+  guest      User          @relation("GuestBookings", fields: [guestId], references: [id])
+  status     BookingStatus @default(pending)
+  mode       BookingMode   @default(request)
+
+  checkIn    DateTime @db.Date
+  checkOut   DateTime @db.Date
+  guests     Int      @default(1)
+  nights     Int
+
+  nightlyTotal Int
+  cleaningFee  Int @default(0)
+  serviceFee   Int @default(0)
+  commission   Int @default(0)
+  total        Int
+  depositDue   Int
+  balanceDue   Int
+  currency     String @default("DZD")
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  payments     Payment[]
+  payout       Payout?
+  review       Review?
+  conversation Conversation?
+  dispute      Dispute?
+
+  @@index([guestId])
+  @@index([propertyId, status])
+}
+
+model Payment {
+  id          String        @id @default(cuid())
+  bookingId   String?
+  booking     Booking?      @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+  userId      String
+  user        User          @relation(fields: [userId], references: [id])
+  type        PaymentType
+  method      PaymentMethod @default(mock)
+  status      PaymentStatus @default(pending)
+  amount      Int
+  currency    String        @default("DZD")
+  providerRef String?
+  idempotencyKey String?    @unique
+  createdAt   DateTime      @default(now())
+
+  @@index([bookingId])
+}
+
+model Payout {
+  id        String       @id @default(cuid())
+  bookingId String       @unique
+  booking   Booking      @relation(fields: [bookingId], references: [id])
+  hostId    String
+  host      User         @relation(fields: [hostId], references: [id])
+  amount    Int
+  status    PayoutStatus @default(scheduled)
+  method    PaymentMethod @default(baridimob)
+  scheduledAt DateTime?
+  paidAt    DateTime?
+  createdAt DateTime     @default(now())
+
+  @@index([hostId])
+}
+
+// ----------------------------------------------------------------------------
+// Social: reviews, messaging, favorites
+// ----------------------------------------------------------------------------
+
+model Review {
+  id         String   @id @default(cuid())
+  bookingId  String   @unique
+  booking    Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  authorId   String
+  author     User     @relation("ReviewAuthor", fields: [authorId], references: [id])
+  subjectId  String
+  subject    User     @relation("ReviewSubject", fields: [subjectId], references: [id])
+  direction  ReviewDirection @default(guest_to_host)
+  rating     Int      // 1..5
+  comment    String?
+  isVerified Boolean  @default(true) // only from completed bookings
+  createdAt  DateTime @default(now())
+
+  @@index([propertyId])
+}
+
+model Conversation {
+  id         String   @id @default(cuid())
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  bookingId  String?  @unique
+  booking    Booking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+  createdAt  DateTime @default(now())
+
+  messages   Message[]
+}
+
+model Message {
+  id             String   @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId       String
+  sender         User     @relation(fields: [senderId], references: [id])
+  body           String
+  attachmentUrl  String?
+  readAt         DateTime?
+  createdAt      DateTime @default(now())
+
+  @@index([conversationId])
+}
+
+model Favorite {
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@id([userId, propertyId])
+}
+
+model Wishlist {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  createdAt DateTime @default(now())
+
+  items     WishlistItem[]
+}
+
+model WishlistItem {
+  wishlistId String
+  wishlist   Wishlist @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@id([wishlistId, propertyId])
+}
+
+// ----------------------------------------------------------------------------
+// Trust & safety, ops
+// ----------------------------------------------------------------------------
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      NotificationType
+  title     String
+  body      String
+  data      Json?
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+
+  @@index([userId, readAt])
+}
+
+model Dispute {
+  id        String        @id @default(cuid())
+  bookingId String        @unique
+  booking   Booking       @relation(fields: [bookingId], references: [id])
+  raisedById String
+  raisedBy  User          @relation("DisputeRaisedBy", fields: [raisedById], references: [id])
+  reason    String
+  status    DisputeStatus @default(open)
+  resolution String?
+  createdAt DateTime      @default(now())
+  resolvedAt DateTime?
+}
+
+model SupportTicket {
+  id        String       @id @default(cuid())
+  userId    String?
+  user      User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  subject   String
+  body      String
+  status    TicketStatus @default(open)
+  createdAt DateTime     @default(now())
+}
+
+model Report {
+  id         String   @id @default(cuid())
+  reporterId String
+  reporter   User     @relation("ReportReporter", fields: [reporterId], references: [id])
+  propertyId String?
+  property   Property? @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+  reason     String
+  detail     String?
+  resolved   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actorId   String?
+  actor     User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  action    String
+  entity    String
+  entityId  String?
+  meta      Json?
+  createdAt DateTime @default(now())
+
+  @@index([entity, entityId])
+}
+
+model AdminAction {
+  id        String   @id @default(cuid())
+  adminId   String
+  admin     User     @relation("AdminActor", fields: [adminId], references: [id])
+  action    String   // approve_listing | reject_listing | suspend_user | ...
+  targetType String
+  targetId  String
+  note      String?
+  createdAt DateTime @default(now())
+}
+
+// ----------------------------------------------------------------------------
+// Monetization
+// ----------------------------------------------------------------------------
+
+model FeaturedListing {
+  id         String   @id @default(cuid())
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  startsAt   DateTime
+  endsAt     DateTime
+  pricePaid  Int
+  createdAt  DateTime @default(now())
+}
+
+model Ad {
+  id        String   @id @default(cuid())
+  title     String
+  imageUrl  String
+  targetUrl String
+  placement String   // home_banner | search_inline
+  startsAt  DateTime
+  endsAt    DateTime
+  isActive  Boolean  @default(true)
+}
+
+model HostSubscription {
+  id            String   @id @default(cuid())
+  hostProfileId String   @unique
+  hostProfile   HostProfile @relation(fields: [hostProfileId], references: [id], onDelete: Cascade)
+  plan          String   // free | pro | agency
+  status        String   @default("active")
+  renewsAt      DateTime?
+  createdAt     DateTime @default(now())
+}
+
+model CommissionConfig {
+  id            String   @id @default(cuid())
+  scope         String   @unique @default("global") // global | wilaya:16 | host:<id>
+  commissionRate Float   @default(0.12)
+  serviceFeeRate Float   @default(0.05)
+  depositRate    Float   @default(0.20)
+  updatedAt     DateTime @updatedAt
+}

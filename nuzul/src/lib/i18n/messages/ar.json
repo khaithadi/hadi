@@ -1,0 +1,55 @@
+{
+  "brand": { "name": "نُزُل", "tagline": "إقامات موثوقة في كامل الجزائر" },
+  "nav": {
+    "explore": "استكشاف",
+    "trips": "رحلاتي",
+    "favorites": "المفضّلة",
+    "account": "حسابي",
+    "host": "كن مضيفاً",
+    "dashboard": "لوحة التحكم",
+    "login": "تسجيل الدخول",
+    "register": "إنشاء حساب",
+    "logout": "تسجيل الخروج",
+    "admin": "الإدارة"
+  },
+  "home": {
+    "heroTitle": "اكتشف إقامتك القادمة في الجزائر",
+    "heroSubtitle": "شقق، فيلات، شاليهات ومنازل — محجوزة بأمان وبأسعار بالدينار",
+    "searchCta": "ابحث",
+    "destination": "الوجهة",
+    "destinationPh": "ابحث عن ولاية أو مدينة",
+    "checkIn": "تاريخ الوصول",
+    "checkOut": "تاريخ المغادرة",
+    "guests": "الضيوف",
+    "featured": "إقامات مميّزة",
+    "exploreByWilaya": "استكشف حسب الولاية",
+    "whyTitle": "لماذا نُزُل؟",
+    "why1": "إقامات موثّقة", "why1d": "كل عقار يخضع للمراجعة قبل النشر.",
+    "why2": "دفع محلي", "why2d": "عربون آمن عبر الإنترنت والباقي عند الوصول.",
+    "why3": "دعم بالعربية", "why3d": "فريق محلي يساعدك بلغتك وعبر واتساب."
+  },
+  "search": { "results": "نتيجة", "noResults": "لا توجد نتائج مطابقة", "filters": "تصفية", "sort": "ترتيب", "perNight": "/ ليلة", "anyType": "كل الأنواع", "price": "السعر", "apply": "تطبيق" },
+  "listing": {
+    "perNight": "لكل ليلة", "reserve": "احجز الآن", "request": "اطلب الحجز", "guests": "الضيوف", "nights": "ليالٍ",
+    "amenities": "المرافق", "rules": "قواعد المنزل", "reviews": "التقييمات", "location": "الموقع", "host": "المضيف",
+    "checkIn": "الوصول", "checkOut": "المغادرة", "total": "المجموع", "deposit": "العربون (يُدفع الآن)", "balance": "الباقي عند الوصول",
+    "serviceFee": "رسوم الخدمة", "cleaning": "رسوم التنظيف", "capacity": "يتّسع لـ", "rooms": "غرف", "beds": "أسرّة", "baths": "حمّامات"
+  },
+  "booking": {
+    "title": "تأكيد الحجز", "paymentMethod": "طريقة الدفع", "pay": "ادفع العربون وأكمل", "success": "تم استلام طلبك بنجاح",
+    "pending": "بانتظار موافقة المضيف", "confirmed": "تم تأكيد الحجز", "myTrips": "رحلاتي", "upcoming": "قادمة", "past": "منتهية", "cancelled": "ملغاة",
+    "empty": "ليس لديك أي حجوزات بعد", "reference": "رقم الحجز"
+  },
+  "auth": {
+    "loginTitle": "تسجيل الدخول", "registerTitle": "إنشاء حساب جديد", "identifier": "البريد أو رقم الهاتف", "password": "كلمة المرور",
+    "fullName": "الاسم الكامل", "email": "البريد الإلكتروني", "phone": "رقم الهاتف", "asGuest": "كضيف", "asHost": "كمضيف",
+    "submit": "متابعة", "haveAccount": "لديك حساب؟", "noAccount": "ليس لديك حساب؟", "orOtp": "أو عبر رمز الهاتف", "demo": "حسابات تجريبية"
+  },
+  "host": {
+    "dashboard": "لوحة المضيف", "earnings": "الأرباح", "occupancy": "نسبة الإشغال", "listings": "عقاراتي", "incoming": "الحجوزات الواردة",
+    "newListing": "أضف عقاراً", "accept": "قبول", "decline": "رفض", "publish": "نشر العقار", "pendingReview": "قيد المراجعة"
+  },
+  "admin": { "dashboard": "لوحة الإدارة", "moderation": "مراجعة العقارات", "users": "المستخدمون", "approve": "موافقة", "reject": "رفض", "kpis": "المؤشرات" },
+  "account": { "title": "حسابي", "language": "اللغة", "becomeHost": "انشر مسكنك واربح", "favorites": "الوجهات المفضّلة", "transactions": "معاملاتي", "security": "الحساب وكلمة المرور", "terms": "الشروط والأحكام" },
+  "common": { "install": "ثبّت التطبيق", "offline": "أنت غير متصل بالإنترنت", "loading": "جاري التحميل…", "back": "رجوع", "save": "حفظ", "cancel": "إلغاء" }
+}

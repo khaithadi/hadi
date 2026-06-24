@@ -1,0 +1,41 @@
+{
+  "brand": { "name": "Nuzul", "tagline": "Trusted stays across Algeria" },
+  "nav": {
+    "explore": "Explore", "trips": "Trips", "favorites": "Favorites", "account": "Account",
+    "host": "Become a host", "dashboard": "Dashboard", "login": "Log in", "register": "Sign up", "logout": "Log out", "admin": "Admin"
+  },
+  "home": {
+    "heroTitle": "Find your next stay in Algeria",
+    "heroSubtitle": "Apartments, villas, chalets and houses — booked securely, priced in dinars",
+    "searchCta": "Search", "destination": "Destination", "destinationPh": "Wilaya or city",
+    "checkIn": "Check-in", "checkOut": "Check-out", "guests": "Guests", "featured": "Featured stays",
+    "exploreByWilaya": "Explore by wilaya", "whyTitle": "Why Nuzul?",
+    "why1": "Verified stays", "why1d": "Every listing is reviewed before going live.",
+    "why2": "Local payment", "why2d": "Secure online deposit, balance on arrival.",
+    "why3": "Support in your language", "why3d": "A local team, also on WhatsApp."
+  },
+  "search": { "results": "results", "noResults": "No matching results", "filters": "Filters", "sort": "Sort", "perNight": "/ night", "anyType": "Any type", "price": "Price", "apply": "Apply" },
+  "listing": {
+    "perNight": "per night", "reserve": "Reserve", "request": "Request to book", "guests": "Guests", "nights": "nights",
+    "amenities": "Amenities", "rules": "House rules", "reviews": "Reviews", "location": "Location", "host": "Host",
+    "checkIn": "Check-in", "checkOut": "Check-out", "total": "Total", "deposit": "Deposit (paid now)", "balance": "Balance on arrival",
+    "serviceFee": "Service fee", "cleaning": "Cleaning fee", "capacity": "Sleeps", "rooms": "rooms", "beds": "beds", "baths": "baths"
+  },
+  "booking": {
+    "title": "Confirm booking", "paymentMethod": "Payment method", "pay": "Pay deposit & continue", "success": "Request sent",
+    "pending": "Awaiting host approval", "confirmed": "Booking confirmed", "myTrips": "My trips", "upcoming": "Upcoming", "past": "Past", "cancelled": "Cancelled",
+    "empty": "You have no bookings yet", "reference": "Reference"
+  },
+  "auth": {
+    "loginTitle": "Log in", "registerTitle": "Create account", "identifier": "Email or phone", "password": "Password",
+    "fullName": "Full name", "email": "Email", "phone": "Phone", "asGuest": "As guest", "asHost": "As host",
+    "submit": "Continue", "haveAccount": "Have an account?", "noAccount": "No account?", "orOtp": "Or via SMS code", "demo": "Demo accounts"
+  },
+  "host": {
+    "dashboard": "Host dashboard", "earnings": "Earnings", "occupancy": "Occupancy", "listings": "My listings", "incoming": "Incoming bookings",
+    "newListing": "Add a listing", "accept": "Accept", "decline": "Decline", "publish": "Publish listing", "pendingReview": "Pending review"
+  },
+  "admin": { "dashboard": "Admin", "moderation": "Moderation", "users": "Users", "approve": "Approve", "reject": "Reject", "kpis": "KPIs" },
+  "account": { "title": "Account", "language": "Language", "becomeHost": "List your place and earn", "favorites": "Favorite destinations", "transactions": "My transactions", "security": "Account & password", "terms": "Terms & conditions" },
+  "common": { "install": "Install app", "offline": "You are offline", "loading": "Loading…", "back": "Back", "save": "Save", "cancel": "Cancel" }
+}
