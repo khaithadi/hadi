@@ -66,7 +66,14 @@ fallback active), cloud media (local-disk driver active). See `docs/15` and `doc
 
 The full product & engineering spec set lives in [`docs/`](./docs/README.md) — PRD, user
 flows, DB schema, API, security/payment/notification architecture, dashboards, wireframes,
-feature & MVP/phase lists, growth/launch/monetization strategy, and the roadmap.
+feature & MVP/phase lists, growth/launch/monetization strategy, the roadmap, and the
+[deployment runbook](./docs/21-deployment.md).
+
+## Deploy (staging)
+
+One-command-ish: push to a branch, import `nuzul/` into Vercel (Root Directory = `nuzul`),
+add a Supabase Postgres + env vars, deploy. Full runbook:
+[`docs/21-deployment.md`](./docs/21-deployment.md).
 
 ## Notes for this environment
 
