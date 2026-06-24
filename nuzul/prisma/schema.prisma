@@ -2,12 +2,18 @@
 // Short-term rental marketplace for Algeria. See docs/03-database-schema.md for the ERD.
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  // "native" for local dev; "rhel-openssl-3.0.x" for Vercel's serverless runtime.
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  // Pooled (PgBouncer) connection for app queries.
+  url       = env("DATABASE_URL")
+  // Direct connection for migrations / introspection. Set DIRECT_URL even locally
+  // (point it at the same Postgres as DATABASE_URL).
+  directUrl = env("DIRECT_URL")
 }
 
 // ----------------------------------------------------------------------------

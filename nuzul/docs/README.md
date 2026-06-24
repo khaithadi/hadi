@@ -25,3 +25,4 @@ the code under `../src` and `../prisma` implements the MVP slice described here.
 | 18 | [Launch Strategy — Algeria](./18-launch-strategy-algeria.md) |
 | 19 | [Monetization Strategy](./19-monetization-strategy.md) |
 | 20 | [Roadmap](./20-roadmap.md) |
+| 21 | [Deployment (Vercel + Supabase)](./21-deployment.md) |
