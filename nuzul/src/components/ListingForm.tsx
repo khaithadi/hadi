@@ -27,6 +27,7 @@ export default function ListingForm({ wilayas, amenities }: { wilayas: WilayaSee
       description: fd.get('description'),
       type: fd.get('type'),
       wilayaId: Number(fd.get('wilayaId')),
+      addressLine: String(fd.get('addressLine') || '').trim() || undefined,
       capacity: Number(fd.get('capacity')),
       rooms: Number(fd.get('rooms')),
       beds: Number(fd.get('beds')),
@@ -69,6 +70,11 @@ export default function ListingForm({ wilayas, amenities }: { wilayas: WilayaSee
           <label className="label">Wilaya</label>
           <select name="wilayaId" className="input">{wilayas.map((w) => <option key={w.id} value={w.id}>{name(w)}</option>)}</select>
         </div>
+      </div>
+
+      <div>
+        <label className="label">Commune / area</label>
+        <input name="addressLine" className="input" placeholder="e.g. Bordj El Kiffane" />
       </div>
 
       <div className="grid grid-cols-4 gap-2">

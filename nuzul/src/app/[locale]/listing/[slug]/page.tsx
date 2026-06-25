@@ -66,7 +66,7 @@ export default async function ListingPage({ params }: { params: { locale: string
           <p className="text-xs font-semibold uppercase tracking-wide text-brand-700">{tp(p.type)}</p>
           <h1 className="mt-1 text-2xl font-extrabold leading-tight md:text-3xl">{p.title}</h1>
           <p className="mt-1 flex items-center gap-1.5 text-sm text-ink/50">
-            <Pin /> {wilayaName}
+            <Pin /> {p.addressLine ? `${p.addressLine} — ${wilayaName}` : wilayaName}
           </p>
 
           {/* Rating badge */}

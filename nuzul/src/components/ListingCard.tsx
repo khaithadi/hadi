@@ -12,6 +12,7 @@ export interface ListingCardData {
   ratingAvg: number;
   reviewsCount: number;
   isFeatured?: boolean;
+  addressLine?: string | null;
   images: { url: string }[];
   wilaya: { nameAr: string; nameFr: string; nameEn: string };
 }
@@ -38,7 +39,7 @@ export default async function ListingCard({ p, favorited }: { p: ListingCardData
             <h3 className="line-clamp-1 text-sm font-bold">{p.title}</h3>
             <Stars rating={p.ratingAvg} count={p.reviewsCount} />
           </div>
-          <p className="mt-0.5 text-xs text-ink/50">{wilayaName}</p>
+          <p className="mt-0.5 text-xs text-ink/50">{p.addressLine ? `${p.addressLine}, ${wilayaName}` : wilayaName}</p>
           <p className="mt-2 text-sm">
             <span className="font-extrabold text-brand-700">{formatMoney(p.pricePerNight, locale)}</span>
             <span className="text-ink/50"> {t('perNight')}</span>
