@@ -2,9 +2,8 @@ import { getTranslations } from 'next-intl/server';
 import { Link } from '@/lib/i18n/navigation';
 import type { SessionPayload } from '@/lib/auth/session';
 import Logo from './Logo';
-import LanguageSwitcher from './LanguageSwitcher';
 
-export default async function SiteHeader({ locale, session }: { locale: string; session: SessionPayload | null }) {
+export default async function SiteHeader({ session }: { session: SessionPayload | null }) {
   const t = await getTranslations('nav');
 
   return (
@@ -22,7 +21,6 @@ export default async function SiteHeader({ locale, session }: { locale: string; 
         </nav>
 
         <div className="flex items-center gap-2">
-          <LanguageSwitcher locale={locale} />
           {session ? (
             <Link href="/account" className="btn-ghost px-3 py-1.5 text-xs">{session.name.split(' ')[0]}</Link>
           ) : (
