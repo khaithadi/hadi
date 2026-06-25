@@ -113,7 +113,7 @@ export default function DateRangePicker({
               onClick={() => pick(day)}
               className={[
                 'mx-auto flex h-9 w-9 items-center justify-center rounded-full transition',
-                past ? 'text-ink/25 line-through' : 'hover:bg-brand-100',
+                past ? 'cursor-default text-ink/25' : 'hover:bg-brand-100',
                 inRange ? 'bg-brand-100' : '',
                 selected ? 'bg-brand-600 text-white hover:bg-brand-600' : '',
               ].join(' ')}
