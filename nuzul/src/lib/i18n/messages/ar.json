@@ -26,9 +26,11 @@
     "whyTitle": "لماذا نُزُل؟",
     "why1": "إقامات موثّقة", "why1d": "كل عقار يخضع للمراجعة قبل النشر.",
     "why2": "دفع محلي", "why2d": "عربون آمن عبر الإنترنت والباقي عند الوصول.",
-    "why3": "دعم بالعربية", "why3d": "فريق محلي يساعدك بلغتك وعبر واتساب."
+    "why3": "دعم بالعربية", "why3d": "فريق محلي يساعدك بلغتك وعبر واتساب.",
+    "dates": "التواريخ", "addDates": "أضف التواريخ", "done": "تم", "clear": "مسح"
   },
-  "search": { "results": "نتيجة", "noResults": "لا توجد نتائج مطابقة", "filters": "تصفية", "sort": "ترتيب", "perNight": "/ ليلة", "anyType": "كل الأنواع", "price": "السعر", "apply": "تطبيق", "guests": "الضيوف", "amenities": "المرافق", "rating": "التقييم", "anyRating": "أي تقييم", "rating4": "4+ نجوم", "rating45": "4.5+ نجوم", "priceMin": "أدنى سعر", "priceMax": "أعلى سعر", "clear": "مسح", "sortRecommended": "موصى به", "sortPriceAsc": "السعر: تصاعدي", "sortPriceDesc": "السعر: تنازلي", "sortRating": "الأعلى تقييماً" },
+  "search": { "results": "نتيجة", "noResults": "لا توجد نتائج مطابقة", "filters": "تصفية", "sort": "ترتيب", "perNight": "/ ليلة", "anyType": "كل الأنواع", "price": "السعر", "apply": "تطبيق", "guests": "الضيوف", "amenities": "المرافق", "rating": "التقييم", "anyRating": "أي تقييم", "rating4": "4+ نجوم", "rating45": "4.5+ نجوم", "priceMin": "أدنى سعر", "priceMax": "أعلى سعر", "clear": "مسح", "sortRecommended": "موصى به", "sortPriceAsc": "السعر: تصاعدي", "sortPriceDesc": "السعر: تنازلي", "sortRating": "الأعلى تقييماً", "type": "النوع", "clearAll": "مسح الكل" },
+  "ptype": { "apartment": "شقة", "studio": "استوديو", "villa": "فيلا", "house": "منزل", "farm": "مزرعة", "guesthouse": "بيت ضيافة", "chalet": "شاليه" },
   "listing": {
     "perNight": "لكل ليلة", "reserve": "احجز الآن", "request": "اطلب الحجز", "guests": "الضيوف", "nights": "ليالٍ",
     "amenities": "المرافق", "rules": "قواعد المنزل", "reviews": "التقييمات", "location": "الموقع", "host": "المضيف",

@@ -1,11 +1,10 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { propertySearchSchema } from '@/lib/validators';
 import { searchProperties } from '@/lib/services/properties';
-import { WILAYAS, PROPERTY_TYPES, AMENITIES } from '@/lib/constants';
+import { WILAYAS, AMENITIES } from '@/lib/constants';
 import SearchBar from '@/components/SearchBar';
 import SearchFilters from '@/components/SearchFilters';
 import ListingCard from '@/components/ListingCard';
-import { Link } from '@/lib/i18n/navigation';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,21 +22,16 @@ export default async function SearchPage({
 
   return (
     <div className="container-app py-6">
-      <SearchBar wilayas={WILAYAS} locale={locale} />
-
-      {/* Type filter rail */}
-      <div className="mt-4 flex gap-2 overflow-x-auto no-scrollbar">
-        <Link href="/search" className={`chip px-3 py-1.5 ${!params.type ? 'bg-brand-600 text-white' : ''}`}>{t('anyType')}</Link>
-        {PROPERTY_TYPES.map((ty) => {
-          const sp = new URLSearchParams(searchParams as Record<string, string>);
-          sp.set('type', ty);
-          return (
-            <Link key={ty} href={`/search?${sp.toString()}`} className={`chip whitespace-nowrap px-3 py-1.5 ${params.type === ty ? 'bg-brand-600 text-white' : ''}`}>
-              {ty}
-            </Link>
-          );
-        })}
-      </div>
+      <SearchBar
+        wilayas={WILAYAS}
+        locale={locale}
+        initial={{
+          wilaya: params.wilaya ? String(params.wilaya) : undefined,
+          checkIn: params.checkIn,
+          checkOut: params.checkOut,
+          guests: params.guests ? String(params.guests) : undefined,
+        }}
+      />
 
       <SearchFilters params={params} amenities={AMENITIES} locale={locale} />
 
