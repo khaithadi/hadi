@@ -23,8 +23,8 @@ export default function BottomNav({ session }: { session: SessionPayload | null 
   // Forced LTR layout so positions stay consistent in RTL (ar) and LTR alike:
   // [messages, account]  ·  Explore (raised center)  ·  [favorites, trips]
   const left: Item[] = [
-    { key: 'messages', href: session ? '/messages' : '/login' },
     { key: 'account', href: session ? '/account' : '/login' },
+    { key: 'messages', href: session ? '/messages' : '/login' },
   ];
   const right: Item[] = [
     { key: 'favorites', href: '/favorites' },
