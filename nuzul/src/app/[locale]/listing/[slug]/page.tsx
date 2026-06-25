@@ -105,13 +105,13 @@ export default async function ListingPage({ params }: { params: { locale: string
           {/* Amenities */}
           <section className="mt-7">
             <h2 className="mb-3 text-lg font-bold">{t('amenities')}</h2>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-3">
               {p.amenities.map((a) => (
-                <div key={a.amenityId} className="flex items-center gap-3 text-sm">
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-600">
+                <div key={a.amenityId} className="flex items-center gap-2.5 text-sm">
+                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-600">
                     <Check />
                   </span>
-                  {amenityLabel(a)}
+                  <span className="leading-tight">{amenityLabel(a)}</span>
                 </div>
               ))}
               {p.amenities.length === 0 && <p className="text-sm text-ink/40">—</p>}
