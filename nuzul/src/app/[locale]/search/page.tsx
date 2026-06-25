@@ -1,8 +1,9 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { propertySearchSchema } from '@/lib/validators';
 import { searchProperties } from '@/lib/services/properties';
-import { WILAYAS, PROPERTY_TYPES } from '@/lib/constants';
+import { WILAYAS, PROPERTY_TYPES, AMENITIES } from '@/lib/constants';
 import SearchBar from '@/components/SearchBar';
+import SearchFilters from '@/components/SearchFilters';
 import ListingCard from '@/components/ListingCard';
 import { Link } from '@/lib/i18n/navigation';
 
@@ -37,6 +38,8 @@ export default async function SearchPage({
           );
         })}
       </div>
+
+      <SearchFilters params={params} amenities={AMENITIES} locale={locale} />
 
       <p className="mt-4 text-sm text-ink/50">{total} {t('results')}</p>
 
