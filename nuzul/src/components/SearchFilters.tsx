@@ -4,12 +4,14 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/lib/i18n/navigation';
 import type { PropertySearchParams } from '@/lib/validators';
-import type { AmenitySeed } from '@/lib/constants';
+import { PROPERTY_TYPES, type AmenitySeed } from '@/lib/constants';
+
+type PillKey = 'sort' | 'price' | 'type' | 'amenities' | 'rating';
 
 /**
- * Advanced search filters. The server (`searchProperties`) already understands every one of
- * these query params — this component just exposes UI for them and pushes the resulting
- * querystring to /search, preserving destination/type/text from the SearchBar + type rail.
+ * Vrbo-style filter bar: a horizontal row of pills above the results. Each pill opens a
+ * full-width panel beneath the bar with its controls. Active pills are highlighted and show a
+ * short value. All pills push the same query params the search backend already understands.
  */
 export default function SearchFilters({
   params,
@@ -21,14 +23,13 @@ export default function SearchFilters({
   locale: string;
 }) {
   const t = useTranslations('search');
+  const tp = useTranslations('ptype');
   const router = useRouter();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<PillKey | null>(null);
 
+  // Working state for the multi-value panels (price + amenities), seeded from applied params.
   const [minPrice, setMinPrice] = useState(params.minPrice?.toString() ?? '');
   const [maxPrice, setMaxPrice] = useState(params.maxPrice?.toString() ?? '');
-  const [guests, setGuests] = useState(params.guests?.toString() ?? '');
-  const [minRating, setMinRating] = useState(params.minRating?.toString() ?? '');
-  const [sort, setSort] = useState<string>(params.sort ?? 'recommended');
   const [selected, setSelected] = useState<string[]>(
     params.amenities ? params.amenities.split(',').filter(Boolean) : [],
   );
@@ -37,70 +38,89 @@ export default function SearchFilters({
     return locale === 'fr' ? a.labelFr : locale === 'en' ? a.labelEn : a.labelAr;
   }
 
-  function toggleAmenity(key: string) {
-    setSelected((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
-  }
-
-  // Keep destination/type/text from the rest of the search UI when (re)submitting.
-  function baseParams() {
+  // Build a /search URL from the currently-applied params, overridden by `changes`
+  // (set a key to '' to clear it). Preserves destination/dates/guests/text.
+  function urlWith(changes: Record<string, string>) {
+    const current: Record<string, string> = {
+      wilaya: params.wilaya ? String(params.wilaya) : '',
+      checkIn: params.checkIn ?? '',
+      checkOut: params.checkOut ?? '',
+      guests: params.guests ? String(params.guests) : '',
+      q: params.q ?? '',
+      type: params.type ?? '',
+      minPrice: params.minPrice?.toString() ?? '',
+      maxPrice: params.maxPrice?.toString() ?? '',
+      amenities: params.amenities ?? '',
+      minRating: params.minRating?.toString() ?? '',
+      sort: params.sort && params.sort !== 'recommended' ? params.sort : '',
+      ...changes,
+    };
     const sp = new URLSearchParams();
-    if (params.wilaya) sp.set('wilaya', String(params.wilaya));
-    if (params.type) sp.set('type', params.type);
-    if (params.q) sp.set('q', params.q);
-    return sp;
+    for (const [k, v] of Object.entries(current)) if (v) sp.set(k, v);
+    return `/search?${sp.toString()}`;
   }
 
-  function apply() {
-    const sp = baseParams();
-    if (minPrice) sp.set('minPrice', minPrice);
-    if (maxPrice) sp.set('maxPrice', maxPrice);
-    if (guests) sp.set('guests', guests);
-    if (minRating) sp.set('minRating', minRating);
-    if (selected.length) sp.set('amenities', selected.join(','));
-    if (sort && sort !== 'recommended') sp.set('sort', sort);
-    router.push(`/search?${sp.toString()}`);
-    setOpen(false);
+  function go(changes: Record<string, string>) {
+    router.push(urlWith(changes));
+    setOpen(null);
   }
 
-  function clear() {
-    setMinPrice('');
-    setMaxPrice('');
-    setGuests('');
-    setMinRating('');
-    setSort('recommended');
-    setSelected([]);
-    router.push(`/search?${baseParams().toString()}`);
-    setOpen(false);
+  function toggle(key: PillKey) {
+    setOpen((o) => (o === key ? null : key));
   }
 
-  // Count active (applied) filters for the badge on the toggle button.
-  const activeCount =
-    (params.minPrice ? 1 : 0) +
-    (params.maxPrice ? 1 : 0) +
-    (params.guests ? 1 : 0) +
-    (params.minRating ? 1 : 0) +
-    (params.amenities ? params.amenities.split(',').filter(Boolean).length : 0) +
-    (params.sort && params.sort !== 'recommended' ? 1 : 0);
+  // Applied-state flags + value labels for each pill.
+  const priceActive = !!(params.minPrice || params.maxPrice);
+  const typeActive = !!params.type;
+  const amenitiesActive = !!params.amenities;
+  const ratingActive = !!params.minRating;
+  const sortActive = !!(params.sort && params.sort !== 'recommended');
+  const anyActive = priceActive || typeActive || amenitiesActive || ratingActive || sortActive;
+
+  const sortLabels: Record<string, string> = {
+    price_asc: t('sortPriceAsc'),
+    price_desc: t('sortPriceDesc'),
+    rating: t('sortRating'),
+  };
+  const sortOptionLabel: Record<string, string> = {
+    recommended: t('sortRecommended'),
+    ...sortLabels,
+  };
 
   return (
     <div className="mt-3">
-      <button type="button" onClick={() => setOpen((o) => !o)} className="btn-ghost" aria-expanded={open}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-          <line x1="4" y1="6" x2="20" y2="6" /><circle cx="9" cy="6" r="2" fill="white" />
-          <line x1="4" y1="12" x2="20" y2="12" /><circle cx="15" cy="12" r="2" fill="white" />
-          <line x1="4" y1="18" x2="20" y2="18" /><circle cx="8" cy="18" r="2" fill="white" />
-        </svg>
-        {t('filters')}
-        {activeCount > 0 && (
-          <span className="ms-1 inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-brand-600 px-1 text-xs font-semibold text-white">
-            {activeCount}
-          </span>
+      {/* Pill row */}
+      <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+        <Pill label={t('sort')} active={sortActive} value={sortActive ? sortLabels[params.sort] : undefined} onClick={() => toggle('sort')} caret />
+        <Pill label={t('price')} active={priceActive} value={priceActive ? `${params.minPrice ?? 0}–${params.maxPrice ?? '∞'}` : undefined} onClick={() => toggle('price')} caret />
+        <Pill label={t('type')} active={typeActive} value={params.type ? tp(params.type) : undefined} onClick={() => toggle('type')} caret />
+        <Pill label={t('amenities')} active={amenitiesActive} value={amenitiesActive ? String(params.amenities!.split(',').filter(Boolean).length) : undefined} onClick={() => toggle('amenities')} caret />
+        <Pill label={t('rating')} active={ratingActive} value={ratingActive ? `${params.minRating}★` : undefined} onClick={() => toggle('rating')} caret />
+        {anyActive && (
+          <button type="button" onClick={() => go({ type: '', minPrice: '', maxPrice: '', amenities: '', minRating: '', sort: '' })} className="chip whitespace-nowrap text-ink/60 underline">
+            {t('clearAll')}
+          </button>
         )}
-      </button>
+      </div>
 
-      {open && (
-        <div className="card mt-3 grid gap-4 p-4">
-          {/* Price range */}
+      {/* Panels */}
+      {open === 'sort' && (
+        <Panel>
+          {(['recommended', 'price_asc', 'price_desc', 'rating'] as const).map((s) => (
+            <button
+              key={s}
+              type="button"
+              onClick={() => go({ sort: s === 'recommended' ? '' : s })}
+              className={`block w-full rounded-lg px-3 py-2 text-start text-sm ${(params.sort ?? 'recommended') === s ? 'bg-brand-50 font-semibold text-brand-700' : 'hover:bg-sand-100'}`}
+            >
+              {sortOptionLabel[s]}
+            </button>
+          ))}
+        </Panel>
+      )}
+
+      {open === 'price' && (
+        <Panel>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="label">{t('priceMin')}</label>
@@ -111,60 +131,98 @@ export default function SearchFilters({
               <input type="number" min={0} inputMode="numeric" className="input" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} placeholder="∞" />
             </div>
           </div>
-
-          {/* Guests / min rating / sort */}
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <div>
-              <label className="label">{t('guests')}</label>
-              <input type="number" min={1} inputMode="numeric" className="input" value={guests} onChange={(e) => setGuests(e.target.value)} placeholder="1" />
-            </div>
-            <div>
-              <label className="label">{t('sort')}</label>
-              <select className="input" value={sort} onChange={(e) => setSort(e.target.value)}>
-                <option value="recommended">{t('sortRecommended')}</option>
-                <option value="price_asc">{t('sortPriceAsc')}</option>
-                <option value="price_desc">{t('sortPriceDesc')}</option>
-                <option value="rating">{t('sortRating')}</option>
-              </select>
-            </div>
-            <div>
-              <label className="label">{t('rating')}</label>
-              <select className="input" value={minRating} onChange={(e) => setMinRating(e.target.value)}>
-                <option value="">{t('anyRating')}</option>
-                <option value="4">{t('rating4')}</option>
-                <option value="4.5">{t('rating45')}</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Amenities */}
-          <div>
-            <label className="label">{t('amenities')}</label>
-            <div className="flex flex-wrap gap-2">
-              {amenities.map((a) => {
-                const on = selected.includes(a.key);
-                return (
-                  <button
-                    key={a.key}
-                    type="button"
-                    onClick={() => toggleAmenity(a.key)}
-                    aria-pressed={on}
-                    className={`chip cursor-pointer ${on ? 'bg-brand-600 text-white' : ''}`}
-                  >
-                    {amenityLabel(a)}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div className="flex gap-2">
-            <button type="button" onClick={apply} className="btn-primary">{t('apply')}</button>
-            <button type="button" onClick={clear} className="btn-ghost">{t('clear')}</button>
-          </div>
-        </div>
+          <PanelActions onApply={() => go({ minPrice, maxPrice })} onClear={() => { setMinPrice(''); setMaxPrice(''); go({ minPrice: '', maxPrice: '' }); }} applyLabel={t('apply')} clearLabel={t('clear')} />
+        </Panel>
       )}
+
+      {open === 'type' && (
+        <Panel>
+          <div className="flex flex-wrap gap-2">
+            {PROPERTY_TYPES.map((ty) => (
+              <button
+                key={ty}
+                type="button"
+                onClick={() => go({ type: params.type === ty ? '' : ty })}
+                className={`chip cursor-pointer ${params.type === ty ? 'bg-brand-600 text-white' : ''}`}
+              >
+                {tp(ty)}
+              </button>
+            ))}
+          </div>
+        </Panel>
+      )}
+
+      {open === 'amenities' && (
+        <Panel>
+          <div className="flex flex-wrap gap-2">
+            {amenities.map((a) => {
+              const on = selected.includes(a.key);
+              return (
+                <button
+                  key={a.key}
+                  type="button"
+                  aria-pressed={on}
+                  onClick={() => setSelected((p) => (p.includes(a.key) ? p.filter((k) => k !== a.key) : [...p, a.key]))}
+                  className={`chip cursor-pointer ${on ? 'bg-brand-600 text-white' : ''}`}
+                >
+                  {amenityLabel(a)}
+                </button>
+              );
+            })}
+          </div>
+          <PanelActions onApply={() => go({ amenities: selected.join(',') })} onClear={() => { setSelected([]); go({ amenities: '' }); }} applyLabel={t('apply')} clearLabel={t('clear')} />
+        </Panel>
+      )}
+
+      {open === 'rating' && (
+        <Panel>
+          {[
+            { v: '', label: t('anyRating') },
+            { v: '4', label: t('rating4') },
+            { v: '4.5', label: t('rating45') },
+          ].map((o) => (
+            <button
+              key={o.v || 'any'}
+              type="button"
+              onClick={() => go({ minRating: o.v })}
+              className={`block w-full rounded-lg px-3 py-2 text-start text-sm ${(params.minRating?.toString() ?? '') === o.v ? 'bg-brand-50 font-semibold text-brand-700' : 'hover:bg-sand-100'}`}
+            >
+              {o.label}
+            </button>
+          ))}
+        </Panel>
+      )}
+    </div>
+  );
+}
+
+function Pill({ label, value, active, onClick, caret }: { label: string; value?: string; active?: boolean; onClick: () => void; caret?: boolean }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full border px-3.5 py-1.5 text-sm font-medium transition ${
+        active ? 'border-brand-600 bg-brand-600 text-white' : 'border-black/15 bg-white text-ink hover:bg-sand-100'
+      }`}
+    >
+      {label}
+      {value && <span className={active ? 'opacity-90' : 'text-ink/50'}>· {value}</span>}
+      {caret && (
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+      )}
+    </button>
+  );
+}
+
+function Panel({ children }: { children: React.ReactNode }) {
+  return <div className="card mt-2 p-3">{children}</div>;
+}
+
+function PanelActions({ onApply, onClear, applyLabel, clearLabel }: { onApply: () => void; onClear: () => void; applyLabel: string; clearLabel: string }) {
+  return (
+    <div className="mt-3 flex gap-2">
+      <button type="button" onClick={onApply} className="btn-primary">{applyLabel}</button>
+      <button type="button" onClick={onClear} className="btn-ghost">{clearLabel}</button>
     </div>
   );
 }

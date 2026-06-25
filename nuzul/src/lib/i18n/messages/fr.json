@@ -12,9 +12,11 @@
     "exploreByWilaya": "Explorer par wilaya", "whyTitle": "Pourquoi Nuzul ?",
     "why1": "Logements vérifiés", "why1d": "Chaque annonce est validée avant publication.",
     "why2": "Paiement local", "why2d": "Acompte en ligne, le solde à l’arrivée.",
-    "why3": "Support en arabe & français", "why3d": "Une équipe locale, aussi sur WhatsApp."
+    "why3": "Support en arabe & français", "why3d": "Une équipe locale, aussi sur WhatsApp.",
+    "dates": "Dates", "addDates": "Ajouter des dates", "done": "Terminé", "clear": "Effacer"
   },
-  "search": { "results": "résultats", "noResults": "Aucun résultat", "filters": "Filtres", "sort": "Trier", "perNight": "/ nuit", "anyType": "Tous types", "price": "Prix", "apply": "Appliquer", "guests": "Voyageurs", "amenities": "Équipements", "rating": "Note", "anyRating": "Toute note", "rating4": "4+ étoiles", "rating45": "4,5+ étoiles", "priceMin": "Prix min", "priceMax": "Prix max", "clear": "Effacer", "sortRecommended": "Recommandé", "sortPriceAsc": "Prix croissant", "sortPriceDesc": "Prix décroissant", "sortRating": "Mieux notés" },
+  "search": { "results": "résultats", "noResults": "Aucun résultat", "filters": "Filtres", "sort": "Trier", "perNight": "/ nuit", "anyType": "Tous types", "price": "Prix", "apply": "Appliquer", "guests": "Voyageurs", "amenities": "Équipements", "rating": "Note", "anyRating": "Toute note", "rating4": "4+ étoiles", "rating45": "4,5+ étoiles", "priceMin": "Prix min", "priceMax": "Prix max", "clear": "Effacer", "sortRecommended": "Recommandé", "sortPriceAsc": "Prix croissant", "sortPriceDesc": "Prix décroissant", "sortRating": "Mieux notés", "type": "Type", "clearAll": "Tout effacer" },
+  "ptype": { "apartment": "Appartement", "studio": "Studio", "villa": "Villa", "house": "Maison", "farm": "Ferme", "guesthouse": "Maison d'hôtes", "chalet": "Chalet" },
   "listing": {
     "perNight": "par nuit", "reserve": "Réserver", "request": "Demander à réserver", "guests": "Voyageurs", "nights": "nuits",
     "amenities": "Équipements", "rules": "Règlement intérieur", "reviews": "Avis", "location": "Emplacement", "host": "Hôte",
