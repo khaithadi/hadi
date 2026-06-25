@@ -52,7 +52,7 @@ export default async function LocaleLayout({
     <html lang={locale} dir={dir}>
       <body className="min-h-dvh pb-16 md:pb-0">
         <NextIntlClientProvider messages={messages}>
-          <SiteHeader locale={locale} session={session} />
+          <SiteHeader session={session} />
           <main className="min-h-[70vh]">{children}</main>
           <BottomNav session={session} />
           <InstallPrompt />
