@@ -24,10 +24,12 @@ jobs:
           POSTGRES_DB: nuzul
         ports: ['5432:5432']
         options: >-
-          --health-cmd pg_isready --health-interval 10s
+          --health-cmd "pg_isready -U nuzul -d nuzul" --health-interval 10s
           --health-timeout 5s --health-retries 5
     env:
       DATABASE_URL: postgresql://nuzul:nuzul@localhost:5432/nuzul?schema=public
+      # Prisma needs DIRECT_URL too (schema sets directUrl); point it at the same CI Postgres.
+      DIRECT_URL: postgresql://nuzul:nuzul@localhost:5432/nuzul?schema=public
       AUTH_SECRET: ci-secret-0123456789abcdef0123456789abcdef
       NEXT_PUBLIC_SITE_URL: http://localhost:3000
     steps:
