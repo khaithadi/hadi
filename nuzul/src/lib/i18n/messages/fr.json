@@ -2,8 +2,9 @@
   "brand": { "name": "Nuzul", "tagline": "Des séjours de confiance partout en Algérie" },
   "nav": {
     "explore": "Explorer", "trips": "Mes voyages", "favorites": "Favoris", "account": "Compte",
-    "host": "Devenir hôte", "dashboard": "Tableau de bord", "login": "Connexion", "register": "Inscription", "logout": "Déconnexion", "admin": "Admin"
+    "host": "Devenir hôte", "dashboard": "Tableau de bord", "login": "Connexion", "register": "Inscription", "logout": "Déconnexion", "admin": "Admin", "messages": "Messages"
   },
+  "messages": { "title": "Messages", "empty": "Aucune conversation", "noMessages": "Pas encore de messages", "send": "Envoyer", "placeholder": "Écrire un message…", "messageHost": "Contacter l'hôte", "messageGuest": "Contacter le voyageur", "back": "Retour", "startConversation": "Démarrez la conversation" },
   "home": {
     "heroTitle": "Trouvez votre prochain séjour en Algérie",
     "heroSubtitle": "Appartements, villas, chalets et maisons — réservés en toute sécurité, en dinars",
