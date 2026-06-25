@@ -14,7 +14,7 @@
     "why2": "Paiement local", "why2d": "Acompte en ligne, le solde à l’arrivée.",
     "why3": "Support en arabe & français", "why3d": "Une équipe locale, aussi sur WhatsApp."
   },
-  "search": { "results": "résultats", "noResults": "Aucun résultat", "filters": "Filtres", "sort": "Trier", "perNight": "/ nuit", "anyType": "Tous types", "price": "Prix", "apply": "Appliquer" },
+  "search": { "results": "résultats", "noResults": "Aucun résultat", "filters": "Filtres", "sort": "Trier", "perNight": "/ nuit", "anyType": "Tous types", "price": "Prix", "apply": "Appliquer", "guests": "Voyageurs", "amenities": "Équipements", "rating": "Note", "anyRating": "Toute note", "rating4": "4+ étoiles", "rating45": "4,5+ étoiles", "priceMin": "Prix min", "priceMax": "Prix max", "clear": "Effacer", "sortRecommended": "Recommandé", "sortPriceAsc": "Prix croissant", "sortPriceDesc": "Prix décroissant", "sortRating": "Mieux notés" },
   "listing": {
     "perNight": "par nuit", "reserve": "Réserver", "request": "Demander à réserver", "guests": "Voyageurs", "nights": "nuits",
     "amenities": "Équipements", "rules": "Règlement intérieur", "reviews": "Avis", "location": "Emplacement", "host": "Hôte",
