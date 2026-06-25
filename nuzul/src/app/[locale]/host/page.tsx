@@ -6,6 +6,7 @@ import { formatMoney, formatDate } from '@/lib/format';
 import type { Locale } from '@/lib/i18n/config';
 import StatusBadge from '@/components/StatusBadge';
 import HostBookingActions from '@/components/HostBookingActions';
+import MessageButton from '@/components/MessageButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,6 +14,7 @@ export default async function HostDashboard({ params: { locale } }: { params: { 
   setRequestLocale(locale);
   const loc = (await getLocale()) as Locale;
   const t = await getTranslations('host');
+  const tm = await getTranslations('messages');
   const session = (await getSession())!;
 
   const [listings, incoming, payouts] = await Promise.all([
@@ -67,7 +69,10 @@ export default async function HostDashboard({ params: { locale } }: { params: { 
                 <p className="text-xs text-ink/50">{b.guest.fullName} · {formatDate(b.checkIn, loc)} → {formatDate(b.checkOut, loc)}</p>
                 <p className="text-xs font-semibold text-brand-700">{formatMoney(b.total, loc)} · {b.reference}</p>
               </div>
-              <HostBookingActions bookingId={b.id} />
+              <div className="flex flex-col items-end gap-2">
+                <HostBookingActions bookingId={b.id} />
+                <MessageButton bookingId={b.id} label={tm('messageGuest')} />
+              </div>
             </div>
           ))}
         </div>

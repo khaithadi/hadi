@@ -5,6 +5,7 @@ import { getSession } from '@/lib/auth/session';
 import { formatMoney, formatDate } from '@/lib/format';
 import type { Locale } from '@/lib/i18n/config';
 import StatusBadge from '@/components/StatusBadge';
+import MessageButton from '@/components/MessageButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -15,6 +16,7 @@ export default async function TripsPage({ params: { locale } }: { params: { loca
 
   const loc = (await getLocale()) as Locale;
   const t = await getTranslations('booking');
+  const tm = await getTranslations('messages');
 
   const bookings = await prisma.booking.findMany({
     where: { guestId: session!.sub },
@@ -39,7 +41,10 @@ export default async function TripsPage({ params: { locale } }: { params: { loca
                 </div>
                 <p className="text-xs text-ink/50">{formatDate(b.checkIn, loc)} → {formatDate(b.checkOut, loc)} · {b.guests} {t('upcoming') && ''}</p>
                 <p className="mt-1 text-xs text-ink/40">{t('reference')}: {b.reference}</p>
-                <p className="mt-1 text-sm font-bold text-brand-700">{formatMoney(b.total, loc)}</p>
+                <div className="mt-1 flex items-center justify-between gap-2">
+                  <p className="text-sm font-bold text-brand-700">{formatMoney(b.total, loc)}</p>
+                  <MessageButton bookingId={b.id} label={tm('messageHost')} />
+                </div>
               </div>
             </div>
           ))}

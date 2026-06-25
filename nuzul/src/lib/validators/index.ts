@@ -87,6 +87,10 @@ export const messageCreateSchema = z.object({
   attachmentUrl: z.string().url().optional(),
 });
 
+export const conversationCreateSchema = z.object({
+  bookingId: z.string(),
+});
+
 export type PropertySearchParams = z.infer<typeof propertySearchSchema>;
 export type PropertyCreateInput = z.infer<typeof propertyCreateSchema>;
 export type BookingCreateInput = z.infer<typeof bookingCreateSchema>;

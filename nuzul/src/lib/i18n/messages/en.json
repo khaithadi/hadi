@@ -2,8 +2,9 @@
   "brand": { "name": "Nuzul", "tagline": "Trusted stays across Algeria" },
   "nav": {
     "explore": "Explore", "trips": "Trips", "favorites": "Favorites", "account": "Account",
-    "host": "Become a host", "dashboard": "Dashboard", "login": "Log in", "register": "Sign up", "logout": "Log out", "admin": "Admin"
+    "host": "Become a host", "dashboard": "Dashboard", "login": "Log in", "register": "Sign up", "logout": "Log out", "admin": "Admin", "messages": "Messages"
   },
+  "messages": { "title": "Messages", "empty": "No conversations yet", "noMessages": "No messages yet", "send": "Send", "placeholder": "Type a message…", "messageHost": "Message host", "messageGuest": "Message guest", "back": "Back", "startConversation": "Start the conversation" },
   "home": {
     "heroTitle": "Find your next stay in Algeria",
     "heroSubtitle": "Apartments, villas, chalets and houses — booked securely, priced in dinars",
