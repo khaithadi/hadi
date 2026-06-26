@@ -26,7 +26,7 @@ export default function InstallPrompt() {
   if (!visible) return null;
 
   return (
-    <div className="fixed inset-x-3 bottom-20 z-40 mx-auto max-w-sm md:bottom-4">
+    <div className="rise-in fixed inset-x-3 bottom-20 z-40 mx-auto max-w-sm md:bottom-4">
       <div className="card flex items-center justify-between gap-3 p-3">
         <span className="text-sm font-medium">نُزُل</span>
         <button
