@@ -5,8 +5,10 @@ import { getPropertyBySlug, getPropertyAvailability } from '@/lib/services/prope
 import { getRates } from '@/lib/commission';
 import { formatMoney } from '@/lib/format';
 import type { Locale } from '@/lib/i18n/config';
+import { WILAYA_COORDS } from '@/lib/constants';
 import BookingWidget from '@/components/BookingWidget';
 import FavoriteButton from '@/components/FavoriteButton';
+import MapEmbed from '@/components/MapEmbed';
 import Stars from '@/components/Stars';
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
@@ -32,6 +34,8 @@ export default async function ListingPage({ params }: { params: { locale: string
   const wilayaName = locale === 'fr' ? p.wilaya.nameFr : locale === 'en' ? p.wilaya.nameEn : p.wilaya.nameAr;
   const amenityLabel = (a: (typeof p.amenities)[number]) =>
     locale === 'fr' ? a.amenity.labelFr : locale === 'en' ? a.amenity.labelEn : a.amenity.labelAr;
+  const coords: [number, number] | null =
+    p.lat != null && p.lng != null ? [p.lat, p.lng] : WILAYA_COORDS[p.wilayaId] ?? null;
 
   return (
     <div className="container-app py-4 md:py-6">
@@ -130,6 +134,17 @@ export default async function ListingPage({ params }: { params: { locale: string
                   </li>
                 ))}
               </ul>
+            </section>
+          )}
+
+          {/* Location */}
+          {coords && (
+            <section className="mt-7">
+              <h2 className="mb-3 text-lg font-bold">{t('location')}</h2>
+              <MapEmbed lat={coords[0]} lng={coords[1]} />
+              <p className="mt-2 flex items-center gap-1.5 text-sm text-ink/50">
+                <Pin /> {p.addressLine ? `${p.addressLine} — ${wilayaName}` : wilayaName}
+              </p>
             </section>
           )}
 
