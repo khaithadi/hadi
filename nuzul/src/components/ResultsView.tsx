@@ -46,7 +46,7 @@ export default function ResultsView({
         children
       ) : (
         <div>
-          <div className="h-[65vh] overflow-hidden rounded-2xl ring-1 ring-black/5">
+          <div className="relative isolate h-[65vh] overflow-hidden rounded-2xl ring-1 ring-black/5">
             <ResultsMap pins={pins} />
           </div>
           <p className="mt-1 text-end text-[10px] text-ink/30">© OpenStreetMap</p>
