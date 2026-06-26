@@ -42,11 +42,8 @@ function FitBounds({ pins }: { pins: Pin[] }) {
 export default function ResultsMap({ pins }: { pins: Pin[] }) {
   const center: [number, number] = pins[0] ? [pins[0].lat, pins[0].lng] : [28, 2.5];
   return (
-    <MapContainer center={center} zoom={5} scrollWheelZoom className="h-full w-full">
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      />
+    <MapContainer center={center} zoom={5} scrollWheelZoom attributionControl={false} className="h-full w-full">
+      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       <FitBounds pins={pins} />
       {pins.map((p) => (
         <Marker key={p.slug} position={[p.lat, p.lng]} icon={priceIcon(p.priceLabel)}>
