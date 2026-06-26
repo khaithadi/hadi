@@ -16,7 +16,7 @@
     "why3": "Support in your language", "why3d": "A local team, also on WhatsApp.",
     "dates": "Dates", "addDates": "Add dates", "done": "Done", "clear": "Clear"
   },
-  "search": { "results": "results", "noResults": "No matching results", "filters": "Filters", "sort": "Sort", "perNight": "/ night", "anyType": "Any type", "price": "Price", "apply": "Apply", "guests": "Guests", "amenities": "Amenities", "rating": "Rating", "anyRating": "Any rating", "rating4": "4+ stars", "rating45": "4.5+ stars", "priceMin": "Min price", "priceMax": "Max price", "clear": "Clear", "sortRecommended": "Recommended", "sortPriceAsc": "Price: low to high", "sortPriceDesc": "Price: high to low", "sortRating": "Top rated", "type": "Type", "clearAll": "Clear all" },
+  "search": { "results": "results", "noResults": "No matching results", "filters": "Filters", "sort": "Sort", "perNight": "/ night", "anyType": "Any type", "price": "Price", "apply": "Apply", "guests": "Guests", "amenities": "Amenities", "rating": "Rating", "anyRating": "Any rating", "rating4": "4+ stars", "rating45": "4.5+ stars", "priceMin": "Min price", "priceMax": "Max price", "clear": "Clear", "sortRecommended": "Recommended", "sortPriceAsc": "Price: low to high", "sortPriceDesc": "Price: high to low", "sortRating": "Top rated", "type": "Type", "clearAll": "Clear all", "list": "List", "map": "Map" },
   "ptype": { "apartment": "Apartment", "studio": "Studio", "villa": "Villa", "house": "House", "farm": "Farm", "guesthouse": "Guesthouse", "chalet": "Chalet" },
   "listing": {
     "perNight": "per night", "reserve": "Reserve", "request": "Request to book", "guests": "Guests", "nights": "nights",
