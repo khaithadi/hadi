@@ -10,8 +10,11 @@ const PropertyMap = dynamic(() => import('./PropertyMap'), {
 
 export default function MapEmbed({ lat, lng, className }: { lat: number; lng: number; className?: string }) {
   return (
-    <div className={`overflow-hidden rounded-2xl ring-1 ring-black/5 ${className ?? 'h-56'}`}>
-      <PropertyMap lat={lat} lng={lng} />
+    <div>
+      <div className={`overflow-hidden rounded-2xl ring-1 ring-black/5 ${className ?? 'h-56'}`}>
+        <PropertyMap lat={lat} lng={lng} />
+      </div>
+      <p className="mt-1 text-end text-[10px] text-ink/30">© OpenStreetMap</p>
     </div>
   );
 }

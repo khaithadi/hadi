@@ -17,11 +17,8 @@ const pinIcon = L.divIcon({
 
 export default function PropertyMap({ lat, lng, zoom = 13 }: { lat: number; lng: number; zoom?: number }) {
   return (
-    <MapContainer center={[lat, lng]} zoom={zoom} scrollWheelZoom={false} className="h-full w-full">
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      />
+    <MapContainer center={[lat, lng]} zoom={zoom} scrollWheelZoom={false} attributionControl={false} className="h-full w-full">
+      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       <Marker position={[lat, lng]} icon={pinIcon} />
     </MapContainer>
   );
