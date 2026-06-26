@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { locales, isRtl, type Locale } from '@/lib/i18n/config';
 import { getSession } from '@/lib/auth/session';
 import SiteHeader from '@/components/SiteHeader';
+import PageTransition from '@/components/PageTransition';
 import BottomNav from '@/components/BottomNav';
 import InstallPrompt from '@/components/InstallPrompt';
 import ServiceWorkerRegister from '@/components/ServiceWorkerRegister';
@@ -54,7 +55,9 @@ export default async function LocaleLayout({
       <body className="min-h-dvh pb-16 md:pb-0">
         <NextIntlClientProvider messages={messages}>
           <SiteHeader session={session} />
-          <main className="min-h-[70vh]">{children}</main>
+          <main className="min-h-[70vh]">
+            <PageTransition>{children}</PageTransition>
+          </main>
           <BottomNav session={session} />
           <InstallPrompt />
           <ServiceWorkerRegister />
