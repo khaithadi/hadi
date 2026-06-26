@@ -17,7 +17,7 @@ body {
 .container-app { @apply mx-auto w-full max-w-6xl px-4; }
 
 @layer components {
-  .btn { @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-brand-400; }
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition active:scale-95 focus:outline-none focus:ring-2 focus:ring-brand-400; }
   .btn-primary { @apply btn bg-brand-600 text-white hover:bg-brand-700; }
   .btn-ghost { @apply btn bg-white text-ink ring-1 ring-black/5 hover:bg-sand-100; }
   .btn-block { @apply w-full; }
@@ -33,3 +33,17 @@ body {
 /* Hide scrollbars on horizontal scroll rails. */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Motion: soft blur-in page transition + reveal helpers (disabled for reduced-motion). */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes pageIn {
+    from { opacity: 0; transform: translateY(8px); filter: blur(5px); }
+    to   { opacity: 1; transform: translateY(0);   filter: blur(0); }
+  }
+  @keyframes riseIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .page-in { animation: pageIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .rise-in { animation: riseIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both; }
+}
