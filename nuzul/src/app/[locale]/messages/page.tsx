@@ -26,7 +26,7 @@ export default async function MessagesPage({ params: { locale } }: { params: { l
         <ul className="space-y-2">
           {conversations.map((c) => (
             <li key={c.id}>
-              <Link href={`/messages/${c.id}`} className="card flex items-center gap-3 p-3">
+              <Link href={`/messages/${c.id}`} className="lift card flex items-center gap-3 p-3">
                 <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-sand-100">
                   {c.image && <img src={c.image} alt="" className="h-full w-full object-cover" />}
                 </div>

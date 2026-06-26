@@ -94,7 +94,7 @@ export default function SearchBar({
         {calOpen && (
           <>
             <button type="button" aria-label="close" className="fixed inset-0 z-10 cursor-default" onClick={() => setCalOpen(false)} />
-            <div className="absolute z-20 mt-1 w-[min(20rem,90vw)] rounded-2xl bg-white p-3 shadow-card ring-1 ring-black/10">
+            <div className="pop-in absolute z-20 mt-1 w-[min(20rem,90vw)] rounded-2xl bg-white p-3 shadow-card ring-1 ring-black/10">
               <DateRangePicker locale={locale} value={range} onChange={setRange} />
               <div className="mt-2 flex justify-between">
                 <button type="button" className="text-sm font-medium text-ink/50 hover:text-ink" onClick={() => setRange({ checkIn: null, checkOut: null })}>

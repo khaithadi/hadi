@@ -215,7 +215,7 @@ function Pill({ label, value, active, onClick, caret }: { label: string; value?:
 }
 
 function Panel({ children }: { children: React.ReactNode }) {
-  return <div className="card mt-2 p-3">{children}</div>;
+  return <div className="rise-in card mt-2 p-3">{children}</div>;
 }
 
 function PanelActions({ onApply, onClear, applyLabel, clearLabel }: { onApply: () => void; onClear: () => void; applyLabel: string; clearLabel: string }) {
