@@ -4,12 +4,14 @@ import { useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { useRouter } from '@/lib/i18n/navigation';
 import { PROPERTY_TYPES, type WilayaSeed, type AmenitySeed } from '@/lib/constants';
+import ImageUploader from './ImageUploader';
 
 export default function ListingForm({ wilayas, amenities }: { wilayas: WilayaSeed[]; amenities: (AmenitySeed & { id: string })[] }) {
   const t = useTranslations('host');
   const locale = useLocale();
   const router = useRouter();
   const [selected, setSelected] = useState<string[]>([]);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,7 +40,7 @@ export default function ListingForm({ wilayas, amenities }: { wilayas: WilayaSee
       minNights: Number(fd.get('minNights') || 1),
       bookingMode: fd.get('bookingMode'),
       amenities: selected,
-      images: String(fd.get('images') || '').split('\n').map((s) => s.trim()).filter(Boolean),
+      images: imageUrls,
       houseRules: [],
     };
     const res = await fetch('/api/properties', {
@@ -99,8 +101,8 @@ export default function ListingForm({ wilayas, amenities }: { wilayas: WilayaSee
       </div>
 
       <div>
-        <label className="label">Image URLs (one per line)</label>
-        <textarea name="images" rows={2} className="input" placeholder="https://…" />
+        <label className="label">Photos</label>
+        <ImageUploader onChange={setImageUrls} />
       </div>
 
       <div>
