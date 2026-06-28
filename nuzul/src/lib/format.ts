@@ -17,9 +17,11 @@ export function formatDate(date: Date | string, locale: Locale = 'ar'): string {
 }
 
 export function slugify(input: string): string {
+  // ASCII-only slug so URLs always resolve (non-Latin titles, e.g. Arabic, fall back to
+  // "listing"). The random suffix keeps it unique.
   const base = input
     .toLowerCase()
-    .replace(/[^\p{L}\p{N}]+/gu, '-')
+    .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
     .slice(0, 60);
   return `${base || 'listing'}-${Math.random().toString(36).slice(2, 7)}`;
