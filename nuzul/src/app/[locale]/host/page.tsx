@@ -83,7 +83,7 @@ export default async function HostDashboard({ params: { locale } }: { params: { 
         <h2 className="mb-2 font-bold">{t('listings')}</h2>
         <div className="grid gap-3 md:grid-cols-2">
           {listings.map((l) => (
-            <div key={l.id} className="card flex gap-3 overflow-hidden p-3">
+            <Link key={l.id} href={`/listing/${l.slug}`} className="lift card flex gap-3 overflow-hidden p-3">
               {l.images[0] && <img src={l.images[0].url} alt="" className="h-16 w-20 rounded-lg object-cover" />}
               <div className="flex-1">
                 <div className="flex items-center justify-between">
@@ -92,7 +92,7 @@ export default async function HostDashboard({ params: { locale } }: { params: { 
                 </div>
                 <p className="mt-1 text-xs text-ink/50">{formatMoney(l.pricePerNight, loc)} · {l._count.bookings} bookings</p>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </section>

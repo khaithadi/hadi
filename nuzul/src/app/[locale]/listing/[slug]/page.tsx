@@ -11,6 +11,8 @@ import FavoriteButton from '@/components/FavoriteButton';
 import MapEmbed from '@/components/MapEmbed';
 import Stars from '@/components/Stars';
 
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const p = await getPropertyBySlug(params.slug);
   if (!p) return {};
