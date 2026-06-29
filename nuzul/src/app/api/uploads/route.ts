@@ -22,11 +22,19 @@ export async function POST(req: Request) {
     if (file.size > 6 * 1024 * 1024) return fail('too_large', 'Max 6MB', 413);
 
     const ext = ALLOWED[file.type] ?? 'jpg';
-    const url = await uploadImage(Buffer.from(await file.arrayBuffer()), {
-      ext,
-      contentType: file.type || 'image/jpeg',
-      userId: session.sub,
-    });
-    return ok({ url }, 201);
+    try {
+      const url = await uploadImage(Buffer.from(await file.arrayBuffer()), {
+        ext,
+        contentType: file.type || 'image/jpeg',
+        userId: session.sub,
+      });
+      return ok({ url }, 201);
+    } catch (err) {
+      // Surface the real Supabase Storage reason (e.g. "Bucket not found", invalid key)
+      // so the client can show it — these messages are diagnostic, not sensitive.
+      const message = err instanceof Error ? err.message : 'Upload failed';
+      console.error('[uploads] storage error', err);
+      return fail('storage_error', message, 502);
+    }
   });
 }

@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 
-type Item = { id: string; preview: string; url?: string; uploading: boolean; error?: boolean };
+type Item = { id: string; preview: string; url?: string; uploading: boolean; error?: boolean; errorMsg?: string };
 
 // Downscale to a max edge + re-encode as JPEG so phone photos upload fast and stay within limits.
 async function resizeToJpeg(file: File, max = 1600, quality = 0.82): Promise<Blob> {
@@ -44,15 +44,19 @@ export default function ImageUploader({ onChange, max = 8 }: { onChange: (urls: 
         const fd = new FormData();
         fd.append('file', blob, 'photo.jpg');
         const res = await fetch('/api/uploads', { method: 'POST', body: fd });
-        if (!res.ok) throw new Error('upload failed');
+        if (!res.ok) {
+          const body = await res.json().catch(() => null);
+          throw new Error(body?.error?.message || `Upload failed (${res.status})`);
+        }
         const { url } = await res.json();
         setItems((p) => {
           const n = p.map((i) => (i.id === id ? { ...i, url, uploading: false } : i));
           emit(n);
           return n;
         });
-      } catch {
-        setItems((p) => p.map((i) => (i.id === id ? { ...i, uploading: false, error: true } : i)));
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : 'Upload failed';
+        setItems((p) => p.map((i) => (i.id === id ? { ...i, uploading: false, error: true, errorMsg } : i)));
       }
     }
     if (inputRef.current) inputRef.current.value = '';
@@ -73,7 +77,12 @@ export default function ImageUploader({ onChange, max = 8 }: { onChange: (urls: 
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={it.preview} alt="" className="h-full w-full object-cover" />
           {it.uploading && <div className="absolute inset-0 grid place-items-center bg-black/30 text-xs font-medium text-white">…</div>}
-          {it.error && <div className="absolute inset-0 grid place-items-center bg-rose-600/70 text-lg font-bold text-white">!</div>}
+          {it.error && (
+            <div className="absolute inset-0 grid place-content-center gap-0.5 bg-rose-600/80 p-1 text-center text-white">
+              <span className="text-lg font-bold leading-none">!</span>
+              {it.errorMsg && <span className="text-[9px] leading-tight">{it.errorMsg}</span>}
+            </div>
+          )}
           <button
             type="button"
             onClick={() => remove(it.id)}
