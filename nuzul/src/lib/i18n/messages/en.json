@@ -36,7 +36,7 @@
   },
   "host": {
     "dashboard": "Host dashboard", "earnings": "Earnings", "occupancy": "Occupancy", "listings": "My listings", "incoming": "Incoming bookings",
-    "newListing": "Add a listing", "accept": "Accept", "decline": "Decline", "publish": "Publish listing", "pendingReview": "Pending review"
+    "newListing": "Add a listing", "accept": "Accept", "decline": "Decline", "publish": "Publish listing", "pendingReview": "Pending review", "editListing": "Edit listing", "save": "Save changes", "edit": "Edit"
   },
   "admin": { "dashboard": "Admin", "moderation": "Moderation", "users": "Users", "approve": "Approve", "reject": "Reject", "kpis": "KPIs" },
   "account": { "title": "Account", "language": "Language", "becomeHost": "List your place and earn", "favorites": "Favorite destinations", "transactions": "My transactions", "security": "Account & password", "terms": "Terms & conditions" },

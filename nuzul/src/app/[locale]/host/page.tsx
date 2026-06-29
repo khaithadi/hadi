@@ -83,16 +83,24 @@ export default async function HostDashboard({ params: { locale } }: { params: { 
         <h2 className="mb-2 font-bold">{t('listings')}</h2>
         <div className="grid gap-3 md:grid-cols-2">
           {listings.map((l) => (
-            <Link key={l.id} href={`/listing/${l.slug}`} className="lift card flex gap-3 overflow-hidden p-3">
-              {l.images[0] && <img src={l.images[0].url} alt="" className="h-16 w-20 rounded-lg object-cover" />}
-              <div className="flex-1">
-                <div className="flex items-center justify-between">
-                  <p className="line-clamp-1 text-sm font-bold">{l.title}</p>
-                  <StatusBadge status={l.status} />
+            <div key={l.id} className="lift card flex items-center gap-3 overflow-hidden p-3">
+              <Link href={`/listing/${l.slug}`} className="flex flex-1 items-center gap-3 overflow-hidden">
+                {l.images[0] && <img src={l.images[0].url} alt="" className="h-16 w-20 shrink-0 rounded-lg object-cover" />}
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="line-clamp-1 text-sm font-bold">{l.title}</p>
+                    <StatusBadge status={l.status} />
+                  </div>
+                  <p className="mt-1 text-xs text-ink/50">{formatMoney(l.pricePerNight, loc)} · {l._count.bookings} bookings</p>
                 </div>
-                <p className="mt-1 text-xs text-ink/50">{formatMoney(l.pricePerNight, loc)} · {l._count.bookings} bookings</p>
-              </div>
-            </Link>
+              </Link>
+              <Link
+                href={`/host/${l.slug}/edit`}
+                className="shrink-0 rounded-lg border border-brand-200 px-3 py-1.5 text-xs font-semibold text-brand-700 transition-colors hover:bg-brand-50"
+              >
+                {t('edit')}
+              </Link>
+            </div>
           ))}
         </div>
       </section>

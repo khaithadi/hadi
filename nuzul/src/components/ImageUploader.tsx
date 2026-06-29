@@ -22,8 +22,18 @@ async function resizeToJpeg(file: File, max = 1600, quality = 0.82): Promise<Blo
   );
 }
 
-export default function ImageUploader({ onChange, max = 8 }: { onChange: (urls: string[]) => void; max?: number }) {
-  const [items, setItems] = useState<Item[]>([]);
+export default function ImageUploader({
+  onChange,
+  max = 8,
+  initialUrls = [],
+}: {
+  onChange: (urls: string[]) => void;
+  max?: number;
+  initialUrls?: string[];
+}) {
+  const [items, setItems] = useState<Item[]>(() =>
+    initialUrls.map((url) => ({ id: url, preview: url, url, uploading: false })),
+  );
   const inputRef = useRef<HTMLInputElement>(null);
 
   const emit = (next: Item[]) => onChange(next.filter((i) => i.url).map((i) => i.url!));
