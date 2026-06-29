@@ -193,7 +193,6 @@ export default async function ListingPage({ params }: { params: { locale: string
             blockedDays={availability.blockedDays}
             bookings={availability.bookings}
           />
-          <p className="mt-2 text-center text-xs text-ink/40">{formatMoney(p.securityDeposit, locale)} {t('deposit')}</p>
         </aside>
       </div>
     </div>

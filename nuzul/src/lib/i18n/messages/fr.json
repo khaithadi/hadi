@@ -21,7 +21,7 @@
   "listing": {
     "perNight": "par nuit", "reserve": "Réserver", "request": "Demander à réserver", "guests": "Voyageurs", "nights": "nuits",
     "amenities": "Équipements", "rules": "Règlement intérieur", "reviews": "Avis", "location": "Emplacement", "host": "Hôte",
-    "checkIn": "Arrivée", "checkOut": "Départ", "total": "Total", "deposit": "Acompte (payé maintenant)", "balance": "Solde à l’arrivée",
+    "checkIn": "Arrivée", "checkOut": "Départ", "dates": "Dates", "addDates": "Choisir les dates", "total": "Total", "deposit": "Acompte (payé maintenant)", "balance": "Solde à l’arrivée",
     "serviceFee": "Frais de service", "cleaning": "Frais de ménage", "capacity": "Capacité", "rooms": "chambres", "beds": "lits", "baths": "SdB"
   },
   "booking": {
