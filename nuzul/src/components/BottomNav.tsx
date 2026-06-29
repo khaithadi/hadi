@@ -10,6 +10,8 @@ const icons: Record<string, JSX.Element> = {
   messages: <path d="M21 11.5a8.4 8.4 0 0 1-9 8.3l-5 1 1.4-3.6A8.4 8.4 0 1 1 21 11.5z" strokeLinejoin="round" />,
   favorites: <path d="M12 20s-7-4.3-9.3-8.2C1.2 9 2.4 5.5 5.7 5.5c2 0 3.2 1.3 3.3 1.7.1-.4 1.3-1.7 3.3-1.7 3.3 0 4.5 3.5 3 6.3C19 15.7 12 20 12 20z" />,
   account: <path d="M4 20a8 8 0 0 1 16 0M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" strokeLinecap="round" />,
+  dashboard: <path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-4h6v4" strokeLinecap="round" strokeLinejoin="round" />,
+  admin: <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" strokeLinejoin="round" />,
 };
 
 type Item = { key: string; href: string };
@@ -21,15 +23,19 @@ export default function BottomNav({ session }: { session: SessionPayload | null 
   const isActive = (href: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href));
 
   // Forced LTR layout so positions stay consistent in RTL (ar) and LTR alike:
-  // [messages, account]  ·  Explore (raised center)  ·  [favorites, trips]
+  // [messages, account]  ·  Explore (raised center)  ·  [favorites, role-tab]
   const left: Item[] = [
     { key: 'account', href: session ? '/account' : '/login' },
     { key: 'messages', href: session ? '/messages' : '/login' },
   ];
-  const right: Item[] = [
-    { key: 'favorites', href: '/favorites' },
-    { key: 'trips', href: '/trips' },
-  ];
+
+  // Right pair adapts to role: hosts get Dashboard, admins get Admin, guests get Trips
+  const right: Item[] =
+    session?.role === 'host'
+      ? [{ key: 'favorites', href: '/favorites' }, { key: 'dashboard', href: '/host' }]
+      : session?.role === 'admin'
+        ? [{ key: 'favorites', href: '/favorites' }, { key: 'admin', href: '/admin' }]
+        : [{ key: 'favorites', href: '/favorites' }, { key: 'trips', href: '/trips' }];
 
   function Tab({ it }: { it: Item }) {
     const active = isActive(it.href);
