@@ -106,7 +106,9 @@ export default function BookingWidget(props: Props) {
           <span className={checkIn ? '' : 'text-ink/40'}>
             {checkIn && checkOut
               ? `${format(parseISO(checkIn), 'd MMM')} → ${format(parseISO(checkOut), 'd MMM')}${nights > 0 ? ` · ${nights} ${t('nights')}` : ''}`
-              : t('addDates')}
+              : checkIn
+                ? `${format(parseISO(checkIn), 'd MMM')} → …`
+                : t('addDates')}
           </span>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="shrink-0 text-ink/50" aria-hidden="true">
             <rect x="3" y="4" width="18" height="18" rx="2" /><path d="M3 9h18M8 2v4M16 2v4" strokeLinecap="round" />
@@ -114,7 +116,7 @@ export default function BookingWidget(props: Props) {
         </button>
         {showCal && (
           <div className="pop-in mt-2 rounded-2xl border border-black/5 p-3 shadow-sm">
-            <DateRangePicker locale={locale} value={range} onChange={onRange} autoNight />
+            <DateRangePicker locale={locale} value={range} onChange={onRange} />
           </div>
         )}
       </div>
@@ -137,8 +139,6 @@ export default function BookingWidget(props: Props) {
       {nights > 0 && availability?.available && (
         <dl className="mt-4 space-y-1.5 border-t border-black/5 pt-3 text-sm">
           <Row label={`${formatMoney(props.pricePerNight, locale)} × ${nights} ${t('nights')}`} value={formatMoney(price.nightlyTotal, locale)} />
-          {price.cleaningFee > 0 && <Row label={t('cleaning')} value={formatMoney(price.cleaningFee, locale)} />}
-          <Row label={t('serviceFee')} value={formatMoney(price.serviceFee, locale)} />
           <Row label={t('total')} value={formatMoney(price.total, locale)} strong />
           <Row label={t('deposit')} value={formatMoney(price.depositDue, locale)} accent />
           <Row label={t('balance')} value={formatMoney(price.balanceDue, locale)} />

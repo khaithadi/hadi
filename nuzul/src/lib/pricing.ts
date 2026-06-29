@@ -45,8 +45,6 @@ export function computePrice(input: PriceInput): PriceBreakdown {
   const {
     pricePerNight,
     nights,
-    cleaningFee = 0,
-    serviceFeeRate = DEFAULTS.serviceFeeRate,
     commissionRate = DEFAULTS.commissionRate,
     depositRate = DEFAULTS.depositRate,
     nightlyOverrides,
@@ -71,18 +69,19 @@ export function computePrice(input: PriceInput): PriceBreakdown {
       ? nightlyOverrides.reduce((s, n) => s + n, 0)
       : pricePerNight * nights;
 
-  const serviceFee = Math.round(nightlyTotal * serviceFeeRate);
+  // The platform earns only from the host-side commission; the guest pays the nightly
+  // subtotal with no added cleaning or service fees ("the price you see is what you pay").
   const commission = Math.round(nightlyTotal * commissionRate);
-  const total = nightlyTotal + cleaningFee + serviceFee;
+  const total = nightlyTotal;
   const depositDue = Math.round(total * depositRate);
   const balanceDue = total - depositDue;
-  const hostPayout = nightlyTotal + cleaningFee - commission;
+  const hostPayout = nightlyTotal - commission;
 
   return {
     nights,
     nightlyTotal,
-    cleaningFee,
-    serviceFee,
+    cleaningFee: 0,
+    serviceFee: 0,
     commission,
     total,
     depositDue,
