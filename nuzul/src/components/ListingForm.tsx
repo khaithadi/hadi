@@ -66,7 +66,6 @@ export default function ListingForm({
       beds: Number(fd.get('beds')),
       bathrooms: Number(fd.get('bathrooms')),
       pricePerNight: Number(fd.get('pricePerNight')),
-      cleaningFee: Number(fd.get('cleaningFee') || 0),
       securityDeposit: Number(fd.get('securityDeposit') || 0),
       minNights: Number(fd.get('minNights') || 1),
       bookingMode: fd.get('bookingMode'),
@@ -118,9 +117,8 @@ export default function ListingForm({
         <div><label className="label">Baths</label><input name="bathrooms" type="number" min={1} defaultValue={initial?.bathrooms ?? 1} className="input" /></div>
       </div>
 
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 gap-2">
         <div><label className="label">Price/night (DZD)</label><input name="pricePerNight" type="number" min={500} defaultValue={initial?.pricePerNight ?? 8000} className="input" /></div>
-        <div><label className="label">Cleaning fee</label><input name="cleaningFee" type="number" min={0} defaultValue={initial?.cleaningFee ?? 1000} className="input" /></div>
         <div><label className="label">Security deposit</label><input name="securityDeposit" type="number" min={0} defaultValue={initial?.securityDeposit ?? 5000} className="input" /></div>
       </div>
 

@@ -139,8 +139,6 @@ export default function BookingWidget(props: Props) {
       {nights > 0 && availability?.available && (
         <dl className="mt-4 space-y-1.5 border-t border-black/5 pt-3 text-sm">
           <Row label={`${formatMoney(props.pricePerNight, locale)} × ${nights} ${t('nights')}`} value={formatMoney(price.nightlyTotal, locale)} />
-          {price.cleaningFee > 0 && <Row label={t('cleaning')} value={formatMoney(price.cleaningFee, locale)} />}
-          <Row label={t('serviceFee')} value={formatMoney(price.serviceFee, locale)} />
           <Row label={t('total')} value={formatMoney(price.total, locale)} strong />
           <Row label={t('deposit')} value={formatMoney(price.depositDue, locale)} accent />
           <Row label={t('balance')} value={formatMoney(price.balanceDue, locale)} />

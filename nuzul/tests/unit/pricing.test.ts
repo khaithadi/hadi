@@ -16,15 +16,16 @@ describe('nightsBetween', () => {
 describe('computePrice', () => {
   const rates = { serviceFeeRate: 0.05, commissionRate: 0.12, depositRate: 0.2 };
 
-  it('computes a full breakdown', () => {
+  it('computes a full breakdown (guest pays nightly only)', () => {
     const p = computePrice({ pricePerNight: 9900, nights: 3, cleaningFee: 1500, ...rates });
     expect(p.nightlyTotal).toBe(29700);
-    expect(p.serviceFee).toBe(1485); // 5% of 29700
-    expect(p.commission).toBe(3564); // 12% of 29700
-    expect(p.total).toBe(32685); // 29700 + 1500 + 1485
-    expect(p.depositDue).toBe(6537); // 20% of total
-    expect(p.balanceDue).toBe(26148); // total - deposit
-    expect(p.hostPayout).toBe(27636); // nightly + cleaning - commission
+    expect(p.serviceFee).toBe(0); // no guest service fee
+    expect(p.cleaningFee).toBe(0); // no guest cleaning fee
+    expect(p.commission).toBe(3564); // 12% of 29700, taken from the host
+    expect(p.total).toBe(29700); // guest pays the nightly subtotal only
+    expect(p.depositDue).toBe(5940); // 20% of total
+    expect(p.balanceDue).toBe(23760); // total - deposit
+    expect(p.hostPayout).toBe(26136); // nightly - commission
   });
 
   it('deposit + balance always reconcile to total', () => {
