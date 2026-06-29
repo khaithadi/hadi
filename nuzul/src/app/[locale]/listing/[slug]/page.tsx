@@ -6,8 +6,10 @@ import { getRates } from '@/lib/commission';
 import { formatMoney } from '@/lib/format';
 import type { Locale } from '@/lib/i18n/config';
 import { WILAYA_COORDS } from '@/lib/constants';
+import { prisma } from '@/lib/db';
+import { getSession } from '@/lib/auth/session';
 import BookingWidget from '@/components/BookingWidget';
-import FavoriteButton from '@/components/FavoriteButton';
+import Gallery from '@/components/Gallery';
 import MapEmbed from '@/components/MapEmbed';
 import Stars from '@/components/Stars';
 
@@ -32,7 +34,15 @@ export default async function ListingPage({ params }: { params: { locale: string
   const p = await getPropertyBySlug(params.slug);
   if (!p) notFound();
 
-  const [availability, rates] = await Promise.all([getPropertyAvailability(p.id), getRates()]);
+  const session = await getSession();
+  const [availability, rates, favorite] = await Promise.all([
+    getPropertyAvailability(p.id),
+    getRates(),
+    session
+      ? prisma.favorite.findUnique({ where: { userId_propertyId: { userId: session.sub, propertyId: p.id } } })
+      : Promise.resolve(null),
+  ]);
+  const favorited = Boolean(favorite);
   const wilayaName = locale === 'fr' ? p.wilaya.nameFr : locale === 'en' ? p.wilaya.nameEn : p.wilaya.nameAr;
   const amenityLabel = (a: (typeof p.amenities)[number]) =>
     locale === 'fr' ? a.amenity.labelFr : locale === 'en' ? a.amenity.labelEn : a.amenity.labelAr;
@@ -41,21 +51,8 @@ export default async function ListingPage({ params }: { params: { locale: string
 
   return (
     <div className="container-app py-4 md:py-6">
-      {/* Gallery — mobile hero with overlay controls */}
-      <div className="relative md:hidden">
-        <div className="aspect-[4/3] w-full overflow-hidden rounded-2xl bg-sand-100">
-          {p.images[0] && <img src={p.images[0].url} alt={p.title} className="h-full w-full object-cover" />}
-        </div>
-        <div className="absolute end-3 top-3">
-          <FavoriteButton propertyId={p.slug} />
-        </div>
-        {p.images.length > 0 && (
-          <span className="absolute end-3 bottom-3 inline-flex items-center gap-1 rounded-full bg-black/55 px-2.5 py-1 text-xs font-medium text-white">
-            <Camera /> 1 / {p.images.length}
-          </span>
-        )}
-        {p.isFeatured && <span className="badge-amber absolute start-3 top-3">★</span>}
-      </div>
+      {/* Gallery — swipeable mobile carousel */}
+      <Gallery images={p.images} propertyId={p.id} favorited={favorited} isFeatured={p.isFeatured} />
 
       {/* Gallery — desktop grid */}
       <div className="hidden gap-2 overflow-hidden rounded-2xl md:grid md:grid-cols-4 md:grid-rows-2">
@@ -236,13 +233,6 @@ function Check() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden="true">
       <path d="M5 12l5 5L20 7" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-function Camera() {
-  return (
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-      <path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h7L19 6h0a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><circle cx="12" cy="12.5" r="3.2" />
     </svg>
   );
 }
