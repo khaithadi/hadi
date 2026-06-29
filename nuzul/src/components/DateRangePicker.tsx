@@ -32,14 +32,22 @@ export default function DateRangePicker({
   locale,
   value,
   onChange,
+  autoNight = false,
 }: {
   locale: string;
   value: DateRange;
   onChange: (range: DateRange) => void;
+  /**
+   * When true, the first tap selects a 1-night stay (check-in + next day), and a second,
+   * later tap extends the checkout. Tapping an earlier/same day restarts at 1 night.
+   * Used by the booking widget; the search bar keeps the plain two-tap range.
+   */
+  autoNight?: boolean;
 }) {
   const today = startOfToday();
   const loc = dfLocale(locale);
   const [month, setMonth] = useState<Date>(startOfMonth(value.checkIn ?? today));
+  const [extending, setExtending] = useState(false);
 
   const monthStart = startOfMonth(month);
   const days = eachDayOfInterval({ start: monthStart, end: endOfMonth(month) });
@@ -53,6 +61,22 @@ export default function DateRangePicker({
 
   function pick(day: Date) {
     const { checkIn, checkOut } = value;
+
+    if (autoNight) {
+      // First tap → a 1-night stay; next later tap extends; earlier/same tap restarts.
+      if (!extending || !checkIn) {
+        onChange({ checkIn: day, checkOut: addDays(day, 1) });
+        setExtending(true);
+      } else if (isAfter(day, checkIn)) {
+        onChange({ checkIn, checkOut: day });
+        setExtending(false);
+      } else {
+        onChange({ checkIn: day, checkOut: addDays(day, 1) });
+        setExtending(true);
+      }
+      return;
+    }
+
     if (!checkIn || (checkIn && checkOut)) {
       onChange({ checkIn: day, checkOut: null });
     } else if (isAfter(day, checkIn)) {
@@ -112,10 +136,10 @@ export default function DateRangePicker({
               disabled={past}
               onClick={() => pick(day)}
               className={[
-                'mx-auto flex h-9 w-9 items-center justify-center rounded-full transition',
+                'mx-auto flex h-9 w-9 items-center justify-center rounded-full transition duration-150 active:scale-90',
                 past ? 'cursor-default text-ink/25' : 'hover:bg-brand-100',
                 inRange ? 'bg-brand-100' : '',
-                selected ? 'bg-brand-600 text-white hover:bg-brand-600' : '',
+                selected ? 'scale-105 bg-brand-600 text-white hover:bg-brand-600' : '',
               ].join(' ')}
             >
               {format(day, 'd')}
