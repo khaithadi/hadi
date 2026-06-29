@@ -21,7 +21,7 @@
   "listing": {
     "perNight": "per night", "reserve": "Reserve", "request": "Request to book", "guests": "Guests", "nights": "nights",
     "amenities": "Amenities", "rules": "House rules", "reviews": "Reviews", "location": "Location", "host": "Host",
-    "checkIn": "Check-in", "checkOut": "Check-out", "total": "Total", "deposit": "Deposit (paid now)", "balance": "Balance on arrival",
+    "checkIn": "Check-in", "checkOut": "Check-out", "dates": "Dates", "addDates": "Choose dates", "total": "Total", "deposit": "Deposit (paid now)", "balance": "Balance on arrival",
     "serviceFee": "Service fee", "cleaning": "Cleaning fee", "capacity": "Sleeps", "rooms": "rooms", "beds": "beds", "baths": "baths"
   },
   "booking": {

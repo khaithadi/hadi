@@ -2,12 +2,14 @@
 
 import { useMemo, useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
+import { format, parseISO } from 'date-fns';
 import { useRouter } from '@/lib/i18n/navigation';
 import { computePrice, nightsBetween } from '@/lib/pricing';
 import { checkAvailability } from '@/lib/availability';
 import { formatMoney } from '@/lib/format';
 import { PAYMENT_METHODS } from '@/lib/constants';
 import type { Locale } from '@/lib/i18n/config';
+import DateRangePicker, { type DateRange } from './DateRangePicker';
 
 interface Props {
   slug: string;
@@ -30,10 +32,21 @@ export default function BookingWidget(props: Props) {
 
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
+  const [showCal, setShowCal] = useState(false);
   const [guests, setGuests] = useState(1);
   const [method, setMethod] = useState('baridimob');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const range: DateRange = {
+    checkIn: checkIn ? parseISO(checkIn) : null,
+    checkOut: checkOut ? parseISO(checkOut) : null,
+  };
+  function onRange(r: DateRange) {
+    setCheckIn(r.checkIn ? format(r.checkIn, 'yyyy-MM-dd') : '');
+    setCheckOut(r.checkOut ? format(r.checkOut, 'yyyy-MM-dd') : '');
+    if (r.checkIn && r.checkOut) setShowCal(false); // collapse once a full range is chosen
+  }
 
   const nights = checkIn && checkOut ? nightsBetween(checkIn, checkOut) : 0;
   const price = useMemo(
@@ -83,15 +96,29 @@ export default function BookingWidget(props: Props) {
         {formatMoney(props.pricePerNight, locale)} <span className="text-sm font-normal text-ink/50">{t('perNight')}</span>
       </p>
 
-      <div className="mt-3 grid grid-cols-2 gap-2">
-        <div>
-          <label className="label">{t('checkIn')}</label>
-          <input type="date" className="input" value={checkIn} onChange={(e) => setCheckIn(e.target.value)} />
-        </div>
-        <div>
-          <label className="label">{t('checkOut')}</label>
-          <input type="date" className="input" value={checkOut} onChange={(e) => setCheckOut(e.target.value)} />
-        </div>
+      <div className="mt-3">
+        <label className="label">{t('dates')}</label>
+        <button
+          type="button"
+          onClick={() => setShowCal((s) => !s)}
+          className="input flex items-center justify-between gap-2 text-start"
+        >
+          <span className={checkIn ? '' : 'text-ink/40'}>
+            {checkIn && checkOut
+              ? `${format(parseISO(checkIn), 'd MMM')} → ${format(parseISO(checkOut), 'd MMM')}`
+              : checkIn
+                ? `${format(parseISO(checkIn), 'd MMM')} → …`
+                : t('addDates')}
+          </span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="shrink-0 text-ink/50" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="18" rx="2" /><path d="M3 9h18M8 2v4M16 2v4" strokeLinecap="round" />
+          </svg>
+        </button>
+        {showCal && (
+          <div className="mt-2 rounded-2xl border border-black/5 p-3 shadow-sm">
+            <DateRangePicker locale={locale} value={range} onChange={onRange} />
+          </div>
+        )}
       </div>
       <div className="mt-2">
         <label className="label">{t('guests')}</label>

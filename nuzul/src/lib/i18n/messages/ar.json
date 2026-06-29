@@ -36,7 +36,7 @@
   "listing": {
     "perNight": "لكل ليلة", "reserve": "احجز الآن", "request": "اطلب الحجز", "guests": "الضيوف", "nights": "ليالٍ",
     "amenities": "المرافق", "rules": "قواعد المنزل", "reviews": "التقييمات", "location": "الموقع", "host": "المضيف",
-    "checkIn": "الوصول", "checkOut": "المغادرة", "total": "المجموع", "deposit": "العربون (يُدفع الآن)", "balance": "الباقي عند الوصول",
+    "checkIn": "الوصول", "checkOut": "المغادرة", "dates": "التواريخ", "addDates": "اختر التواريخ", "total": "المجموع", "deposit": "العربون (يُدفع الآن)", "balance": "الباقي عند الوصول",
     "serviceFee": "رسوم الخدمة", "cleaning": "رسوم التنظيف", "capacity": "يتّسع لـ", "rooms": "غرف", "beds": "أسرّة", "baths": "حمّامات"
   },
   "booking": {
