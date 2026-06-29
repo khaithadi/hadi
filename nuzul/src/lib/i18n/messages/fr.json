@@ -36,7 +36,7 @@
   },
   "host": {
     "dashboard": "Espace hôte", "earnings": "Revenus", "occupancy": "Taux d’occupation", "listings": "Mes annonces", "incoming": "Réservations reçues",
-    "newListing": "Ajouter un logement", "accept": "Accepter", "decline": "Refuser", "publish": "Publier", "pendingReview": "En attente de validation"
+    "newListing": "Ajouter un logement", "accept": "Accepter", "decline": "Refuser", "publish": "Publier", "pendingReview": "En attente de validation", "editListing": "Modifier le logement", "save": "Enregistrer", "edit": "Modifier"
   },
   "admin": { "dashboard": "Administration", "moderation": "Modération", "users": "Utilisateurs", "approve": "Approuver", "reject": "Rejeter", "kpis": "Indicateurs" },
   "account": { "title": "Mon compte", "language": "Langue", "becomeHost": "Publiez votre logement et gagnez", "favorites": "Destinations favorites", "transactions": "Mes transactions", "security": "Compte et mot de passe", "terms": "Conditions générales" },

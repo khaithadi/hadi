@@ -51,7 +51,7 @@
   },
   "host": {
     "dashboard": "لوحة المضيف", "earnings": "الأرباح", "occupancy": "نسبة الإشغال", "listings": "عقاراتي", "incoming": "الحجوزات الواردة",
-    "newListing": "أضف عقاراً", "accept": "قبول", "decline": "رفض", "publish": "نشر العقار", "pendingReview": "قيد المراجعة"
+    "newListing": "أضف عقاراً", "accept": "قبول", "decline": "رفض", "publish": "نشر العقار", "pendingReview": "قيد المراجعة", "editListing": "تعديل العقار", "save": "حفظ التغييرات", "edit": "تعديل"
   },
   "admin": { "dashboard": "لوحة الإدارة", "moderation": "مراجعة العقارات", "users": "المستخدمون", "approve": "موافقة", "reject": "رفض", "kpis": "المؤشرات" },
   "account": { "title": "حسابي", "language": "اللغة", "becomeHost": "انشر مسكنك واربح", "favorites": "الوجهات المفضّلة", "transactions": "معاملاتي", "security": "الحساب وكلمة المرور", "terms": "الشروط والأحكام" },
