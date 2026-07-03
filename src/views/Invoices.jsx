@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { INVOICE_STATUSES, meta } from '../lib/constants.js';
 import { invoiceState } from '../lib/calc.js';
 import { formatMoney, formatDate } from '../lib/format.js';
+import { useT } from '../lib/i18n.js';
 import Ticket, { EmptyState } from '../components/Ticket.jsx';
 import StatusBadge from '../components/StatusBadge.jsx';
 import ProgressBar from '../components/ProgressBar.jsx';
 
 export default function Invoices({ data, nav }) {
+  const t = useT();
   const [filter, setFilter] = useState('all');
   const [query, setQuery] = useState('');
   const nameOf = (id) => (data.customers.find((c) => c.id === id) || {}).name || '—';
@@ -18,18 +20,18 @@ export default function Invoices({ data, nav }) {
 
   return (
     <div className="page">
-      <input className="input search-input" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="🔍 بحث بالعميل أو الرقم…" />
+      <input className="input search-input" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={t('inv.searchPh')} />
       <div className="filter-row">
-        <button className={'filter-chip' + (filter === 'all' ? ' active' : '')} onClick={() => setFilter('all')}>الكل</button>
+        <button className={'filter-chip' + (filter === 'all' ? ' active' : '')} onClick={() => setFilter('all')}>{t('c.all')}</button>
         {INVOICE_STATUSES.map((s) => (
           <button key={s.id} className={'filter-chip' + (filter === s.id ? ' active' : '')}
             style={filter === s.id ? { background: s.color, borderColor: s.color, color: '#fff' } : {}}
-            onClick={() => setFilter(s.id)}>{s.label}</button>
+            onClick={() => setFilter(s.id)}>{t('istatus.' + s.id)}</button>
         ))}
       </div>
 
       {list.length === 0 ? (
-        <EmptyState text="لا توجد فواتير. اضغط + لإنشاء فاتورة." />
+        <EmptyState text={t('inv.empty')} />
       ) : (
         <div className="ticket-list">
           {list.map(({ inv, st }) => {
@@ -42,7 +44,7 @@ export default function Invoices({ data, nav }) {
                 </div>
                 <ProgressBar state={st} />
                 <div className="ticket-dash" />
-                <div className="ticket-row sub"><span>{formatDate(inv.date)}</span><StatusBadge label={im.label} color={im.color} /></div>
+                <div className="ticket-row sub"><span>{formatDate(inv.date)}</span><StatusBadge label={t('istatus.' + st.status)} color={im.color} /></div>
               </Ticket>
             );
           })}

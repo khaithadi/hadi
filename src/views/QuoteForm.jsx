@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { uid, todayISO } from '../lib/format.js';
 import { QUOTE_STATUSES, DEFAULT_TAX_RATE } from '../lib/constants.js';
+import { useT } from '../lib/i18n.js';
 import ItemsEditor from '../components/ItemsEditor.jsx';
 
 export default function QuoteForm({ initial, presetCustomerId, data, nav, onCancel, onSave }) {
+  const t = useT();
   const q = initial || {};
   const defaultRate = data.settings.defaultTaxRate ?? DEFAULT_TAX_RATE;
   const [customerId, setCustomerId] = useState(q.customerId || presetCustomerId || data.customers[0]?.id || '');
@@ -17,9 +19,9 @@ export default function QuoteForm({ initial, presetCustomerId, data, nav, onCanc
   const [notes, setNotes] = useState(q.notes || '');
 
   if (data.customers.length === 0) {
-    return <div className="page"><div className="empty">أضِف عميلاً أولاً قبل إنشاء عرض.</div>
-      <button className="btn-primary" onClick={() => nav.newCustomer()}>إضافة عميل</button>
-      <button className="btn-secondary" style={{ marginTop: 8 }} onClick={onCancel}>رجوع</button></div>;
+    return <div className="page"><div className="empty">{t('quote.addFirst')}</div>
+      <button className="btn-primary" onClick={() => nav.newCustomer()}>{t('quote.addCustomer')}</button>
+      <button className="btn-secondary" style={{ marginTop: 8 }} onClick={onCancel}>{t('c.back')}</button></div>;
   }
 
   function handleSave() {
@@ -36,17 +38,17 @@ export default function QuoteForm({ initial, presetCustomerId, data, nav, onCanc
 
   return (
     <div className="page">
-      <label className="label">العميل</label>
+      <label className="label">{t('quote.customer')}</label>
       <select className="input" value={customerId} onChange={(e) => setCustomerId(e.target.value)}>
         {data.customers.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
       </select>
 
-      <label className="label">التاريخ</label>
+      <label className="label">{t('c.date')}</label>
       <input className="input" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
 
-      <label className="label">الحالة</label>
+      <label className="label">{t('c.status')}</label>
       <select className="input" value={status} onChange={(e) => setStatus(e.target.value)}>
-        {QUOTE_STATUSES.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
+        {QUOTE_STATUSES.map((s) => <option key={s.id} value={s.id}>{t('qstatus.' + s.id)}</option>)}
       </select>
 
       <ItemsEditor
@@ -57,12 +59,12 @@ export default function QuoteForm({ initial, presetCustomerId, data, nav, onCanc
         services={data.services}
       />
 
-      <label className="label">ملاحظات (اختياري)</label>
+      <label className="label">{t('c.notesOpt')}</label>
       <textarea className="input" rows={2} value={notes} onChange={(e) => setNotes(e.target.value)} />
 
       <div className="form-actions">
-        <button className="btn-secondary" onClick={onCancel}>إلغاء</button>
-        <button className="btn-primary" onClick={handleSave}>{initial ? 'حفظ' : 'إنشاء العرض'}</button>
+        <button className="btn-secondary" onClick={onCancel}>{t('c.cancel')}</button>
+        <button className="btn-primary" onClick={handleSave}>{initial ? t('c.save') : t('quote.create')}</button>
       </div>
     </div>
   );

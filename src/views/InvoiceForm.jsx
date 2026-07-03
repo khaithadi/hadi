@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { uid, todayISO } from '../lib/format.js';
 import { DEFAULT_TAX_RATE } from '../lib/constants.js';
+import { useT } from '../lib/i18n.js';
 import ItemsEditor from '../components/ItemsEditor.jsx';
 
 export default function InvoiceForm({ initial, presetCustomerId, data, nav, onCancel, onSave }) {
+  const t = useT();
   const inv = initial || {};
   const defaultRate = data.settings.defaultTaxRate ?? DEFAULT_TAX_RATE;
   const [customerId, setCustomerId] = useState(inv.customerId || presetCustomerId || data.customers[0]?.id || '');
@@ -16,9 +18,9 @@ export default function InvoiceForm({ initial, presetCustomerId, data, nav, onCa
   const [notes, setNotes] = useState(inv.notes || '');
 
   if (data.customers.length === 0) {
-    return <div className="page"><div className="empty">أضِف عميلاً أولاً قبل إنشاء فاتورة.</div>
-      <button className="btn-primary" onClick={() => nav.newCustomer()}>إضافة عميل</button>
-      <button className="btn-secondary" style={{ marginTop: 8 }} onClick={onCancel}>رجوع</button></div>;
+    return <div className="page"><div className="empty">{t('inv.addFirst')}</div>
+      <button className="btn-primary" onClick={() => nav.newCustomer()}>{t('quote.addCustomer')}</button>
+      <button className="btn-secondary" style={{ marginTop: 8 }} onClick={onCancel}>{t('c.back')}</button></div>;
   }
 
   function handleSave() {
@@ -35,12 +37,12 @@ export default function InvoiceForm({ initial, presetCustomerId, data, nav, onCa
 
   return (
     <div className="page">
-      <label className="label">العميل</label>
+      <label className="label">{t('quote.customer')}</label>
       <select className="input" value={customerId} onChange={(e) => setCustomerId(e.target.value)}>
         {data.customers.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
       </select>
 
-      <label className="label">التاريخ</label>
+      <label className="label">{t('c.date')}</label>
       <input className="input" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
 
       <ItemsEditor
@@ -51,12 +53,12 @@ export default function InvoiceForm({ initial, presetCustomerId, data, nav, onCa
         services={data.services}
       />
 
-      <label className="label">ملاحظات (اختياري)</label>
+      <label className="label">{t('c.notesOpt')}</label>
       <textarea className="input" rows={2} value={notes} onChange={(e) => setNotes(e.target.value)} />
 
       <div className="form-actions">
-        <button className="btn-secondary" onClick={onCancel}>إلغاء</button>
-        <button className="btn-primary" onClick={handleSave}>{initial ? 'حفظ' : 'إنشاء الفاتورة'}</button>
+        <button className="btn-secondary" onClick={onCancel}>{t('c.cancel')}</button>
+        <button className="btn-primary" onClick={handleSave}>{initial ? t('c.save') : t('inv.create')}</button>
       </div>
     </div>
   );

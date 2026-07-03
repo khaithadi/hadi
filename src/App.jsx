@@ -8,6 +8,7 @@ import TopBar from './components/TopBar.jsx';
 import BottomNav from './components/BottomNav.jsx';
 import Fab from './components/Fab.jsx';
 import ConfirmProvider from './components/ConfirmProvider.jsx';
+import { LangContext, t as translate } from './lib/i18n.js';
 
 import Dashboard from './views/Dashboard.jsx';
 import Customers from './views/Customers.jsx';
@@ -31,27 +32,27 @@ import PeriodPayForm from './views/PeriodPayForm.jsx';
 import Settings from './views/Settings.jsx';
 import DocPrint from './views/DocPrint.jsx';
 
-const TITLES = {
-  dashboard: (d) => d.settings.businessName || 'ميثاق',
-  customers: () => 'العملاء',
-  customer: () => 'ملف العميل',
-  customerForm: (d, e) => (e ? 'تعديل العميل' : 'عميل جديد'),
-  quotes: () => 'العروض',
-  quoteForm: (d, e) => (e ? 'تعديل العرض' : 'عرض جديد'),
-  quoteDetail: () => 'تفاصيل العرض',
-  invoices: () => 'الفواتير',
-  invoiceForm: (d, e) => (e ? 'تعديل الفاتورة' : 'فاتورة جديدة'),
-  invoiceDetail: () => 'تفاصيل الفاتورة',
-  paymentForm: () => 'تسجيل دفعة',
-  expenses: () => 'المصاريف',
-  expenseForm: (d, e) => (e ? 'تعديل مصروف' : 'مصروف جديد'),
-  workerDetail: () => 'ملف العامل',
-  workerForm: (d, e) => (e ? 'تعديل العامل' : 'عامل جديد'),
-  laborForm: () => 'مستحق جديد',
-  laborPayment: () => 'دفعة لعامل',
-  timesheetForm: () => 'تسجيل يوم',
-  periodPay: () => 'دفع فترة',
-  settings: () => 'الإعدادات',
+// view → i18n title key (or a fn returning a key for new/edit variants).
+const TITLE_KEYS = {
+  customers: 'nav.customers',
+  customer: 't.customer',
+  customerForm: (e) => (e ? 't.customerEdit' : 't.customerNew'),
+  quotes: 'nav.quotes',
+  quoteForm: (e) => (e ? 't.quoteEdit' : 't.quoteNew'),
+  quoteDetail: 't.quoteDetail',
+  invoices: 'nav.invoices',
+  invoiceForm: (e) => (e ? 't.invoiceEdit' : 't.invoiceNew'),
+  invoiceDetail: 't.invoiceDetail',
+  paymentForm: 't.paymentForm',
+  expenses: 'nav.expenses',
+  expenseForm: (e) => (e ? 't.expenseEdit' : 't.expenseNew'),
+  workerDetail: 't.workerDetail',
+  workerForm: (e) => (e ? 't.workerEdit' : 't.workerNew'),
+  laborForm: 't.laborForm',
+  laborPayment: 't.laborPayment',
+  timesheetForm: 't.timesheetForm',
+  periodPay: 't.periodPay',
+  settings: 't.settings',
 };
 
 const TAB_VIEWS = ['dashboard', 'customers', 'quotes', 'invoices', 'expenses'];
@@ -94,6 +95,13 @@ export default function App() {
       return () => mq.removeEventListener('change', apply);
     }
   }, [data.settings.theme]);
+
+  // Language: set the document direction (Arabic = RTL, French/English = LTR).
+  useEffect(() => {
+    const lg = data.settings.language || 'ar';
+    document.documentElement.lang = lg;
+    document.documentElement.dir = lg === 'ar' ? 'rtl' : 'ltr';
+  }, [data.settings.language]);
 
   function persist(next) {
     setData(next);
@@ -418,14 +426,23 @@ export default function App() {
   const activeLabor = data.labor.find((l) => l.id === active.laborId);
 
   const showBack = !TAB_VIEWS.includes(view);
-  const titleFn = TITLES[view] || (() => 'ميثاق');
+  const lang = data.settings.language || 'ar';
+  let title;
+  if (view === 'dashboard') {
+    title = data.settings.businessName || translate(lang, 'nav.dashboard');
+  } else {
+    const k = TITLE_KEYS[view];
+    const key = typeof k === 'function' ? k(editing) : k;
+    title = key ? translate(lang, key) : 'Mithaq';
+  }
 
   return (
+    <LangContext.Provider value={lang}>
     <ConfirmProvider>
     <div className="app-root">
       <div className="shell">
         <TopBar
-          title={titleFn(data, editing)}
+          title={title}
           showBack={showBack}
           showSettings={view === 'dashboard'}
           onBack={nav.back}
@@ -580,5 +597,6 @@ export default function App() {
       </div>
     </div>
     </ConfirmProvider>
+    </LangContext.Provider>
   );
 }
