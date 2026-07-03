@@ -32,3 +32,20 @@ export function buildDocText(kind, doc, customer, settings) {
   if (settings.phone) lines.push(`Tél : ${settings.phone}`);
   return lines.join('\n');
 }
+
+// Plain-text payment receipt (French) for WhatsApp sharing.
+export function buildReceiptText(invoice, payment, customer, settings) {
+  const st = invoiceState(invoice);
+  const lines = [];
+  lines.push(settings.businessName || 'Mithaq');
+  lines.push(`Reçu de paiement — ${formatDate(payment.date)}`);
+  lines.push(`Facture ${invoice.number}`);
+  lines.push(`Client : ${customer ? customer.name : ''}`);
+  lines.push('—'.repeat(20));
+  lines.push(`Montant reçu : ${formatMoneyFr(payment.amount)}`);
+  if (payment.method) lines.push(`Mode : ${payment.method}`);
+  if (payment.receivedBy) lines.push(`Reçu par : ${payment.receivedBy}`);
+  lines.push(st.remaining > 0 ? `Reste à payer : ${formatMoneyFr(st.remaining)}` : 'Payé en totalité');
+  if (settings.phone) lines.push(`Tél : ${settings.phone}`);
+  return lines.join('\n');
+}

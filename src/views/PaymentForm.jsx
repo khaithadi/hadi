@@ -8,11 +8,12 @@ export default function PaymentForm({ invoice, onCancel, onSave }) {
   const [amount, setAmount] = useState(st.remaining || '');
   const [date, setDate] = useState(todayISO());
   const [method, setMethod] = useState(PAYMENT_METHODS[0]);
+  const [receivedBy, setReceivedBy] = useState('');
 
   function handleSave() {
     const amt = Number(amount) || 0;
     if (amt <= 0) return;
-    onSave({ amount: amt, date, method });
+    onSave({ amount: amt, date, method, receivedBy: receivedBy.trim() });
   }
 
   return (
@@ -32,6 +33,9 @@ export default function PaymentForm({ invoice, onCancel, onSave }) {
       <select className="input" value={method} onChange={(e) => setMethod(e.target.value)}>
         {PAYMENT_METHODS.map((m) => <option key={m} value={m}>{m}</option>)}
       </select>
+
+      <label className="label">المستلم (من استلم الدفعة) — اختياري</label>
+      <input className="input" value={receivedBy} onChange={(e) => setReceivedBy(e.target.value)} placeholder="مثال: محمد" />
 
       <div className="form-actions">
         <button className="btn-secondary" onClick={onCancel}>إلغاء</button>

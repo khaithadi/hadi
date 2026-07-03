@@ -3,7 +3,7 @@ import { uid, todayISO } from '../lib/format.js';
 import { QUOTE_STATUSES, DEFAULT_TAX_RATE } from '../lib/constants.js';
 import ItemsEditor from '../components/ItemsEditor.jsx';
 
-export default function QuoteForm({ initial, presetCustomerId, data, onCancel, onSave }) {
+export default function QuoteForm({ initial, presetCustomerId, data, nav, onCancel, onSave }) {
   const q = initial || {};
   const defaultRate = data.settings.defaultTaxRate ?? DEFAULT_TAX_RATE;
   const [customerId, setCustomerId] = useState(q.customerId || presetCustomerId || data.customers[0]?.id || '');
@@ -12,13 +12,14 @@ export default function QuoteForm({ initial, presetCustomerId, data, onCancel, o
   const [items, setItems] = useState(q.items?.length ? q.items : [{ id: uid(), desc: '', qty: 1, price: 0 }]);
   const [applyTax, setApplyTax] = useState(!!q.applyTax);
   const [taxRate, setTaxRate] = useState(q.taxRate ?? defaultRate);
-  const [discountType, setDiscountType] = useState(q.discountType || null);
+  const [discountType, setDiscountType] = useState(q.discountType || 'percent');
   const [discountValue, setDiscountValue] = useState(q.discountValue ?? 0);
   const [notes, setNotes] = useState(q.notes || '');
 
   if (data.customers.length === 0) {
     return <div className="page"><div className="empty">أضِف عميلاً أولاً قبل إنشاء عرض.</div>
-      <button className="btn-secondary" onClick={onCancel}>رجوع</button></div>;
+      <button className="btn-primary" onClick={() => nav.newCustomer()}>إضافة عميل</button>
+      <button className="btn-secondary" style={{ marginTop: 8 }} onClick={onCancel}>رجوع</button></div>;
   }
 
   function handleSave() {
@@ -28,7 +29,7 @@ export default function QuoteForm({ initial, presetCustomerId, data, onCancel, o
       ...(initial ? { id: initial.id, number: initial.number } : {}),
       customerId, date, status,
       items: clean, applyTax, taxRate: Number(taxRate) || 0,
-      discountType: discountType || null, discountValue: Number(discountValue) || 0,
+      discountType, discountValue: Number(discountValue) || 0,
       notes: notes.trim(),
     });
   }

@@ -5,6 +5,7 @@ import { laborState, workerRates, workerUnpaid, dayHours } from '../lib/calc.js'
 import { formatMoney, formatDate } from '../lib/format.js';
 import ProgressBar from '../components/ProgressBar.jsx';
 import StatusBadge from '../components/StatusBadge.jsx';
+import { useConfirm } from '../components/ConfirmProvider.jsx';
 
 export default function WorkerDetail({ worker, data, nav, actions }) {
   const [confirmDel, setConfirmDel] = useState(false);
@@ -56,6 +57,7 @@ export default function WorkerDetail({ worker, data, nav, actions }) {
 
 /* ----------------------------- monthly ----------------------------- */
 function MonthlyBody({ worker, data, nav, actions }) {
+  const confirm = useConfirm();
   const rates = workerRates(worker);
   const unpaid = workerUnpaid(data.timesheet, worker.id, rates);
   const days = (data.timesheet || [])
@@ -95,7 +97,7 @@ function MonthlyBody({ worker, data, nav, actions }) {
                 <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   {d.paid
                     ? <StatusBadge label="مدفوعة" color="var(--success)" />
-                    : <button className="icon-btn-sm" onClick={() => actions.deleteTimesheet(d.id)} aria-label="حذف"><X size={15} /></button>}
+                    : <button className="icon-btn-sm" onClick={async () => { if (await confirm('حذف هذا اليوم؟')) actions.deleteTimesheet(d.id); }} aria-label="حذف"><X size={15} /></button>}
                 </span>
               </div>
             );
@@ -108,6 +110,7 @@ function MonthlyBody({ worker, data, nav, actions }) {
 
 /* ----------------------------- project ----------------------------- */
 function ProjectBody({ worker, data, nav, actions, nameOf }) {
+  const confirm = useConfirm();
   const entries = (data.labor || [])
     .filter((l) => l.workerId === worker.id)
     .sort((a, b) => (a.date < b.date ? 1 : -1));
@@ -154,7 +157,7 @@ function ProjectBody({ worker, data, nav, actions, nameOf }) {
                     {l.payments.map((p) => (
                       <div className="pay-item" key={p.id}>
                         <div><div className="pa">{formatMoney(p.amount)}</div><div className="pm">{formatDate(p.date)}</div></div>
-                        <button className="icon-btn-sm" onClick={() => actions.deleteLaborPayment(l.id, p.id)} aria-label="حذف"><X size={15} /></button>
+                        <button className="icon-btn-sm" onClick={async () => { if (await confirm('حذف هذه الدفعة؟')) actions.deleteLaborPayment(l.id, p.id); }} aria-label="حذف"><X size={15} /></button>
                       </div>
                     ))}
                   </div>
@@ -167,7 +170,7 @@ function ProjectBody({ worker, data, nav, actions, nameOf }) {
                       <button className="btn-secondary sm" onClick={() => nav.laborPayment(l.id)}><Plus size={14} /> دفعة</button>
                     </>
                   )}
-                  <button className="btn-text-danger" onClick={() => actions.deleteLabor(l.id)}><Trash2 size={14} /> حذف</button>
+                  <button className="btn-text-danger" onClick={async () => { if (await confirm('حذف هذا المستحق؟')) actions.deleteLabor(l.id); }}><Trash2 size={14} /> حذف</button>
                 </div>
               </div>
             );

@@ -8,13 +8,17 @@ import ProgressBar from '../components/ProgressBar.jsx';
 
 export default function Invoices({ data, nav }) {
   const [filter, setFilter] = useState('all');
+  const [query, setQuery] = useState('');
   const nameOf = (id) => (data.customers.find((c) => c.id === id) || {}).name || '—';
+  const s = query.trim().toLowerCase();
   const withState = data.invoices.map((inv) => ({ inv, st: invoiceState(inv) }));
   const list = (filter === 'all' ? withState : withState.filter((x) => x.st.status === filter))
+    .filter(({ inv }) => !s || nameOf(inv.customerId).toLowerCase().includes(s) || String(inv.number).toLowerCase().includes(s))
     .sort((a, b) => new Date(b.inv.date) - new Date(a.inv.date));
 
   return (
     <div className="page">
+      <input className="input search-input" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="🔍 بحث بالعميل أو الرقم…" />
       <div className="filter-row">
         <button className={'filter-chip' + (filter === 'all' ? ' active' : '')} onClick={() => setFilter('all')}>الكل</button>
         {INVOICE_STATUSES.map((s) => (

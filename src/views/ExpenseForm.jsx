@@ -1,60 +1,29 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
 import { todayISO } from '../lib/format.js';
+import { imageToThumb } from '../lib/image.js';
 import { EXPENSE_CATEGORIES } from '../lib/constants.js';
-
-// Downscale an uploaded image to a small JPEG dataURL so localStorage stays small.
-function fileToThumb(file) {
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const img = new Image();
-      img.onload = () => {
-        const max = 900;
-        let { width, height } = img;
-        if (width > max || height > max) {
-          const r = Math.min(max / width, max / height);
-          width = Math.round(width * r);
-          height = Math.round(height * r);
-        }
-        const canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
-        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
-        resolve(canvas.toDataURL('image/jpeg', 0.7));
-      };
-      img.onerror = () => resolve(null);
-      img.src = reader.result;
-    };
-    reader.onerror = () => resolve(null);
-    reader.readAsDataURL(file);
-  });
-}
 
 export default function ExpenseForm({ initial, presetCustomerId, data, onCancel, onSave }) {
   const e = initial || {};
-  const [customerId, setCustomerId] = useState(e.customerId || presetCustomerId || data.customers[0]?.id || '');
+  // Empty string = general expense (equipment, overhead…) not tied to a customer.
+  const [customerId, setCustomerId] = useState(e.customerId || presetCustomerId || '');
   const [category, setCategory] = useState(e.category || 'materials');
   const [amount, setAmount] = useState(e.amount ?? '');
   const [description, setDescription] = useState(e.description || '');
   const [date, setDate] = useState(e.date || todayISO());
   const [receipt, setReceipt] = useState(e.receipt || null);
 
-  if (data.customers.length === 0) {
-    return <div className="page"><div className="empty">أضِف عميلاً أولاً، فكل مصروف مرتبط بعميل/مشروع.</div>
-      <button className="btn-secondary" onClick={onCancel}>رجوع</button></div>;
-  }
-
   async function onPickReceipt(ev) {
     const file = ev.target.files?.[0];
-    if (file) setReceipt(await fileToThumb(file));
+    if (file) setReceipt(await imageToThumb(file));
   }
 
   function handleSave() {
-    if (!amount || Number(amount) <= 0 || !customerId) return;
+    if (!amount || Number(amount) <= 0) return;
     onSave({
       ...(initial ? { id: initial.id } : {}),
-      customerId,
+      customerId: customerId || null,
       category,
       amount: Number(amount),
       description: description.trim(),
@@ -67,6 +36,7 @@ export default function ExpenseForm({ initial, presetCustomerId, data, onCancel,
     <div className="page">
       <label className="label">العميل / المشروع</label>
       <select className="input" value={customerId} onChange={(ev) => setCustomerId(ev.target.value)}>
+        <option value="">عام (غير مرتبط بعميل)</option>
         {data.customers.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
       </select>
 
