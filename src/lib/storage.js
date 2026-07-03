@@ -23,6 +23,10 @@ export function defaultData() {
       phone: '',
       defaultTaxRate: DEFAULT_TAX_RATE,
       invoiceFooter: '',
+      logo: null,
+      theme: 'system',
+      language: 'ar',
+      lastBackupAt: null,
     },
     seq: { quote: 0, invoice: 0 },
   };

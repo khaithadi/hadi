@@ -6,8 +6,10 @@ import { formatMoney, formatDate, copyText } from '../lib/format.js';
 import { buildDocText } from '../lib/text.js';
 import StatusBadge from '../components/StatusBadge.jsx';
 import ProgressBar from '../components/ProgressBar.jsx';
+import { useConfirm } from '../components/ConfirmProvider.jsx';
 
 export default function InvoiceDetail({ invoice, data, nav, actions }) {
+  const confirm = useConfirm();
   const [confirmDel, setConfirmDel] = useState(false);
   const [copied, setCopied] = useState(false);
   const customer = data.customers.find((c) => c.id === invoice.customerId);
@@ -59,9 +61,12 @@ export default function InvoiceDetail({ invoice, data, nav, actions }) {
             <div className="pay-item" key={p.id}>
               <div>
                 <div className="pa">{formatMoney(p.amount)}</div>
-                <div className="pm">{formatDate(p.date)} · {p.method}</div>
+                <div className="pm">{formatDate(p.date)} · {p.method}{p.receivedBy ? ' · ' + p.receivedBy : ''}</div>
               </div>
-              <button className="icon-btn-sm" onClick={() => actions.deletePayment(invoice.id, p.id)} aria-label="حذف"><X size={15} /></button>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                <button className="icon-btn-sm" onClick={() => nav.print('receipt', invoice.id, p.id)} aria-label="إيصال"><Printer size={15} /></button>
+                <button className="icon-btn-sm" onClick={async () => { if (await confirm('حذف هذه الدفعة؟')) actions.deletePayment(invoice.id, p.id); }} aria-label="حذف"><X size={15} /></button>
+              </span>
             </div>
           ))}
         </div>

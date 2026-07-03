@@ -1,4 +1,4 @@
-import { Users, ClipboardList, ReceiptText } from 'lucide-react';
+import { Users, ClipboardList, ReceiptText, ShieldAlert } from 'lucide-react';
 import { dashboardMetrics, invoiceState, docTotals } from '../lib/calc.js';
 import { formatMoney, formatDate } from '../lib/format.js';
 import { EXPENSE_CATEGORIES, meta } from '../lib/constants.js';
@@ -16,8 +16,17 @@ export default function Dashboard({ data, nav }) {
     .sort((a, b) => new Date(b.date) - new Date(a.date))
     .slice(0, 5);
 
+  const hasData = data.customers.length + data.invoices.length + data.quotes.length > 0;
+  const needsBackup = hasData && !data.settings.lastBackupAt;
+
   return (
     <div className="page">
+      {needsBackup && (
+        <button className="backup-reminder" onClick={() => nav.settings()}>
+          <ShieldAlert size={17} />
+          <span>خُذ نسخة احتياطية من بياناتك حتى لا تفقدها — اضغط هنا.</span>
+        </button>
+      )}
       <div className="ledger-strip">
         <div className="ledger-cell">
           <span className="ledger-label">الإيرادات المحصّلة</span>

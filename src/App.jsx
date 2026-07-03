@@ -7,6 +7,7 @@ import { laborState, workerRates, periodSummary } from './lib/calc.js';
 import TopBar from './components/TopBar.jsx';
 import BottomNav from './components/BottomNav.jsx';
 import Fab from './components/Fab.jsx';
+import ConfirmProvider from './components/ConfirmProvider.jsx';
 
 import Dashboard from './views/Dashboard.jsx';
 import Customers from './views/Customers.jsx';
@@ -61,12 +62,14 @@ const FORM_VIEWS = ['customerForm', 'quoteForm', 'invoiceForm', 'expenseForm', '
 export default function App() {
   const [data, setData] = useState(defaultData());
   const [loading, setLoading] = useState(true);
-  const [view, setView] = useState('dashboard');
+  // View history stack — deeper navigations push, back() pops, tab switches reset.
+  // The current view is always the top of the stack.
+  const [history, setHistory] = useState(['dashboard']);
+  const view = history[history.length - 1];
   const [active, setActive] = useState({}); // { customerId, quoteId, invoiceId }
   const [editing, setEditing] = useState(null); // entity being edited (forms)
   const [preset, setPreset] = useState(null); // preset customerId for new docs
-  const [returnTo, setReturnTo] = useState('dashboard');
-  const [print, setPrint] = useState(null); // { kind, id }
+  const [print, setPrint] = useState(null); // { kind, id, paymentId }
   const [expTab, setExpTab] = useState('expenses'); // expenses screen sub-tab: 'expenses' | 'workers'
 
   useEffect(() => {
@@ -173,12 +176,14 @@ export default function App() {
       persist({ ...data, invoices: data.invoices.filter((i) => i.id !== id) });
     },
     addPayment(invoiceId, payment) {
+      const created = { ...payment, id: uid() };
       persist({
         ...data,
         invoices: data.invoices.map((i) =>
-          i.id === invoiceId ? { ...i, payments: [...(i.payments || []), { ...payment, id: uid() }] } : i
+          i.id === invoiceId ? { ...i, payments: [...(i.payments || []), created] } : i
         ),
       });
+      return created;
     },
     deletePayment(invoiceId, paymentId) {
       persist({
@@ -321,46 +326,45 @@ export default function App() {
   };
 
   /* --------------------------- navigation -------------------------- */
+  const push = (v) => setHistory((h) => [...h, v]);
   const nav = {
-    go(v) {
-      setEditing(null);
-      setPreset(null);
-      setView(v);
-    },
-    openCustomer(id) { setActive((a) => ({ ...a, customerId: id })); setReturnTo('customers'); setView('customer'); },
-    openQuote(id) { setActive((a) => ({ ...a, quoteId: id })); setView('quoteDetail'); },
-    openInvoice(id) { setActive((a) => ({ ...a, invoiceId: id })); setView('invoiceDetail'); },
+    // Tab switches reset the stack to a single root view.
+    go(v) { setEditing(null); setPreset(null); setHistory([v]); },
 
-    newCustomer() { setEditing(null); setReturnTo('customers'); setView('customerForm'); },
-    editCustomer(c) { setEditing(c); setReturnTo('customer'); setView('customerForm'); },
+    openCustomer(id) { setActive((a) => ({ ...a, customerId: id })); push('customer'); },
+    openQuote(id) { setActive((a) => ({ ...a, quoteId: id })); push('quoteDetail'); },
+    openInvoice(id) { setActive((a) => ({ ...a, invoiceId: id })); push('invoiceDetail'); },
 
-    newQuote(presetCustomerId, ret) { setEditing(null); setPreset(presetCustomerId || null); setReturnTo(ret || 'quotes'); setView('quoteForm'); },
-    editQuote(q, ret) { setEditing(q); setReturnTo(ret || 'quoteDetail'); setView('quoteForm'); },
+    newCustomer() { setEditing(null); push('customerForm'); },
+    editCustomer(c) { setEditing(c); push('customerForm'); },
 
-    newInvoice(presetCustomerId, ret) { setEditing(null); setPreset(presetCustomerId || null); setReturnTo(ret || 'invoices'); setView('invoiceForm'); },
-    editInvoice(inv, ret) { setEditing(inv); setReturnTo(ret || 'invoiceDetail'); setView('invoiceForm'); },
+    newQuote(presetCustomerId) { setEditing(null); setPreset(presetCustomerId || null); push('quoteForm'); },
+    editQuote(q) { setEditing(q); push('quoteForm'); },
 
-    newExpense(presetCustomerId, ret) { setEditing(null); setPreset(presetCustomerId || null); setReturnTo(ret || 'expenses'); setView('expenseForm'); },
-    editExpense(e, ret) { setEditing(e); setReturnTo(ret || 'expenses'); setView('expenseForm'); },
+    newInvoice(presetCustomerId) { setEditing(null); setPreset(presetCustomerId || null); push('invoiceForm'); },
+    editInvoice(inv) { setEditing(inv); push('invoiceForm'); },
 
-    payment(invoiceId) { setActive((a) => ({ ...a, invoiceId })); setReturnTo('invoiceDetail'); setView('paymentForm'); },
+    newExpense(presetCustomerId) { setEditing(null); setPreset(presetCustomerId || null); push('expenseForm'); },
+    editExpense(e) { setEditing(e); push('expenseForm'); },
 
-    openWorker(id) { setActive((a) => ({ ...a, workerId: id })); setReturnTo('expenses'); setView('workerDetail'); },
-    newWorker() { setEditing(null); setReturnTo('expenses'); setView('workerForm'); },
-    editWorker(w) { setEditing(w); setReturnTo('workerDetail'); setView('workerForm'); },
-    newLabor(workerId) { setActive((a) => ({ ...a, workerId })); setEditing(null); setReturnTo('workerDetail'); setView('laborForm'); },
-    laborPayment(laborId) { setActive((a) => ({ ...a, laborId })); setReturnTo('workerDetail'); setView('laborPayment'); },
-    newTimesheet(workerId) { setActive((a) => ({ ...a, workerId })); setReturnTo('workerDetail'); setView('timesheetForm'); },
-    payPeriod(workerId) { setActive((a) => ({ ...a, workerId })); setReturnTo('workerDetail'); setView('periodPay'); },
+    payment(invoiceId) { setActive((a) => ({ ...a, invoiceId })); push('paymentForm'); },
 
-    print(kind, id) { setPrint({ kind, id }); },
+    openWorker(id) { setActive((a) => ({ ...a, workerId: id })); push('workerDetail'); },
+    newWorker() { setEditing(null); push('workerForm'); },
+    editWorker(w) { setEditing(w); push('workerForm'); },
+    newLabor(workerId) { setActive((a) => ({ ...a, workerId })); setEditing(null); push('laborForm'); },
+    laborPayment(laborId) { setActive((a) => ({ ...a, laborId })); push('laborPayment'); },
+    newTimesheet(workerId) { setActive((a) => ({ ...a, workerId })); push('timesheetForm'); },
+    payPeriod(workerId) { setActive((a) => ({ ...a, workerId })); push('periodPay'); },
+
+    print(kind, id, paymentId) { setPrint({ kind, id, paymentId }); },
     closePrint() { setPrint(null); },
-    settings() { setReturnTo('dashboard'); setView('settings'); },
+    settings() { push('settings'); },
 
     back() {
       setEditing(null);
       setPreset(null);
-      setView(returnTo || 'dashboard');
+      setHistory((h) => (h.length > 1 ? h.slice(0, -1) : h));
     },
   };
 
@@ -384,7 +388,7 @@ export default function App() {
   if (print) {
     return (
       <div className="app-root">
-        <DocPrint kind={print.kind} id={print.id} data={data} onClose={nav.closePrint} />
+        <DocPrint kind={print.kind} id={print.id} paymentId={print.paymentId} data={data} onClose={nav.closePrint} />
       </div>
     );
   }
@@ -399,6 +403,7 @@ export default function App() {
   const titleFn = TITLES[view] || (() => 'ميثاق');
 
   return (
+    <ConfirmProvider>
     <div className="app-root">
       <div className="shell">
         <TopBar
@@ -433,6 +438,7 @@ export default function App() {
               initial={editing}
               presetCustomerId={preset}
               data={data}
+              nav={nav}
               onCancel={nav.back}
               onSave={(q) => {
                 const saved = actions.saveQuote(q);
@@ -450,6 +456,7 @@ export default function App() {
               initial={editing}
               presetCustomerId={preset}
               data={data}
+              nav={nav}
               onCancel={nav.back}
               onSave={(inv) => {
                 const saved = actions.saveInvoice(inv);
@@ -465,8 +472,9 @@ export default function App() {
               invoice={activeInvoice}
               onCancel={nav.back}
               onSave={(p) => {
-                actions.addPayment(activeInvoice.id, p);
+                const created = actions.addPayment(activeInvoice.id, p);
                 nav.back();
+                nav.print('receipt', activeInvoice.id, created.id);
               }}
             />
           )}
@@ -553,5 +561,6 @@ export default function App() {
         {!FORM_VIEWS.includes(view) && <BottomNav active={view} onChange={nav.go} />}
       </div>
     </div>
+    </ConfirmProvider>
   );
 }

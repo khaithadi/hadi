@@ -488,3 +488,57 @@ textarea.input { resize: vertical; }
 /* worker detail personal-info chips */
 .worker-meta { display: flex; flex-direction: column; gap: 2px; font-size: 12.5px; color: var(--ink-soft); }
 .worker-meta b { color: var(--ink); font-weight: 600; }
+
+/* ---- batch additions ---- */
+
+/* Date inputs: keep a full border on all sides and align the value in RTL.
+   (WebKit otherwise drops the left edge and left-aligns the value.) */
+input[type="date"], input[type="time"] {
+  -webkit-appearance: none; appearance: none;
+  text-align: right; direction: rtl;
+}
+input[type="date"]::-webkit-date-and-time-value,
+input[type="time"]::-webkit-date-and-time-value { text-align: right; }
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator { margin: 0; opacity: 0.6; }
+
+/* Search box on list screens */
+.search-input { margin-bottom: 10px; }
+
+/* Safe-area aware bottom spacing so the FAB / nav never cover content on iPhone */
+.content { padding-bottom: calc(118px + env(safe-area-inset-bottom)); }
+.fab { bottom: calc(84px + env(safe-area-inset-bottom)); }
+.bottom-nav { padding-bottom: calc(6px + env(safe-area-inset-bottom)); }
+
+/* Confirm modal (used for every destructive action) */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 50;
+  display: flex; align-items: center; justify-content: center; padding: 24px;
+}
+.modal-card {
+  width: 100%; max-width: 360px; background: var(--surface); border-radius: 16px;
+  padding: 20px; box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+}
+.modal-msg { font-family: 'Cairo', sans-serif; font-weight: 700; font-size: 15px; color: var(--ink); text-align: center; }
+.modal-actions { display: flex; gap: 10px; margin-top: 18px; }
+.modal-actions .btn-secondary, .modal-actions .btn-primary { flex: 1; }
+.modal-danger { background: var(--danger); }
+
+/* Privacy note + backup reminder */
+.privacy-note {
+  display: flex; align-items: flex-start; gap: 8px; margin: 4px 0 10px;
+  background: var(--surface-alt); border-radius: 10px; padding: 10px 12px;
+  font-size: 12.5px; color: var(--ink-soft); line-height: 1.6;
+}
+.privacy-note svg { color: var(--success); flex-shrink: 0; margin-top: 1px; }
+.backup-reminder {
+  display: flex; align-items: center; gap: 8px; width: 100%; text-align: right;
+  background: #FBEEE6; border: 1px solid var(--copper); color: var(--copper-dark);
+  border-radius: 12px; padding: 11px 14px; margin-bottom: 12px;
+  font-family: 'Tajawal', sans-serif; font-size: 13px; font-weight: 700;
+}
+.backup-reminder svg { flex-shrink: 0; }
+
+/* Business logo on the printed document */
+.invoice-brand { display: flex; align-items: center; gap: 12px; }
+.invoice-logo { max-height: 56px; max-width: 140px; object-fit: contain; }

@@ -7,12 +7,16 @@ import StatusBadge from '../components/StatusBadge.jsx';
 
 export default function Customers({ data, nav }) {
   const [filter, setFilter] = useState('all');
+  const [query, setQuery] = useState('');
+  const q = query.trim().toLowerCase();
   const list = (filter === 'all' ? data.customers : data.customers.filter((c) => c.status === filter))
+    .filter((c) => !q || (c.name || '').toLowerCase().includes(q) || (c.phone || '').includes(q))
     .slice()
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   return (
     <div className="page">
+      <input className="input search-input" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="🔍 بحث عن عميل…" />
       <div className="filter-row">
         <button className={'filter-chip' + (filter === 'all' ? ' active' : '')} onClick={() => setFilter('all')}>
           الكل

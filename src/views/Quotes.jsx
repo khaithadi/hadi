@@ -7,13 +7,17 @@ import StatusBadge from '../components/StatusBadge.jsx';
 
 export default function Quotes({ data, nav }) {
   const [filter, setFilter] = useState('all');
+  const [query, setQuery] = useState('');
   const nameOf = (id) => (data.customers.find((c) => c.id === id) || {}).name || '—';
+  const s = query.trim().toLowerCase();
   const list = (filter === 'all' ? data.quotes : data.quotes.filter((q) => q.status === filter))
+    .filter((q) => !s || nameOf(q.customerId).toLowerCase().includes(s) || String(q.number).toLowerCase().includes(s))
     .slice()
     .sort((a, b) => new Date(b.date) - new Date(a.date));
 
   return (
     <div className="page">
+      <input className="input search-input" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="🔍 بحث بالعميل أو الرقم…" />
       <div className="filter-row">
         <button className={'filter-chip' + (filter === 'all' ? ' active' : '')} onClick={() => setFilter('all')}>الكل</button>
         {QUOTE_STATUSES.map((s) => (

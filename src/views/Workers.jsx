@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { WORKER_TYPES, meta } from '../lib/constants.js';
 import { laborState } from '../lib/calc.js';
 import { formatMoney } from '../lib/format.js';
@@ -6,7 +7,10 @@ import StatusBadge from '../components/StatusBadge.jsx';
 
 // Saved workers list. Each row shows the total still owed to that worker.
 export default function Workers({ data, nav }) {
+  const [query, setQuery] = useState('');
+  const q = query.trim().toLowerCase();
   const list = data.workers
+    .filter((w) => !q || (w.name || '').toLowerCase().includes(q) || (w.phone || '').includes(q))
     .slice()
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
@@ -16,11 +20,14 @@ export default function Workers({ data, nav }) {
       .reduce((s, l) => s + laborState(l).remaining, 0);
   }
 
-  if (list.length === 0) {
-    return <EmptyState text="لا يوجد عمّال. اضغط + لإضافة عامل." />;
-  }
-
   return (
+    <>
+      {(data.workers.length > 0) && (
+        <input className="input search-input" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="🔍 بحث عن عامل…" />
+      )}
+      {list.length === 0 ? (
+        <EmptyState text="لا يوجد عمّال. اضغط + لإضافة عامل." />
+      ) : (
     <div className="ticket-list">
       {list.map((w) => {
         const tm = meta(WORKER_TYPES, w.payType);
@@ -40,5 +47,7 @@ export default function Workers({ data, nav }) {
         );
       })}
     </div>
+      )}
+    </>
   );
 }

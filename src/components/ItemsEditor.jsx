@@ -58,27 +58,19 @@ export default function ItemsEditor({
         )}
       </div>
 
-      {/* Discount */}
-      <div className="switch-row">
-        <span className="switch-lbl">تخفيض</span>
-        <label className="switch">
-          <input type="checkbox" checked={!!discountType} onChange={(e) => setDiscountType(e.target.checked ? 'percent' : null)} />
-          <span className="slider" />
-        </label>
+      {/* Discount — shown directly; a value of 0 simply has no effect. */}
+      <label className="label">التخفيض</label>
+      <div className="tax-row">
+        <select className="input" style={{ width: 130 }} value={discountType || 'percent'} onChange={(e) => setDiscountType(e.target.value)}>
+          <option value="percent">نسبة %</option>
+          <option value="amount">مبلغ ثابت</option>
+        </select>
+        <input className="input tax-rate" type="number" min="0" inputMode="decimal" placeholder="0" value={discountValue} onChange={(e) => setDiscountValue(e.target.value)} />
       </div>
-      {discountType && (
-        <div className="tax-row">
-          <select className="input" style={{ width: 130 }} value={discountType} onChange={(e) => setDiscountType(e.target.value)}>
-            <option value="percent">نسبة %</option>
-            <option value="amount">مبلغ ثابت</option>
-          </select>
-          <input className="input tax-rate" type="number" min="0" inputMode="decimal" value={discountValue} onChange={(e) => setDiscountValue(e.target.value)} />
-        </div>
-      )}
 
       {/* Tax */}
       <div className="switch-row">
-        <span className="switch-lbl">إضافة الضريبة</span>
+        <span className="switch-lbl">إضافة الضريبة (TVA)</span>
         <label className="switch">
           <input type="checkbox" checked={applyTax} onChange={(e) => setApplyTax(e.target.checked)} />
           <span className="slider" />
@@ -86,7 +78,7 @@ export default function ItemsEditor({
       </div>
       {applyTax && (
         <div className="tax-row">
-          <label className="label" style={{ marginTop: 0 }}>نسبة الضريبة (%)</label>
+          <label className="label" style={{ marginTop: 0 }}>نسبة TVA (%)</label>
           <input className="input tax-rate" type="number" min="0" inputMode="decimal" value={taxRate} onChange={(e) => setTaxRate(e.target.value)} />
         </div>
       )}
@@ -102,7 +94,7 @@ export default function ItemsEditor({
         )}
         {applyTax && (
           <div className="ticket-row" style={{ width: '100%', fontSize: 13, color: 'var(--ink-soft)', fontWeight: 600 }}>
-            <span>الضريبة ({Number(taxRate) || 0}%)</span><span>{formatMoney(tax)}</span>
+            <span>TVA ({Number(taxRate) || 0}%)</span><span>{formatMoney(tax)}</span>
           </div>
         )}
         <div className="ticket-row" style={{ width: '100%' }}>
