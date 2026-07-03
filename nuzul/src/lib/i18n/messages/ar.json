@@ -42,7 +42,7 @@
   "booking": {
     "title": "تأكيد الحجز", "paymentMethod": "طريقة الدفع", "pay": "ادفع العربون وأكمل", "success": "تم استلام طلبك بنجاح",
     "pending": "بانتظار موافقة المضيف", "confirmed": "تم تأكيد الحجز", "myTrips": "رحلاتي", "upcoming": "قادمة", "past": "منتهية", "cancelled": "ملغاة",
-    "empty": "ليس لديك أي حجوزات بعد", "reference": "رقم الحجز"
+    "empty": "ليس لديك أي حجوزات بعد", "reference": "رقم الحجز", "guests": "ضيوف", "leaveReview": "اترك تقييماً", "yourReview": "تقييمك", "comment": "شاركنا تجربتك (اختياري)", "submitReview": "إرسال التقييم"
   },
   "auth": {
     "loginTitle": "تسجيل الدخول", "registerTitle": "إنشاء حساب جديد", "identifier": "البريد أو رقم الهاتف", "password": "كلمة المرور",
@@ -53,7 +53,7 @@
     "dashboard": "لوحة المضيف", "earnings": "الأرباح", "occupancy": "نسبة الإشغال", "listings": "عقاراتي", "incoming": "الحجوزات الواردة",
     "newListing": "أضف عقاراً", "accept": "قبول", "decline": "رفض", "publish": "نشر العقار", "pendingReview": "قيد المراجعة", "editListing": "تعديل العقار", "save": "حفظ التغييرات", "edit": "تعديل"
   },
-  "admin": { "dashboard": "لوحة الإدارة", "moderation": "مراجعة العقارات", "users": "المستخدمون", "approve": "موافقة", "reject": "رفض", "kpis": "المؤشرات" },
-  "account": { "title": "حسابي", "language": "اللغة", "becomeHost": "انشر مسكنك واربح", "favorites": "الوجهات المفضّلة", "transactions": "معاملاتي", "security": "الحساب وكلمة المرور", "terms": "الشروط والأحكام" },
+  "admin": { "dashboard": "لوحة الإدارة", "moderation": "مراجعة العقارات", "users": "المستخدمون", "hosts": "المضيفون", "listings": "العقارات", "bookings": "الحجوزات", "deposits": "العرابين", "approve": "موافقة", "reject": "رفض", "kpis": "المؤشرات" },
+  "account": { "title": "حسابي", "language": "اللغة", "becomeHost": "انشر مسكنك واربح", "favorites": "الوجهات المفضّلة", "transactions": "معاملاتي", "security": "الحساب وكلمة المرور", "terms": "الشروط والأحكام", "privacy": "سياسة الخصوصية", "editProfile": "تعديل الملف الشخصي", "name": "الاسم الكامل", "phone": "رقم الهاتف", "changePassword": "تغيير كلمة المرور", "currentPassword": "كلمة المرور الحالية", "newPassword": "كلمة المرور الجديدة", "save": "حفظ", "saved": "تم الحفظ" },
   "common": { "install": "ثبّت التطبيق", "offline": "أنت غير متصل بالإنترنت", "loading": "جاري التحميل…", "back": "رجوع", "save": "حفظ", "cancel": "إلغاء" }
 }

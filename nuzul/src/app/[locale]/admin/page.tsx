@@ -26,10 +26,10 @@ export default async function AdminDashboard({ params: { locale } }: { params: {
 
   const kpis = [
     { label: t('users'), value: String(users) },
-    { label: 'Hosts', value: String(hosts) },
-    { label: 'Listings', value: String(approved) },
-    { label: 'Bookings', value: String(bookings) },
-    { label: 'Deposits', value: formatMoney(deposits._sum.amount ?? 0, loc) },
+    { label: t('hosts'), value: String(hosts) },
+    { label: t('listings'), value: String(approved) },
+    { label: t('bookings'), value: String(bookings) },
+    { label: t('deposits'), value: formatMoney(deposits._sum.amount ?? 0, loc) },
   ];
 
   return (

@@ -17,8 +17,9 @@ export default async function AccountPage({ params: { locale } }: { params: { lo
     { href: '/host', label: t('becomeHost'), highlight: true },
     { href: '/favorites', label: t('favorites') },
     { href: '/trips', label: t('transactions') },
-    { href: '/account', label: t('security') },
+    { href: '/account/settings', label: t('security') },
     { href: '/legal/terms', label: t('terms') },
+    { href: '/legal/privacy', label: t('privacy') },
   ];
 
   return (
