@@ -18,6 +18,10 @@
   --line: #DDD5C3;
   --success: #4F7942;
   --danger: #B23A2E;
+  /* motion tokens */
+  --ease: cubic-bezier(.22,.9,.35,1.1);      /* slight overshoot for pops */
+  --ease-out: cubic-bezier(.16,1,.3,1);      /* smooth decelerate */
+  --dur: .28s;
 }
 
 * { box-sizing: border-box; }
@@ -168,8 +172,12 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
   width: 100%; border: 1px solid var(--line); background: var(--surface);
   border-radius: 10px; padding: 11px 12px; font-size: 14.5px; font-family: 'Tajawal', sans-serif;
   color: var(--ink);
+  transition: border-color .2s var(--ease-out), box-shadow .2s var(--ease-out);
 }
-.input:focus { outline: 2px solid var(--copper); border-color: var(--copper); }
+.input:focus {
+  outline: none; border-color: var(--copper);
+  box-shadow: 0 0 0 3px rgba(193, 98, 45, 0.18);
+}
 textarea.input { resize: vertical; }
 
 .item-edit-row { display: flex; gap: 6px; align-items: center; }
@@ -400,7 +408,7 @@ textarea.input { resize: vertical; }
 
 /* progress bar (copper) */
 .progress { height: 7px; background: var(--surface-alt); border-radius: 20px; overflow: hidden; margin: 8px 0 0; }
-.progress-bar { height: 100%; background: var(--copper); border-radius: 20px; transition: width .3s; }
+.progress-bar { height: 100%; background: var(--copper); border-radius: 20px; transition: width .5s var(--ease-out); }
 .progress-sub { display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-soft); margin-top: 5px; }
 .progress-sub .due { color: var(--danger); font-weight: 700; }
 .progress-sub .ok { color: var(--success); font-weight: 700; }
@@ -566,4 +574,118 @@ input[type="time"]::-webkit-calendar-picker-indicator { margin: 0; opacity: 0.6;
 :root[data-theme="dark"] .alert-card { background: rgba(233,136,123,0.12); }
 :root[data-theme="dark"] .fin-box.alert { background: rgba(233,136,123,0.12); }
 :root[data-theme="dark"] .backup-reminder { background: rgba(213,121,55,0.15); }
-:root[data-theme="dark"] .input:focus { outline-color: var(--copper); }
+:root[data-theme="dark"] .input:focus { box-shadow: 0 0 0 3px rgba(213, 121, 55, 0.28); }
+
+/* ============================================================
+   Motion & glass — CSS-only animation system.
+   GPU-friendly (transform/opacity/backdrop-filter); disabled
+   wholesale under prefers-reduced-motion at the very bottom.
+   ============================================================ */
+
+/* ---- view transitions: .view-anim remounts (keyed) per navigation ---- */
+.view-anim { animation: view-in var(--dur) var(--ease-out) both; }
+@keyframes view-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- button micro-interactions ---- */
+button {
+  transition: transform .15s var(--ease), box-shadow .2s var(--ease-out),
+              background-color .2s, color .2s, border-color .2s, opacity .2s;
+}
+button:active:not(:disabled) { transform: scale(.96); }
+.btn-primary:active:not(:disabled) { transform: scale(.95); box-shadow: 0 1px 4px rgba(0,0,0,.18) inset; }
+.btn-danger-sm:active:not(:disabled) { transform: scale(.9); }
+.icon-btn:active:not(:disabled), .icon-btn-sm:active:not(:disabled) { transform: scale(.85); }
+
+/* FAB: pop-in on mount, playful press */
+.fab {
+  animation: fab-in .45s var(--ease) both;
+  transition: transform .18s var(--ease), box-shadow .2s var(--ease-out);
+}
+.fab:active { transform: scale(.88) rotate(90deg); box-shadow: 0 3px 10px rgba(193,98,45,0.35); }
+@keyframes fab-in {
+  from { transform: scale(0); opacity: 0; }
+  60%  { transform: scale(1.08); opacity: 1; }
+  to   { transform: scale(1); }
+}
+
+/* chips & category selectors: smooth state change + tiny pop when activated */
+.filter-chip, .cat-select, .action-pill, .add-link {
+  transition: background-color .2s, color .2s, border-color .2s, transform .15s var(--ease);
+}
+.filter-chip.active, .cat-select.active { animation: chip-pop .25s var(--ease); }
+@keyframes chip-pop { 50% { transform: scale(1.06); } }
+
+/* bottom nav: active icon lifts */
+.nav-item svg { transition: transform .25s var(--ease); }
+.nav-item.active svg { transform: translateY(-2px) scale(1.12); }
+.nav-item { transition: color .2s, transform .15s var(--ease); }
+
+/* ---- list entrance stagger (all ticket lists) ---- */
+.ticket-list > * { animation: item-in .35s var(--ease-out) backwards; }
+.ticket-list > *:nth-child(1) { animation-delay: .02s; }
+.ticket-list > *:nth-child(2) { animation-delay: .05s; }
+.ticket-list > *:nth-child(3) { animation-delay: .08s; }
+.ticket-list > *:nth-child(4) { animation-delay: .11s; }
+.ticket-list > *:nth-child(5) { animation-delay: .14s; }
+.ticket-list > *:nth-child(6) { animation-delay: .17s; }
+.ticket-list > *:nth-child(7) { animation-delay: .20s; }
+.ticket-list > *:nth-child(8) { animation-delay: .23s; }
+@keyframes item-in {
+  from { opacity: 0; transform: translateY(8px) scale(.985); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ---- frosted-glass bars (fallback = existing solid colours) ---- */
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  .topbar {
+    background: rgba(246, 243, 236, 0.72);
+    -webkit-backdrop-filter: blur(14px) saturate(1.5);
+    backdrop-filter: blur(14px) saturate(1.5);
+  }
+  .bottom-nav {
+    background: rgba(255, 255, 255, 0.72);
+    -webkit-backdrop-filter: blur(14px) saturate(1.5);
+    backdrop-filter: blur(14px) saturate(1.5);
+  }
+  .print-bar {
+    background: rgba(246, 243, 236, 0.8);
+    -webkit-backdrop-filter: blur(12px) saturate(1.4);
+    backdrop-filter: blur(12px) saturate(1.4);
+  }
+  :root[data-theme="dark"] .topbar { background: rgba(21, 19, 14, 0.66); }
+  :root[data-theme="dark"] .bottom-nav { background: rgba(32, 29, 22, 0.7); }
+  :root[data-theme="dark"] .print-bar { background: rgba(21, 19, 14, 0.75); }
+}
+
+/* ---- confirm modal: blurred dim + card pop ---- */
+.modal-overlay {
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  animation: overlay-in .2s ease-out both;
+}
+.modal-card { animation: modal-in .28s var(--ease) both; }
+@keyframes overlay-in { from { opacity: 0; } }
+@keyframes modal-in {
+  from { opacity: 0; transform: scale(.92) translateY(10px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ---- dark/light theme switch cross-fade ---- */
+body, .shell, .topbar, .bottom-nav, .doc-card, .ticket, .pay-item,
+.info-card, .profit-card, .net-card, .fin-box, .cat-item, .modal-card {
+  transition: background-color .3s, color .3s, border-color .3s;
+}
+
+/* ---- accessibility: honour reduced-motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* keep printed/PDF documents static */
+.invoice-doc, .invoice-doc * { animation: none !important; transition: none !important; }

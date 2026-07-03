@@ -449,6 +449,8 @@ export default function App() {
           onSettings={nav.settings}
         />
         <div className="content">
+          {/* Keyed wrapper: remounts on navigation so the view-in animation replays. */}
+          <div className="view-anim" key={view + (active.customerId || '') + (active.workerId || '') + (active.quoteId || '') + (active.invoiceId || '')}>
           {view === 'dashboard' && <Dashboard data={data} nav={nav} />}
 
           {view === 'customers' && <Customers data={data} nav={nav} />}
@@ -590,6 +592,7 @@ export default function App() {
           {view === 'settings' && (
             <Settings data={data} actions={actions} onCancel={() => nav.go('dashboard')} />
           )}
+          </div>
         </div>
 
         {TAB_VIEWS.includes(view) && <Fab onClick={fabAction} />}
