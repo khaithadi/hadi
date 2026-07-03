@@ -1,5 +1,6 @@
 import { Plus, X } from 'lucide-react';
 import { uid, formatMoney } from '../lib/format.js';
+import { useT } from '../lib/i18n.js';
 
 // Controlled editor for line items + services-catalog picker + configurable
 // Tax + Discount, with a live totals preview. Shared by QuoteForm/InvoiceForm.
@@ -9,6 +10,7 @@ export default function ItemsEditor({
   discountType, setDiscountType, discountValue, setDiscountValue,
   services = [],
 }) {
+  const t = useT();
   const update = (id, field, value) => setItems(items.map((it) => (it.id === id ? { ...it, [field]: value } : it)));
   const addRow = () => setItems([...items, { id: uid(), desc: '', qty: 1, price: 0 }]);
   const removeRow = (id) => setItems(items.filter((it) => it.id !== id));
@@ -32,45 +34,45 @@ export default function ItemsEditor({
 
   return (
     <>
-      <label className="label">العناصر</label>
+      <label className="label">{t('doc.items')}</label>
       {items.map((it) => (
         <div className="item-edit-row" key={it.id}>
-          <input className="input flex-grow" placeholder="الوصف" value={it.desc} onChange={(e) => update(it.id, 'desc', e.target.value)} />
+          <input className="input flex-grow" placeholder={t('doc.desc')} value={it.desc} onChange={(e) => update(it.id, 'desc', e.target.value)} />
           <input className="input qty" type="number" min="0" inputMode="decimal" value={it.qty} onChange={(e) => update(it.id, 'qty', e.target.value)} />
-          <input className="input price" type="number" min="0" inputMode="decimal" placeholder="السعر" value={it.price} onChange={(e) => update(it.id, 'price', e.target.value)} />
+          <input className="input price" type="number" min="0" inputMode="decimal" placeholder={t('set.price')} value={it.price} onChange={(e) => update(it.id, 'price', e.target.value)} />
           {items.length > 1 && (
-            <button className="icon-btn-sm" onClick={() => removeRow(it.id)} aria-label="حذف"><X size={16} /></button>
+            <button className="icon-btn-sm" onClick={() => removeRow(it.id)} aria-label={t('c.delete')}><X size={16} /></button>
           )}
         </div>
       ))}
 
       <div className="item-add-row">
-        <button className="btn-ghost" onClick={addRow}><Plus size={16} /> إضافة عنصر</button>
+        <button className="btn-ghost" onClick={addRow}><Plus size={16} /> {t('doc.addItem')}</button>
         {services.length > 0 && (
           <select
             className="input catalog-pick"
             value=""
             onChange={(e) => { addFromCatalog(e.target.value); e.target.value = ''; }}
           >
-            <option value="">+ من الخدمات</option>
+            <option value="">{t('doc.fromCatalog')}</option>
             {services.map((s) => <option key={s.id} value={s.id}>{s.name} — {formatMoney(s.price)}</option>)}
           </select>
         )}
       </div>
 
       {/* Discount — shown directly; a value of 0 simply has no effect. */}
-      <label className="label">التخفيض</label>
+      <label className="label">{t('doc.discount')}</label>
       <div className="tax-row">
         <select className="input" style={{ width: 130 }} value={discountType || 'percent'} onChange={(e) => setDiscountType(e.target.value)}>
-          <option value="percent">نسبة %</option>
-          <option value="amount">مبلغ ثابت</option>
+          <option value="percent">{t('doc.percent')}</option>
+          <option value="amount">{t('doc.fixed')}</option>
         </select>
         <input className="input tax-rate" type="number" min="0" inputMode="decimal" placeholder="0" value={discountValue} onChange={(e) => setDiscountValue(e.target.value)} />
       </div>
 
       {/* Tax */}
       <div className="switch-row">
-        <span className="switch-lbl">إضافة الضريبة (TVA)</span>
+        <span className="switch-lbl">{t('doc.addTax')}</span>
         <label className="switch">
           <input type="checkbox" checked={applyTax} onChange={(e) => setApplyTax(e.target.checked)} />
           <span className="slider" />
@@ -78,18 +80,18 @@ export default function ItemsEditor({
       </div>
       {applyTax && (
         <div className="tax-row">
-          <label className="label" style={{ marginTop: 0 }}>نسبة TVA (%)</label>
+          <label className="label" style={{ marginTop: 0 }}>{t('doc.taxRate')}</label>
           <input className="input tax-rate" type="number" min="0" inputMode="decimal" value={taxRate} onChange={(e) => setTaxRate(e.target.value)} />
         </div>
       )}
 
       <div className="total-preview" style={{ flexDirection: 'column', gap: 6 }}>
         <div className="ticket-row" style={{ width: '100%', fontSize: 13, color: 'var(--ink-soft)', fontWeight: 600 }}>
-          <span>المجموع الفرعي</span><span>{formatMoney(subtotal)}</span>
+          <span>{t('doc.subtotal')}</span><span>{formatMoney(subtotal)}</span>
         </div>
         {discount > 0 && (
           <div className="ticket-row" style={{ width: '100%', fontSize: 13, color: 'var(--ink-soft)', fontWeight: 600 }}>
-            <span>التخفيض</span><span>− {formatMoney(discount)}</span>
+            <span>{t('doc.discount')}</span><span>− {formatMoney(discount)}</span>
           </div>
         )}
         {applyTax && (
@@ -98,7 +100,7 @@ export default function ItemsEditor({
           </div>
         )}
         <div className="ticket-row" style={{ width: '100%' }}>
-          <span>الإجمالي</span><span>{formatMoney(taxedBase + tax)}</span>
+          <span>{t('doc.total')}</span><span>{formatMoney(taxedBase + tax)}</span>
         </div>
       </div>
     </>

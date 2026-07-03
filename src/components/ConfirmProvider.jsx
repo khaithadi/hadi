@@ -1,4 +1,5 @@
 import { createContext, useContext, useCallback, useState } from 'react';
+import { useT } from '../lib/i18n.js';
 
 // A single app-wide confirmation modal. Any component calls
 //   const confirm = useConfirm();
@@ -11,6 +12,7 @@ export function useConfirm() {
 }
 
 export default function ConfirmProvider({ children }) {
+  const t = useT();
   const [state, setState] = useState(null); // { message, resolve }
 
   const confirm = useCallback(
@@ -31,8 +33,8 @@ export default function ConfirmProvider({ children }) {
           <div className="modal-card" onClick={(e) => e.stopPropagation()}>
             <div className="modal-msg">{state.message}</div>
             <div className="modal-actions">
-              <button className="btn-secondary" onClick={() => close(false)}>إلغاء</button>
-              <button className="btn-primary modal-danger" onClick={() => close(true)}>حذف</button>
+              <button className="btn-secondary" onClick={() => close(false)}>{t('c.cancel')}</button>
+              <button className="btn-primary modal-danger" onClick={() => close(true)}>{t('c.delete')}</button>
             </div>
           </div>
         </div>

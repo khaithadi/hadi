@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { QUOTE_STATUSES, meta } from '../lib/constants.js';
 import { docTotals } from '../lib/calc.js';
 import { formatMoney, formatDate } from '../lib/format.js';
+import { useT } from '../lib/i18n.js';
 import Ticket, { EmptyState } from '../components/Ticket.jsx';
 import StatusBadge from '../components/StatusBadge.jsx';
 
 export default function Quotes({ data, nav }) {
+  const t = useT();
   const [filter, setFilter] = useState('all');
   const [query, setQuery] = useState('');
   const nameOf = (id) => (data.customers.find((c) => c.id === id) || {}).name || '—';
@@ -17,18 +19,18 @@ export default function Quotes({ data, nav }) {
 
   return (
     <div className="page">
-      <input className="input search-input" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="🔍 بحث بالعميل أو الرقم…" />
+      <input className="input search-input" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={t('quote.searchPh')} />
       <div className="filter-row">
-        <button className={'filter-chip' + (filter === 'all' ? ' active' : '')} onClick={() => setFilter('all')}>الكل</button>
+        <button className={'filter-chip' + (filter === 'all' ? ' active' : '')} onClick={() => setFilter('all')}>{t('c.all')}</button>
         {QUOTE_STATUSES.map((s) => (
           <button key={s.id} className={'filter-chip' + (filter === s.id ? ' active' : '')}
             style={filter === s.id ? { background: s.color, borderColor: s.color, color: '#fff' } : {}}
-            onClick={() => setFilter(s.id)}>{s.label}</button>
+            onClick={() => setFilter(s.id)}>{t('qstatus.' + s.id)}</button>
         ))}
       </div>
 
       {list.length === 0 ? (
-        <EmptyState text="لا توجد عروض. اضغط + لإنشاء عرض." />
+        <EmptyState text={t('quote.empty')} />
       ) : (
         <div className="ticket-list">
           {list.map((q) => {
@@ -40,7 +42,7 @@ export default function Quotes({ data, nav }) {
                   <span className="ticket-amount" style={{ color: 'var(--copper-dark)' }}>{formatMoney(docTotals(q).total)}</span>
                 </div>
                 <div className="ticket-dash" />
-                <div className="ticket-row sub"><span>{formatDate(q.date)}</span><StatusBadge label={qm.label} color={qm.color} /></div>
+                <div className="ticket-row sub"><span>{formatDate(q.date)}</span><StatusBadge label={t('qstatus.' + q.status)} color={qm.color} /></div>
               </Ticket>
             );
           })}

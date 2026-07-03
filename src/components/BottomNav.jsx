@@ -1,11 +1,12 @@
 import { LayoutDashboard, Users, ClipboardList, ReceiptText, Wallet } from 'lucide-react';
+import { useT } from '../lib/i18n.js';
 
 const TABS = [
-  { key: 'dashboard', label: 'الرئيسية', icon: LayoutDashboard },
-  { key: 'customers', label: 'العملاء', icon: Users },
-  { key: 'quotes', label: 'العروض', icon: ClipboardList },
-  { key: 'invoices', label: 'الفواتير', icon: ReceiptText },
-  { key: 'expenses', label: 'المصاريف', icon: Wallet },
+  { key: 'dashboard', tkey: 'nav.dashboard', icon: LayoutDashboard },
+  { key: 'customers', tkey: 'nav.customers', icon: Users },
+  { key: 'quotes', tkey: 'nav.quotes', icon: ClipboardList },
+  { key: 'invoices', tkey: 'nav.invoices', icon: ReceiptText },
+  { key: 'expenses', tkey: 'nav.expenses', icon: Wallet },
 ];
 
 // Maps any sub-view to its owning tab (e.g. customer profile → customers).
@@ -18,20 +19,21 @@ function tabFor(view) {
 }
 
 export default function BottomNav({ active, onChange }) {
+  const t = useT();
   const activeKey = tabFor(active);
   return (
     <div className="bottom-nav">
-      {TABS.map((t) => {
-        const Icon = t.icon;
-        const isActive = activeKey === t.key;
+      {TABS.map((tab) => {
+        const Icon = tab.icon;
+        const isActive = activeKey === tab.key;
         return (
           <button
-            key={t.key}
+            key={tab.key}
             className={'nav-item' + (isActive ? ' active' : '')}
-            onClick={() => onChange(t.key)}
+            onClick={() => onChange(tab.key)}
           >
             <Icon size={20} strokeWidth={isActive ? 2.4 : 1.8} />
-            <span>{t.label}</span>
+            <span>{t(tab.tkey)}</span>
           </button>
         );
       })}

@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import { Phone, Pencil, Plus, Trash2, Check, X, CalendarDays, Wallet } from 'lucide-react';
-import { WORKER_TYPES, meta } from '../lib/constants.js';
 import { laborState, workerRates, workerUnpaid, dayHours } from '../lib/calc.js';
 import { formatMoney, formatDate } from '../lib/format.js';
 import ProgressBar from '../components/ProgressBar.jsx';
 import StatusBadge from '../components/StatusBadge.jsx';
 import { useConfirm } from '../components/ConfirmProvider.jsx';
+import { useT } from '../lib/i18n.js';
 
 export default function WorkerDetail({ worker, data, nav, actions }) {
+  const t = useT();
   const [confirmDel, setConfirmDel] = useState(false);
-  const tm = meta(WORKER_TYPES, worker.payType);
   const isMonthly = worker.payType === 'monthly';
-  const nameOf = (id) => (data.customers.find((c) => c.id === id) || {}).name || 'عام';
+  const nameOf = (id) => (data.customers.find((c) => c.id === id) || {}).name || t('c.general');
 
   return (
     <div className="page">
@@ -19,13 +19,13 @@ export default function WorkerDetail({ worker, data, nav, actions }) {
         <div className="profile-id">
           <div className="profile-name">{worker.name}</div>
           <div style={{ margin: '4px 0 6px' }}>
-            <StatusBadge label={tm.label} color={isMonthly ? 'var(--indigo)' : 'var(--copper)'} />
+            <StatusBadge label={t('wtype.' + worker.payType)} color={isMonthly ? 'var(--indigo)' : 'var(--copper)'} />
           </div>
           <div className="worker-meta">
-            {worker.phone && <span>الهاتف: <b>{worker.phone}</b></span>}
-            {worker.emergencyPhone && <span>احتياطي: <b>{worker.emergencyPhone}</b>{worker.emergencyName ? ` (${worker.emergencyName})` : ''}</span>}
-            {worker.idNumber && <span>بطاقة التعريف: <b>{worker.idNumber}</b></span>}
-            {isMonthly && <span>الراتب اليومي: <b>{formatMoney(worker.dailySalary)}</b> · <b>{worker.dailyHours}</b> سا/يوم</span>}
+            {worker.phone && <span>{t('c.phone')}: <b>{worker.phone}</b></span>}
+            {worker.emergencyPhone && <span>{t('work.emergPhone')}: <b>{worker.emergencyPhone}</b>{worker.emergencyName ? ` (${worker.emergencyName})` : ''}</span>}
+            {worker.idNumber && <span>{t('work.idNumber')}: <b>{worker.idNumber}</b></span>}
+            {isMonthly && <span>{t('work.dailyLabel')} <b>{formatMoney(worker.dailySalary)}</b> · <b>{worker.dailyHours}</b> {t('work.perDay')}</span>}
             {worker.note && <span>{worker.note}</span>}
           </div>
         </div>
@@ -33,22 +33,22 @@ export default function WorkerDetail({ worker, data, nav, actions }) {
 
       <div className="action-row">
         {worker.phone && (
-          <a className="action-pill" href={`tel:${worker.phone.replace(/\s/g, '')}`}><Phone size={15} /> اتصال</a>
+          <a className="action-pill" href={`tel:${worker.phone.replace(/\s/g, '')}`}><Phone size={15} /> {t('cust.call')}</a>
         )}
-        <button className="action-pill" onClick={() => nav.editWorker(worker)}><Pencil size={15} /> تعديل</button>
+        <button className="action-pill" onClick={() => nav.editWorker(worker)}><Pencil size={15} /> {t('c.edit')}</button>
       </div>
 
       {isMonthly ? <MonthlyBody worker={worker} data={data} nav={nav} actions={actions} /> : <ProjectBody worker={worker} data={data} nav={nav} actions={actions} nameOf={nameOf} />}
 
       {confirmDel ? (
         <div className="confirm-row">
-          <span>حذف العامل وكل سجلّاته؟</span>
+          <span>{t('work.delConfirm')}</span>
           <button className="btn-danger-sm" onClick={() => { actions.deleteWorker(worker.id); nav.back(); }}><Check size={16} /></button>
           <button className="btn-ghost-sm" onClick={() => setConfirmDel(false)}><X size={16} /></button>
         </div>
       ) : (
         <button className="btn-text-danger" onClick={() => setConfirmDel(true)} style={{ marginTop: 8 }}>
-          <Trash2 size={15} /> حذف العامل
+          <Trash2 size={15} /> {t('work.delWorker')}
         </button>
       )}
     </div>
@@ -57,6 +57,7 @@ export default function WorkerDetail({ worker, data, nav, actions }) {
 
 /* ----------------------------- monthly ----------------------------- */
 function MonthlyBody({ worker, data, nav, actions }) {
+  const t = useT();
   const confirm = useConfirm();
   const rates = workerRates(worker);
   const unpaid = workerUnpaid(data.timesheet, worker.id, rates);
@@ -68,22 +69,22 @@ function MonthlyBody({ worker, data, nav, actions }) {
     <>
       <div className="profit-card">
         <div className="profit-top">
-          <span className="profit-label">مستحق غير مدفوع</span>
+          <span className="profit-label">{t('work.unpaidDue')}</span>
           <span className="profit-value">{formatMoney(unpaid.amount)}</span>
         </div>
         <div className="profit-break">
-          <div className="bk"><div className="bk-lbl">ساعات غير مدفوعة</div><div className="bk-val">{unpaid.hours} سا</div></div>
+          <div className="bk"><div className="bk-lbl">{t('work.unpaidHours')}</div><div className="bk-val">{unpaid.hours} h</div></div>
         </div>
       </div>
 
       <div className="doc-actions">
-        <button className="btn-secondary sm" onClick={() => nav.newTimesheet(worker.id)}><Plus size={14} /> تسجيل يوم</button>
-        <button className="btn-primary sm" onClick={() => nav.payPeriod(worker.id)} disabled={unpaid.amount <= 0}><Wallet size={14} /> دفع فترة</button>
+        <button className="btn-secondary sm" onClick={() => nav.newTimesheet(worker.id)}><Plus size={14} /> {t('work.logDay')}</button>
+        <button className="btn-primary sm" onClick={() => nav.payPeriod(worker.id)} disabled={unpaid.amount <= 0}><Wallet size={14} /> {t('work.payPeriod')}</button>
       </div>
 
-      <div className="section-title"><CalendarDays size={15} style={{ verticalAlign: 'middle' }} /> سجل الأيام</div>
+      <div className="section-title"><CalendarDays size={15} style={{ verticalAlign: 'middle' }} /> {t('work.dayLog')}</div>
       {days.length === 0 ? (
-        <div className="muted">لا توجد أيام مسجّلة بعد</div>
+        <div className="muted">{t('work.noDays')}</div>
       ) : (
         <div className="ticket-list">
           {days.map((d) => {
@@ -91,13 +92,13 @@ function MonthlyBody({ worker, data, nav, actions }) {
             return (
               <div className="pay-item" key={d.id}>
                 <div>
-                  <div className="pa">{formatDate(d.date)} · {h.total} سا</div>
-                  <div className="pm">{d.start} → {d.end}{h.overtime > 0 ? ` · +${h.overtime} إضافي` : ''}</div>
+                  <div className="pa">{formatDate(d.date)} · {h.total} h</div>
+                  <div className="pm">{d.start} → {d.end}{h.overtime > 0 ? ` · +${h.overtime}` : ''}</div>
                 </div>
                 <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   {d.paid
-                    ? <StatusBadge label="مدفوعة" color="var(--success)" />
-                    : <button className="icon-btn-sm" onClick={async () => { if (await confirm('حذف هذا اليوم؟')) actions.deleteTimesheet(d.id); }} aria-label="حذف"><X size={15} /></button>}
+                    ? <StatusBadge label={t('work.paidBadge')} color="var(--success)" />
+                    : <button className="icon-btn-sm" onClick={async () => { if (await confirm(t('work.delDay'))) actions.deleteTimesheet(d.id); }} aria-label={t('c.delete')}><X size={15} /></button>}
                 </span>
               </div>
             );
@@ -110,6 +111,7 @@ function MonthlyBody({ worker, data, nav, actions }) {
 
 /* ----------------------------- project ----------------------------- */
 function ProjectBody({ worker, data, nav, actions, nameOf }) {
+  const t = useT();
   const confirm = useConfirm();
   const entries = (data.labor || [])
     .filter((l) => l.workerId === worker.id)
@@ -118,12 +120,12 @@ function ProjectBody({ worker, data, nav, actions, nameOf }) {
   return (
     <>
       <div className="section-head">
-        <div className="section-title">المستحقات</div>
-        <button className="add-link" onClick={() => nav.newLabor(worker.id)}><Plus size={14} /> إضافة مستحق</button>
+        <div className="section-title">{t('work.dues')}</div>
+        <button className="add-link" onClick={() => nav.newLabor(worker.id)}><Plus size={14} /> {t('work.addDue')}</button>
       </div>
 
       {entries.length === 0 ? (
-        <div className="muted">لا توجد مستحقات بعد</div>
+        <div className="muted">{t('work.noDues')}</div>
       ) : (
         <div className="ticket-list">
           {entries.map((l) => {
@@ -157,7 +159,7 @@ function ProjectBody({ worker, data, nav, actions, nameOf }) {
                     {l.payments.map((p) => (
                       <div className="pay-item" key={p.id}>
                         <div><div className="pa">{formatMoney(p.amount)}</div><div className="pm">{formatDate(p.date)}</div></div>
-                        <button className="icon-btn-sm" onClick={async () => { if (await confirm('حذف هذه الدفعة؟')) actions.deleteLaborPayment(l.id, p.id); }} aria-label="حذف"><X size={15} /></button>
+                        <button className="icon-btn-sm" onClick={async () => { if (await confirm(t('work.delPayment'))) actions.deleteLaborPayment(l.id, p.id); }} aria-label={t('c.delete')}><X size={15} /></button>
                       </div>
                     ))}
                   </div>
@@ -166,11 +168,11 @@ function ProjectBody({ worker, data, nav, actions, nameOf }) {
                 <div className="doc-actions" style={{ marginTop: 10 }}>
                   {st.remaining > 0 && (
                     <>
-                      <button className="btn-primary sm" onClick={() => actions.payLaborInFull(l.id)}><Check size={14} /> مدفوع بالكامل</button>
-                      <button className="btn-secondary sm" onClick={() => nav.laborPayment(l.id)}><Plus size={14} /> دفعة</button>
+                      <button className="btn-primary sm" onClick={() => actions.payLaborInFull(l.id)}><Check size={14} /> {t('work.payFull')}</button>
+                      <button className="btn-secondary sm" onClick={() => nav.laborPayment(l.id)}><Plus size={14} /> {t('inv.payment')}</button>
                     </>
                   )}
-                  <button className="btn-text-danger" onClick={async () => { if (await confirm('حذف هذا المستحق؟')) actions.deleteLabor(l.id); }}><Trash2 size={14} /> حذف</button>
+                  <button className="btn-text-danger" onClick={async () => { if (await confirm(t('work.delDue'))) actions.deleteLabor(l.id); }}><Trash2 size={14} /> {t('c.delete')}</button>
                 </div>
               </div>
             );

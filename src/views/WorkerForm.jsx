@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { WORKER_TYPES } from '../lib/constants.js';
+import { useT } from '../lib/i18n.js';
 
 export default function WorkerForm({ initial, onCancel, onSave }) {
+  const t = useT();
   const w = initial || {};
   const [name, setName] = useState(w.name || '');
   const [phone, setPhone] = useState(w.phone || '');
@@ -33,46 +35,46 @@ export default function WorkerForm({ initial, onCancel, onSave }) {
 
   return (
     <div className="page">
-      <label className="label">اسم العامل</label>
-      <input className="input" value={name} onChange={(e) => setName(e.target.value)} placeholder="مثال: محمد" />
+      <label className="label">{t('work.name')}</label>
+      <input className="input" value={name} onChange={(e) => setName(e.target.value)} />
 
-      <label className="label">رقم الهاتف</label>
+      <label className="label">{t('c.phone')}</label>
       <input className="input" type="tel" inputMode="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="05XX XX XX XX" />
 
-      <label className="label">اسم قريب (للطوارئ)</label>
+      <label className="label">{t('work.emergName')}</label>
       <input className="input" value={emergencyName} onChange={(e) => setEmergencyName(e.target.value)} />
 
-      <label className="label">رقم هاتف احتياطي</label>
+      <label className="label">{t('work.emergPhone')}</label>
       <input className="input" type="tel" inputMode="tel" value={emergencyPhone} onChange={(e) => setEmergencyPhone(e.target.value)} />
 
-      <label className="label">رقم بطاقة التعريف</label>
+      <label className="label">{t('work.idNumber')}</label>
       <input className="input" inputMode="numeric" value={idNumber} onChange={(e) => setIdNumber(e.target.value)} />
 
-      <label className="label">نوع العامل</label>
+      <label className="label">{t('work.type')}</label>
       <select className="input" value={payType} onChange={(e) => setPayType(e.target.value)}>
-        {WORKER_TYPES.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}
+        {WORKER_TYPES.map((wt) => <option key={wt.id} value={wt.id}>{t('wtype.' + wt.id)}</option>)}
       </select>
 
       {payType === 'monthly' ? (
         <>
-          <label className="label">الراتب اليومي (دج)</label>
-          <input className="input" type="number" min="0" inputMode="decimal" value={dailySalary} onChange={(e) => setDailySalary(e.target.value)} placeholder="مثال: 2200" />
-          <label className="label">ساعات العمل اليومية</label>
-          <input className="input" type="number" min="0" inputMode="decimal" value={dailyHours} onChange={(e) => setDailyHours(e.target.value)} placeholder="مثال: 8" />
+          <label className="label">{t('work.dailySalary')}</label>
+          <input className="input" type="number" min="0" inputMode="decimal" value={dailySalary} onChange={(e) => setDailySalary(e.target.value)} placeholder="2200" />
+          <label className="label">{t('work.dailyHours')}</label>
+          <input className="input" type="number" min="0" inputMode="decimal" value={dailyHours} onChange={(e) => setDailyHours(e.target.value)} placeholder="8" />
         </>
       ) : (
         <>
-          <label className="label">سعر الوحدة الافتراضي (اختياري)</label>
-          <input className="input" type="number" min="0" inputMode="decimal" value={rate} onChange={(e) => setRate(e.target.value)} placeholder="مثال: سعر المتر" />
+          <label className="label">{t('work.defaultRate')}</label>
+          <input className="input" type="number" min="0" inputMode="decimal" value={rate} onChange={(e) => setRate(e.target.value)} />
         </>
       )}
 
-      <label className="label">ملاحظات</label>
+      <label className="label">{t('c.notes')}</label>
       <textarea className="input" rows={2} value={note} onChange={(e) => setNote(e.target.value)} />
 
       <div className="form-actions">
-        <button className="btn-secondary" onClick={onCancel}>إلغاء</button>
-        <button className="btn-primary" onClick={handleSave}>{initial ? 'حفظ' : 'إضافة العامل'}</button>
+        <button className="btn-secondary" onClick={onCancel}>{t('c.cancel')}</button>
+        <button className="btn-primary" onClick={handleSave}>{initial ? t('c.save') : t('work.addWorker')}</button>
       </div>
     </div>
   );

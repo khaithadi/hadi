@@ -7,8 +7,10 @@ import { buildDocText } from '../lib/text.js';
 import StatusBadge from '../components/StatusBadge.jsx';
 import ProgressBar from '../components/ProgressBar.jsx';
 import { useConfirm } from '../components/ConfirmProvider.jsx';
+import { useT } from '../lib/i18n.js';
 
 export default function InvoiceDetail({ invoice, data, nav, actions }) {
+  const t = useT();
   const confirm = useConfirm();
   const [confirmDel, setConfirmDel] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -30,7 +32,7 @@ export default function InvoiceDetail({ invoice, data, nav, actions }) {
             <div className="doc-client">{customer ? customer.name : '—'}</div>
             <div className="doc-sub">{invoice.number} · {formatDate(invoice.date)}</div>
           </div>
-          <StatusBadge label={im.label} color={im.color} />
+          <StatusBadge label={t('istatus.' + st.status)} color={im.color} />
         </div>
         <div className="ticket-dash" />
         {invoice.items.map((it) => (
@@ -40,21 +42,21 @@ export default function InvoiceDetail({ invoice, data, nav, actions }) {
           </div>
         ))}
         <div className="ticket-dash" />
-        <div className="item-row subtle"><span>المجموع الفرعي</span><span>{formatMoney(st.subtotal)}</span></div>
-        {st.discount > 0 && <div className="item-row subtle"><span>التخفيض</span><span>− {formatMoney(st.discount)}</span></div>}
-        {invoice.applyTax && <div className="item-row subtle"><span>الضريبة ({invoice.taxRate}%)</span><span>{formatMoney(st.tax)}</span></div>}
-        <div className="item-row total"><span>الإجمالي</span><span>{formatMoney(st.total)}</span></div>
+        <div className="item-row subtle"><span>{t('doc.subtotal')}</span><span>{formatMoney(st.subtotal)}</span></div>
+        {st.discount > 0 && <div className="item-row subtle"><span>{t('doc.discount')}</span><span>− {formatMoney(st.discount)}</span></div>}
+        {invoice.applyTax && <div className="item-row subtle"><span>TVA ({invoice.taxRate}%)</span><span>{formatMoney(st.tax)}</span></div>}
+        <div className="item-row total"><span>{t('doc.total')}</span><span>{formatMoney(st.total)}</span></div>
         <ProgressBar state={st} />
         {invoice.notes && <div className="doc-notes">{invoice.notes}</div>}
       </div>
 
       {/* Payments */}
       <div className="section-head">
-        <div className="section-title">المدفوعات</div>
-        {st.remaining > 0 && <button className="add-link" onClick={() => nav.payment(invoice.id)}><Plus size={14} /> دفعة</button>}
+        <div className="section-title">{t('inv.payments')}</div>
+        {st.remaining > 0 && <button className="add-link" onClick={() => nav.payment(invoice.id)}><Plus size={14} /> {t('inv.payment')}</button>}
       </div>
       {(invoice.payments || []).length === 0 ? (
-        <div className="muted">لم تُسجَّل أي دفعة بعد</div>
+        <div className="muted">{t('inv.noPayments')}</div>
       ) : (
         <div className="ticket-list">
           {invoice.payments.map((p) => (
@@ -64,8 +66,8 @@ export default function InvoiceDetail({ invoice, data, nav, actions }) {
                 <div className="pm">{formatDate(p.date)} · {p.method}{p.receivedBy ? ' · ' + p.receivedBy : ''}</div>
               </div>
               <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                <button className="icon-btn-sm" onClick={() => nav.print('receipt', invoice.id, p.id)} aria-label="إيصال"><Printer size={15} /></button>
-                <button className="icon-btn-sm" onClick={async () => { if (await confirm('حذف هذه الدفعة؟')) actions.deletePayment(invoice.id, p.id); }} aria-label="حذف"><X size={15} /></button>
+                <button className="icon-btn-sm" onClick={() => nav.print('receipt', invoice.id, p.id)} aria-label="receipt"><Printer size={15} /></button>
+                <button className="icon-btn-sm" onClick={async () => { if (await confirm(t('inv.delPayment'))) actions.deletePayment(invoice.id, p.id); }} aria-label={t('c.delete')}><X size={15} /></button>
               </span>
             </div>
           ))}
@@ -73,19 +75,19 @@ export default function InvoiceDetail({ invoice, data, nav, actions }) {
       )}
 
       <div className="doc-actions" style={{ marginTop: 4 }}>
-        <button className="btn-secondary" onClick={() => nav.print('invoice', invoice.id)}><Printer size={16} /> حفظ PDF / طباعة</button>
-        <button className="btn-secondary" onClick={() => nav.editInvoice(invoice, 'invoiceDetail')}><Pencil size={16} /> تعديل</button>
+        <button className="btn-secondary" onClick={() => nav.print('invoice', invoice.id)}><Printer size={16} /> {t('inv.savePdf')}</button>
+        <button className="btn-secondary" onClick={() => nav.editInvoice(invoice, 'invoiceDetail')}><Pencil size={16} /> {t('c.edit')}</button>
       </div>
-      <button className="btn-ghost" onClick={handleCopy}><Copy size={16} /> {copied ? 'تم النسخ ✓' : 'نسخ كنص (للواتساب)'}</button>
+      <button className="btn-ghost" onClick={handleCopy}><Copy size={16} /> {copied ? t('c.copied') : t('inv.copyText')}</button>
 
       {confirmDel ? (
         <div className="confirm-row">
-          <span>تأكيد حذف الفاتورة؟</span>
+          <span>{t('inv.delConfirm')}</span>
           <button className="btn-danger-sm" onClick={() => { actions.deleteInvoice(invoice.id); nav.go('invoices'); }}><Check size={16} /></button>
           <button className="btn-ghost-sm" onClick={() => setConfirmDel(false)}><X size={16} /></button>
         </div>
       ) : (
-        <button className="btn-text-danger" onClick={() => setConfirmDel(true)}><Trash2 size={15} /> حذف الفاتورة</button>
+        <button className="btn-text-danger" onClick={() => setConfirmDel(true)}><Trash2 size={15} /> {t('inv.delete')}</button>
       )}
     </div>
   );
