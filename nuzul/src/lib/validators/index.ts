@@ -91,6 +91,18 @@ export const conversationCreateSchema = z.object({
   bookingId: z.string(),
 });
 
+export const accountUpdateSchema = z
+  .object({
+    fullName: z.string().min(2).max(80),
+    phone: z.string().min(9).max(20).optional().or(z.literal('')),
+    currentPassword: z.string().optional(),
+    newPassword: z.string().min(8).max(128).optional(),
+  })
+  .refine((d) => !d.newPassword || (d.currentPassword && d.currentPassword.length > 0), {
+    message: 'Current password is required to set a new one',
+    path: ['currentPassword'],
+  });
+
 export type PropertySearchParams = z.infer<typeof propertySearchSchema>;
 export type PropertyCreateInput = z.infer<typeof propertyCreateSchema>;
 export type BookingCreateInput = z.infer<typeof bookingCreateSchema>;

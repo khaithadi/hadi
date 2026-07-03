@@ -27,7 +27,7 @@
   "booking": {
     "title": "Confirm booking", "paymentMethod": "Payment method", "pay": "Pay deposit & continue", "success": "Request sent",
     "pending": "Awaiting host approval", "confirmed": "Booking confirmed", "myTrips": "My trips", "upcoming": "Upcoming", "past": "Past", "cancelled": "Cancelled",
-    "empty": "You have no bookings yet", "reference": "Reference"
+    "empty": "You have no bookings yet", "reference": "Reference", "guests": "guests", "leaveReview": "Leave a review", "yourReview": "Your review", "comment": "Share your experience (optional)", "submitReview": "Submit review"
   },
   "auth": {
     "loginTitle": "Log in", "registerTitle": "Create account", "identifier": "Email or phone", "password": "Password",
@@ -38,7 +38,7 @@
     "dashboard": "Host dashboard", "earnings": "Earnings", "occupancy": "Occupancy", "listings": "My listings", "incoming": "Incoming bookings",
     "newListing": "Add a listing", "accept": "Accept", "decline": "Decline", "publish": "Publish listing", "pendingReview": "Pending review", "editListing": "Edit listing", "save": "Save changes", "edit": "Edit"
   },
-  "admin": { "dashboard": "Admin", "moderation": "Moderation", "users": "Users", "approve": "Approve", "reject": "Reject", "kpis": "KPIs" },
-  "account": { "title": "Account", "language": "Language", "becomeHost": "List your place and earn", "favorites": "Favorite destinations", "transactions": "My transactions", "security": "Account & password", "terms": "Terms & conditions" },
+  "admin": { "dashboard": "Admin", "moderation": "Moderation", "users": "Users", "hosts": "Hosts", "listings": "Listings", "bookings": "Bookings", "deposits": "Deposits", "approve": "Approve", "reject": "Reject", "kpis": "KPIs" },
+  "account": { "title": "Account", "language": "Language", "becomeHost": "List your place and earn", "favorites": "Favorite destinations", "transactions": "My transactions", "security": "Account & password", "terms": "Terms & conditions", "privacy": "Privacy policy", "editProfile": "Edit profile", "name": "Full name", "phone": "Phone", "changePassword": "Change password", "currentPassword": "Current password", "newPassword": "New password", "save": "Save", "saved": "Saved" },
   "common": { "install": "Install app", "offline": "You are offline", "loading": "Loading…", "back": "Back", "save": "Save", "cancel": "Cancel" }
 }

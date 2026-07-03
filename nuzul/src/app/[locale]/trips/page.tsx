@@ -6,6 +6,8 @@ import { formatMoney, formatDate } from '@/lib/format';
 import type { Locale } from '@/lib/i18n/config';
 import StatusBadge from '@/components/StatusBadge';
 import MessageButton from '@/components/MessageButton';
+import ReviewForm from '@/components/ReviewForm';
+import Stars from '@/components/Stars';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,9 +20,18 @@ export default async function TripsPage({ params: { locale } }: { params: { loca
   const t = await getTranslations('booking');
   const tm = await getTranslations('messages');
 
+  // Confirmed stays whose checkout has passed become "completed" so the guest can review them.
+  await prisma.booking.updateMany({
+    where: { guestId: session!.sub, status: 'confirmed', checkOut: { lt: new Date() } },
+    data: { status: 'completed' },
+  });
+
   const bookings = await prisma.booking.findMany({
     where: { guestId: session!.sub },
-    include: { property: { include: { images: { take: 1, orderBy: { sortOrder: 'asc' } }, wilaya: true } } },
+    include: {
+      property: { include: { images: { take: 1, orderBy: { sortOrder: 'asc' } }, wilaya: true } },
+      review: true,
+    },
     orderBy: { checkIn: 'desc' },
   });
 
@@ -32,20 +43,31 @@ export default async function TripsPage({ params: { locale } }: { params: { loca
       ) : (
         <div className="space-y-3">
           {bookings.map((b) => (
-            <div key={b.id} className="card flex gap-3 overflow-hidden p-3">
-              {b.property.images[0] && <img src={b.property.images[0].url} alt="" className="h-20 w-24 rounded-lg object-cover" />}
-              <div className="flex-1">
-                <div className="flex items-center justify-between">
-                  <h3 className="line-clamp-1 text-sm font-bold">{b.property.title}</h3>
-                  <StatusBadge status={b.status} />
-                </div>
-                <p className="text-xs text-ink/50">{formatDate(b.checkIn, loc)} → {formatDate(b.checkOut, loc)} · {b.guests} {t('upcoming') && ''}</p>
-                <p className="mt-1 text-xs text-ink/40">{t('reference')}: {b.reference}</p>
-                <div className="mt-1 flex items-center justify-between gap-2">
-                  <p className="text-sm font-bold text-brand-700">{formatMoney(b.total, loc)}</p>
-                  <MessageButton bookingId={b.id} label={tm('messageHost')} />
+            <div key={b.id} className="card overflow-hidden p-3">
+              <div className="flex gap-3">
+                {b.property.images[0] && <img src={b.property.images[0].url} alt="" className="h-20 w-24 rounded-lg object-cover" />}
+                <div className="flex-1">
+                  <div className="flex items-center justify-between">
+                    <h3 className="line-clamp-1 text-sm font-bold">{b.property.title}</h3>
+                    <StatusBadge status={b.status} />
+                  </div>
+                  <p className="text-xs text-ink/50">{formatDate(b.checkIn, loc)} → {formatDate(b.checkOut, loc)} · {b.guests} {t('guests')}</p>
+                  <p className="mt-1 text-xs text-ink/40">{t('reference')}: {b.reference}</p>
+                  <div className="mt-1 flex items-center justify-between gap-2">
+                    <p className="text-sm font-bold text-brand-700">{formatMoney(b.total, loc)}</p>
+                    <MessageButton bookingId={b.id} label={tm('messageHost')} />
+                  </div>
                 </div>
               </div>
+
+              {/* Review: prompt after a completed stay, or show the one already left */}
+              {b.status === 'completed' && !b.review && <ReviewForm bookingId={b.id} />}
+              {b.review && (
+                <div className="mt-2 flex items-center gap-2 border-t border-black/5 pt-2 text-xs text-ink/60">
+                  <span className="font-semibold">{t('yourReview')}:</span>
+                  <Stars rating={b.review.rating} />
+                </div>
+              )}
             </div>
           ))}
         </div>
