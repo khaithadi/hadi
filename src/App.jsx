@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { loadData, saveData, normalize, seedDemo, defaultData } from './lib/storage.js';
 import { uid, todayISO } from './lib/format.js';
 import { convertQuoteToInvoice } from './lib/convert.js';
@@ -77,6 +77,50 @@ export default function App() {
     setData(loadData());
     setLoading(false);
   }, []);
+
+  // --- browser-history sync: makes the iOS edge-swipe / Android back button
+  // drive in-app navigation. Every deeper view pushes a history entry
+  // (depth = internal stack depth); popstate pops the internal stack.
+  const depthRef = useRef(0);     // browser entries we have pushed
+  const squelchRef = useRef(0);   // popstates to ignore (we triggered them)
+  const printRef = useRef(null);
+  useEffect(() => { printRef.current = print; }, [print]);
+
+  useEffect(() => {
+    window.history.replaceState({ d: 0 }, '');
+    const onPop = (e) => {
+      const newDepth = (e.state && typeof e.state.d === 'number') ? e.state.d : 0;
+      if (squelchRef.current > 0) {
+        squelchRef.current--;
+        depthRef.current = newDepth;
+        return;
+      }
+      if (newDepth > depthRef.current) {
+        // Forward gesture — the discarded view can't be restored; snap back.
+        squelchRef.current++;
+        window.history.go(depthRef.current - newDepth);
+        return;
+      }
+      let steps = depthRef.current - newDepth;
+      depthRef.current = newDepth;
+      if (printRef.current) {
+        setPrint(null);
+        steps--;
+      }
+      if (steps > 0) {
+        setEditing(null);
+        setPreset(null);
+        setHistory((h) => h.slice(0, Math.max(1, h.length - steps)));
+      }
+    };
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, []);
+
+  const pushBrowser = () => {
+    depthRef.current++;
+    window.history.pushState({ d: depthRef.current }, '');
+  };
 
   // Apply the theme: resolve 'system' against the OS preference, stamp
   // data-theme on <html>, and keep the browser status-bar colour in sync.
@@ -352,10 +396,17 @@ export default function App() {
   };
 
   /* --------------------------- navigation -------------------------- */
-  const push = (v) => setHistory((h) => [...h, v]);
+  const push = (v) => { setHistory((h) => [...h, v]); pushBrowser(); };
   const nav = {
-    // Tab switches reset the stack to a single root view.
-    go(v) { setEditing(null); setPreset(null); setHistory([v]); },
+    // Tab switches reset the stack to a single root view (and unwind the
+    // browser entries we pushed, so a swipe-back from a tab exits cleanly).
+    go(v) {
+      setEditing(null); setPreset(null); setHistory([v]);
+      if (depthRef.current > 0) {
+        squelchRef.current++;
+        window.history.go(-depthRef.current);
+      }
+    },
 
     openCustomer(id) { setActive((a) => ({ ...a, customerId: id })); push('customer'); },
     openQuote(id) { setActive((a) => ({ ...a, quoteId: id })); push('quoteDetail'); },
@@ -383,14 +434,20 @@ export default function App() {
     newTimesheet(workerId) { setActive((a) => ({ ...a, workerId })); push('timesheetForm'); },
     payPeriod(workerId) { setActive((a) => ({ ...a, workerId })); push('periodPay'); },
 
-    print(kind, id, paymentId) { setPrint({ kind, id, paymentId }); },
-    closePrint() { setPrint(null); },
+    // The print overlay gets its own history entry so swipe-back dismisses it.
+    print(kind, id, paymentId) { setPrint({ kind, id, paymentId }); pushBrowser(); },
+    closePrint() { window.history.back(); },
     settings() { push('settings'); },
 
+    // In-app back buttons go through the browser so both stacks stay in sync;
+    // the popstate handler performs the actual internal pop.
     back() {
-      setEditing(null);
-      setPreset(null);
-      setHistory((h) => (h.length > 1 ? h.slice(0, -1) : h));
+      if (depthRef.current > 0) window.history.back();
+      else {
+        setEditing(null);
+        setPreset(null);
+        setHistory((h) => (h.length > 1 ? h.slice(0, -1) : h));
+      }
     },
   };
 
