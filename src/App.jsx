@@ -77,6 +77,24 @@ export default function App() {
     setLoading(false);
   }, []);
 
+  // Apply the theme: resolve 'system' against the OS preference, stamp
+  // data-theme on <html>, and keep the browser status-bar colour in sync.
+  useEffect(() => {
+    const pref = data.settings.theme || 'system';
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const apply = () => {
+      const dark = pref === 'dark' || (pref === 'system' && mq.matches);
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', dark ? '#15130E' : '#C1622D');
+    };
+    apply();
+    if (pref === 'system') {
+      mq.addEventListener('change', apply);
+      return () => mq.removeEventListener('change', apply);
+    }
+  }, [data.settings.theme]);
+
   function persist(next) {
     setData(next);
     saveData(next);

@@ -542,3 +542,28 @@ input[type="time"]::-webkit-calendar-picker-indicator { margin: 0; opacity: 0.6;
 /* Business logo on the printed document */
 .invoice-brand { display: flex; align-items: center; gap: 12px; }
 .invoice-logo { max-height: 56px; max-width: 140px; object-fit: contain; }
+
+/* ---- Dark mode ----
+   App.jsx resolves the 'system' setting to a concrete light/dark and stamps
+   data-theme on <html>, so only the dark values live here. The printed
+   document (.invoice-doc / .print-wrap) uses its own fixed light colors and is
+   intentionally unaffected. */
+:root[data-theme="dark"] {
+  --bg: #15130E;
+  --surface: #201D16;
+  --surface-alt: #2B2720;
+  --ink: #EFEADF;
+  --ink-soft: #A8A090;
+  --copper: #D57937;
+  --copper-dark: #E79A5A;
+  --indigo: #86A6C6;
+  --line: #383225;
+  --success: #82BC70;
+  --danger: #E9887B;
+}
+/* Fixed-colour app chips/cards that would otherwise not adapt */
+:root[data-theme="dark"] .filter-chip.active { background: var(--copper); border-color: var(--copper); color: #fff; }
+:root[data-theme="dark"] .alert-card { background: rgba(233,136,123,0.12); }
+:root[data-theme="dark"] .fin-box.alert { background: rgba(233,136,123,0.12); }
+:root[data-theme="dark"] .backup-reminder { background: rgba(213,121,55,0.15); }
+:root[data-theme="dark"] .input:focus { outline-color: var(--copper); }

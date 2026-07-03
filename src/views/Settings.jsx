@@ -75,6 +75,13 @@ export default function Settings({ data, actions, onCancel }) {
         </label>
       )}
 
+      <label className="label">المظهر</label>
+      <select className="input" value={s.theme || 'system'} onChange={(e) => actions.saveSettings({ theme: e.target.value })}>
+        <option value="system">حسب النظام</option>
+        <option value="light">فاتح</option>
+        <option value="dark">داكن</option>
+      </select>
+
       <label className="label">نص أسفل الفاتورة (يظهر فوق الملاحظات)</label>
       <textarea className="input" rows={2} placeholder="مثال: شروط الدفع، معلومات الحساب البنكي…" value={invoiceFooter} onChange={(e) => setInvoiceFooter(e.target.value)} />
 
