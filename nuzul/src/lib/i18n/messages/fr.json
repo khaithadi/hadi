@@ -7,6 +7,7 @@
   },
   "messages": { "title": "Messages", "empty": "Aucune conversation", "noMessages": "Pas encore de messages", "send": "Envoyer", "placeholder": "Écrire un message…", "messageHost": "Contacter l'hôte", "messageGuest": "Contacter le voyageur", "back": "Retour", "startConversation": "Démarrez la conversation" },
   "notifications": { "title": "Notifications", "empty": "Aucune notification", "justNow": "À l'instant" },
+  "error": { "title": "Une erreur est survenue", "body": "Réessayez — il s'agit souvent d'une interruption temporaire.", "retry": "Réessayer" },
   "home": {
     "heroTitle": "Trouvez votre prochain séjour en Algérie",
     "heroSubtitle": "Appartements, villas, chalets et maisons — réservés en toute sécurité, en dinars",
