@@ -41,7 +41,7 @@ export default async function TripsPage({ params: { locale } }: { params: { loca
       {bookings.length === 0 ? (
         <p className="mt-10 text-center text-ink/50">{t('empty')}</p>
       ) : (
-        <div className="space-y-3">
+        <div className="stagger space-y-3">
           {bookings.map((b) => (
             <div key={b.id} className="card overflow-hidden p-3">
               <div className="flex gap-3">

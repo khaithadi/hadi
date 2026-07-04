@@ -36,7 +36,7 @@ export default async function HomePage({ params: { locale } }: { params: { local
       {/* Featured */}
       <section className="container-app mt-8">
         <h2 className="mb-3 text-lg font-bold">{t('featured')}</h2>
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        <div className="stagger grid grid-cols-2 gap-3 md:grid-cols-4">
           {featured.map((p) => (
             <ListingCard key={p.id} p={p} />
           ))}

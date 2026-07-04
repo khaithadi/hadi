@@ -81,7 +81,7 @@ export default async function HostDashboard({ params: { locale } }: { params: { 
       {/* Listings */}
       <section className="mt-8">
         <h2 className="mb-2 font-bold">{t('listings')}</h2>
-        <div className="grid gap-3 md:grid-cols-2">
+        <div className="stagger grid gap-3 md:grid-cols-2">
           {listings.map((l) => (
             <div key={l.id} className="lift card flex items-center gap-3 overflow-hidden p-3">
               <Link href={`/listing/${l.slug}`} className="flex flex-1 items-center gap-3 overflow-hidden">

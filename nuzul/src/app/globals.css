@@ -4,9 +4,16 @@
 
 :root {
   --font-sans: 'Cairo', 'Tajawal', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  /* Springy overshoot easing for presses and active states. */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-html { -webkit-text-size-adjust: 100%; touch-action: manipulation; }
+html {
+  -webkit-text-size-adjust: 100%;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  scroll-behavior: smooth;
+}
 
 body {
   @apply bg-sand-50 text-ink antialiased;
@@ -17,14 +24,14 @@ body {
 .container-app { @apply mx-auto w-full max-w-6xl px-4; }
 
 @layer components {
-  .btn { @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition active:scale-95 focus:outline-none focus:ring-2 focus:ring-brand-400; }
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200 active:scale-[0.96] active:brightness-95 focus:outline-none focus:ring-2 focus:ring-brand-400; transition-timing-function: var(--ease-spring); }
   .btn-primary { @apply btn bg-brand-600 text-white hover:bg-brand-700; }
   .btn-ghost { @apply btn bg-white text-ink ring-1 ring-black/5 hover:bg-sand-100; }
   .btn-block { @apply w-full; }
   .input { @apply w-full rounded-xl border border-black/10 bg-white px-3.5 py-2.5 text-sm text-ink outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100; }
   .label { @apply mb-1 block text-xs font-medium text-ink/60; }
   .card { @apply rounded-2xl bg-white text-ink shadow-card ring-1 ring-black/5; }
-  .chip { @apply inline-flex items-center gap-1 rounded-full bg-sand-100 px-2.5 py-1 text-xs font-medium text-ink/70 transition; }
+  .chip { @apply inline-flex items-center gap-1 rounded-full bg-sand-100 px-2.5 py-1 text-xs font-medium text-ink/70 transition active:scale-95; }
   .lift { @apply transition duration-300 ease-out hover:-translate-y-1 hover:shadow-lg; }
   .badge-amber { @apply rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-700; }
   .badge-green { @apply rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-700; }
@@ -35,21 +42,58 @@ body {
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* Motion: soft blur-in page transition + reveal helpers (disabled for reduced-motion). */
+/* Loading surface: shimmering placeholder block (base color always, sweep only with motion). */
+.skeleton { @apply relative overflow-hidden bg-sand-100; }
+
+/* Motion: blur-in transitions + reveal helpers (all disabled for reduced-motion). */
 @media (prefers-reduced-motion: no-preference) {
   @keyframes pageIn {
     from { opacity: 0; transform: translateY(8px); filter: blur(5px); }
     to   { opacity: 1; transform: translateY(0);   filter: blur(0); }
   }
   @keyframes riseIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(10px); filter: blur(3px); }
+    to   { opacity: 1; transform: translateY(0);    filter: blur(0); }
   }
   @keyframes popIn {
-    from { opacity: 0; transform: scale(0.97) translateY(4px); }
-    to   { opacity: 1; transform: scale(1) translateY(0); }
+    from { opacity: 0; transform: scale(0.97) translateY(4px); filter: blur(4px); }
+    to   { opacity: 1; transform: scale(1) translateY(0);      filter: blur(0); }
+  }
+  @keyframes heartPop {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.35); }
+    100% { transform: scale(1); }
+  }
+  @keyframes shimmer {
+    100% { transform: translateX(100%); }
   }
   .page-in { animation: pageIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) both; }
   .rise-in { animation: riseIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both; }
   .pop-in  { animation: popIn 0.18s cubic-bezier(0.22, 1, 0.36, 1) both; transform-origin: top center; }
+  .heart-pop { animation: heartPop 0.35s var(--ease-spring); }
+
+  /* Cascading list entrance: put .stagger on any grid/list container. */
+  .stagger > * { animation: riseIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .stagger > *:nth-child(2)  { animation-delay: 45ms; }
+  .stagger > *:nth-child(3)  { animation-delay: 90ms; }
+  .stagger > *:nth-child(4)  { animation-delay: 135ms; }
+  .stagger > *:nth-child(5)  { animation-delay: 180ms; }
+  .stagger > *:nth-child(6)  { animation-delay: 225ms; }
+  .stagger > *:nth-child(7)  { animation-delay: 270ms; }
+  .stagger > *:nth-child(8)  { animation-delay: 315ms; }
+  .stagger > *:nth-child(9)  { animation-delay: 360ms; }
+  .stagger > *:nth-child(10) { animation-delay: 405ms; }
+  .stagger > *:nth-child(11) { animation-delay: 450ms; }
+  .stagger > *:nth-child(n+12) { animation-delay: 495ms; }
+
+  /* Shimmer sweep across .skeleton surfaces; sits under z-[1]+ children (e.g. a loaded img). */
+  .skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+    animation: shimmer 1.4s infinite;
+  }
 }

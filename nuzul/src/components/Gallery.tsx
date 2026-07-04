@@ -69,7 +69,7 @@ export default function Gallery({
               type="button"
               aria-label={`photo ${i + 1}`}
               onClick={() => go(i)}
-              className={`h-1.5 rounded-full transition-all ${i === idx ? 'w-4 bg-white' : 'w-1.5 bg-white/60'}`}
+              className={`h-1.5 rounded-full transition-all active:scale-90 ${i === idx ? 'w-4 bg-white' : 'w-1.5 bg-white/60'}`}
             />
           ))}
         </div>

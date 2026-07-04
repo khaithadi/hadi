@@ -23,7 +23,7 @@ export default async function MessagesPage({ params: { locale } }: { params: { l
       {conversations.length === 0 ? (
         <p className="mt-10 text-center text-ink/50">{t('empty')}</p>
       ) : (
-        <ul className="space-y-2">
+        <ul className="stagger space-y-2">
           {conversations.map((c) => (
             <li key={c.id}>
               <Link href={`/messages/${c.id}`} className="lift card flex items-center gap-3 p-3">
