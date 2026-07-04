@@ -27,7 +27,7 @@
   "booking": {
     "title": "Confirmation", "paymentMethod": "Mode de paiement", "pay": "Payer l’acompte", "success": "Demande envoyée",
     "pending": "En attente de l’hôte", "confirmed": "Réservation confirmée", "myTrips": "Mes voyages", "upcoming": "À venir", "past": "Passés", "cancelled": "Annulés",
-    "empty": "Aucune réservation pour l’instant", "reference": "Référence", "guests": "voyageurs", "leaveReview": "Laisser un avis", "yourReview": "Votre avis", "comment": "Partagez votre expérience (facultatif)", "submitReview": "Envoyer l’avis"
+    "empty": "Aucune réservation pour l’instant", "reference": "Référence", "guests": "voyageurs", "leaveReview": "Laisser un avis", "yourReview": "Votre avis", "comment": "Partagez votre expérience (facultatif)", "submitReview": "Envoyer l’avis", "depositWindowBody": "Contactez l’hôte pour remettre l’acompte avant la fin du délai, sinon la demande expire automatiquement"
   },
   "auth": {
     "loginTitle": "Connexion", "registerTitle": "Créer un compte", "identifier": "Email ou téléphone", "password": "Mot de passe",
@@ -36,7 +36,7 @@
   },
   "host": {
     "dashboard": "Espace hôte", "earnings": "Revenus", "occupancy": "Taux d’occupation", "listings": "Mes annonces", "incoming": "Réservations reçues",
-    "newListing": "Ajouter un logement", "accept": "Accepter", "decline": "Refuser", "publish": "Publier", "pendingReview": "En attente de validation", "editListing": "Modifier le logement", "save": "Enregistrer", "edit": "Modifier"
+    "newListing": "Ajouter un logement", "accept": "Accepter", "decline": "Refuser", "publish": "Publier", "pendingReview": "En attente de validation", "editListing": "Modifier le logement", "save": "Enregistrer", "edit": "Modifier", "confirmAfterDeposit": "Confirmez seulement après réception de l’acompte"
   },
   "admin": { "dashboard": "Administration", "moderation": "Modération", "users": "Utilisateurs", "hosts": "Hôtes", "listings": "Annonces", "bookings": "Réservations", "deposits": "Acomptes", "approve": "Approuver", "reject": "Rejeter", "kpis": "Indicateurs" },
   "account": { "title": "Mon compte", "language": "Langue", "becomeHost": "Publiez votre logement et gagnez", "favorites": "Destinations favorites", "transactions": "Mes transactions", "security": "Compte et mot de passe", "terms": "Conditions générales", "privacy": "Politique de confidentialité", "editProfile": "Modifier le profil", "name": "Nom complet", "phone": "Téléphone", "changePassword": "Changer le mot de passe", "currentPassword": "Mot de passe actuel", "newPassword": "Nouveau mot de passe", "save": "Enregistrer", "saved": "Enregistré" },

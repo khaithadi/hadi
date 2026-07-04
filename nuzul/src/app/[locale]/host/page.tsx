@@ -7,6 +7,7 @@ import type { Locale } from '@/lib/i18n/config';
 import StatusBadge from '@/components/StatusBadge';
 import HostBookingActions from '@/components/HostBookingActions';
 import MessageButton from '@/components/MessageButton';
+import DepositCountdown from '@/components/DepositCountdown';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,6 +17,12 @@ export default async function HostDashboard({ params: { locale } }: { params: { 
   const t = await getTranslations('host');
   const tm = await getTranslations('messages');
   const session = (await getSession())!;
+
+  // Requests whose 24h deposit window lapsed without host confirmation expire and free the dates.
+  await prisma.booking.updateMany({
+    where: { property: { hostId: session.sub }, status: 'pending', depositDeadline: { lt: new Date() } },
+    data: { status: 'expired' },
+  });
 
   const [listings, incoming, payouts] = await Promise.all([
     prisma.property.findMany({
@@ -68,6 +75,11 @@ export default async function HostDashboard({ params: { locale } }: { params: { 
                 <p className="text-sm font-bold">{b.property.title}</p>
                 <p className="text-xs text-ink/50">{b.guest.fullName} · {formatDate(b.checkIn, loc)} → {formatDate(b.checkOut, loc)}</p>
                 <p className="text-xs font-semibold text-brand-700">{formatMoney(b.total, loc)} · {b.reference}</p>
+                {b.depositDeadline && (
+                  <p className="mt-1 text-[11px] text-ink/50">
+                    {t('confirmAfterDeposit')} · <DepositCountdown deadline={b.depositDeadline.toISOString()} />
+                  </p>
+                )}
               </div>
               <div className="flex flex-col items-end gap-2">
                 <HostBookingActions bookingId={b.id} />

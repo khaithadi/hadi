@@ -116,7 +116,13 @@ export default function BookingWidget(props: Props) {
         </button>
         {showCal && (
           <div className="pop-in mt-2 rounded-2xl border border-black/5 p-3 shadow-sm">
-            <DateRangePicker locale={locale} value={range} onChange={onRange} />
+            <DateRangePicker
+              locale={locale}
+              value={range}
+              onChange={onRange}
+              blockedDays={props.blockedDays}
+              bookedRanges={props.bookings}
+            />
           </div>
         )}
       </div>

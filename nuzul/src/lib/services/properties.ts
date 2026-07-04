@@ -87,7 +87,13 @@ export async function getPropertyAvailability(propertyId: string): Promise<Prope
   const [days, bookings] = await Promise.all([
     prisma.availabilityDay.findMany({ where: { propertyId, isBlocked: true }, select: { date: true } }),
     prisma.booking.findMany({
-      where: { propertyId, status: { in: ['pending', 'confirmed'] } },
+      where: {
+        propertyId,
+        OR: [
+          { status: 'confirmed' },
+          { status: 'pending', OR: [{ depositDeadline: null }, { depositDeadline: { gte: new Date() } }] },
+        ],
+      },
       select: { checkIn: true, checkOut: true },
     }),
   ]);

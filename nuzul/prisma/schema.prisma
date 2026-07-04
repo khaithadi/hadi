@@ -409,6 +409,9 @@ model Booking {
   depositDue   Int
   balanceDue   Int
   currency     String @default("DZD")
+  // Offline (cash/bank-transfer) request bookings get a 24h window to deliver the
+  // deposit before the host confirms; null for instant-book / online-paid bookings.
+  depositDeadline DateTime?
 
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
