@@ -7,6 +7,7 @@
   },
   "messages": { "title": "Messages", "empty": "No conversations yet", "noMessages": "No messages yet", "send": "Send", "placeholder": "Type a message…", "messageHost": "Message host", "messageGuest": "Message guest", "back": "Back", "startConversation": "Start the conversation" },
   "notifications": { "title": "Notifications", "empty": "No notifications yet", "justNow": "Just now" },
+  "error": { "title": "Something went wrong", "body": "Please try again — this is usually a temporary hiccup.", "retry": "Try again" },
   "home": {
     "heroTitle": "Find your next stay in Algeria",
     "heroSubtitle": "Apartments, villas, chalets and houses — booked securely, priced in dinars",
