@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { getLocale, getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '@/lib/i18n/navigation';
 import { prisma } from '@/lib/db';
@@ -102,7 +103,7 @@ export default async function HostDashboard({ params: { locale } }: { params: { 
             <div key={l.id} className="card overflow-hidden p-3">
               <div className="flex items-center gap-3">
                 <Link href={`/listing/${l.slug}`} className="flex flex-1 items-center gap-3 overflow-hidden">
-                  {l.images[0] && <img src={l.images[0].url} alt="" className="h-16 w-20 shrink-0 rounded-lg object-cover" />}
+                  {l.images[0] && <Image src={l.images[0].url} alt="" width={80} height={64} className="h-16 w-20 shrink-0 rounded-lg object-cover" />}
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-2">
                       <p className="line-clamp-1 text-sm font-bold">{l.title}</p>

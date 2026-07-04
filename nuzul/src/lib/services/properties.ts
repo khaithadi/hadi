@@ -1,3 +1,4 @@
+import { unstable_cache } from 'next/cache';
 import { prisma } from '@/lib/db';
 import type { Prisma } from '@prisma/client';
 import type { PropertySearchParams } from '@/lib/validators';
@@ -9,7 +10,33 @@ const LISTING_INCLUDE = {
   host: { select: { id: true, fullName: true, avatarUrl: true } },
 } satisfies Prisma.PropertyInclude;
 
-export async function searchProperties(params: PropertySearchParams) {
+// Public listing data is read on nearly every page and changes rarely, so it's cached in
+// Next's data cache (revalidated on a timer, and immediately on any property write via
+// revalidateTag('properties') — see PROPERTIES_TAG). This takes Postgres off the hot browse
+// path, which is the main cause of slow navigation. Personalized/volatile reads (session,
+// availability) are deliberately NOT cached.
+export const PROPERTIES_TAG = 'properties';
+
+/** Home page: top featured/approved listings. Cached. */
+export const getFeaturedProperties = unstable_cache(
+  () =>
+    prisma.property.findMany({
+      where: { status: 'approved' },
+      orderBy: [{ isFeatured: 'desc' }, { ratingAvg: 'desc' }],
+      take: 8,
+      include: { images: { take: 1, orderBy: { sortOrder: 'asc' } }, wilaya: true },
+    }),
+  ['featured-properties'],
+  { revalidate: 60, tags: [PROPERTIES_TAG] },
+);
+
+export const searchProperties = unstable_cache(
+  _searchProperties,
+  ['search-properties'],
+  { revalidate: 60, tags: [PROPERTIES_TAG] },
+);
+
+async function _searchProperties(params: PropertySearchParams) {
   const where: Prisma.PropertyWhereInput = { status: 'approved' };
 
   if (params.wilaya) where.wilayaId = params.wilaya;
@@ -57,26 +84,29 @@ export async function searchProperties(params: PropertySearchParams) {
   return { total, data };
 }
 
-export function getPropertyBySlug(slug: string) {
-  return prisma.property.findUnique({
-    where: { slug },
-    include: {
-      images: { orderBy: { sortOrder: 'asc' } },
-      videos: true,
-      wilaya: true,
-      municipality: true,
-      amenities: { include: { amenity: true } },
-      houseRules: true,
-      host: { select: { id: true, fullName: true, avatarUrl: true, hostProfile: true, createdAt: true } },
-      reviews: {
-        where: { direction: 'guest_to_host' },
-        include: { author: { select: { fullName: true, avatarUrl: true } } },
-        orderBy: { createdAt: 'desc' },
-        take: 10,
+export const getPropertyBySlug = unstable_cache(
+  (slug: string) =>
+    prisma.property.findUnique({
+      where: { slug },
+      include: {
+        images: { orderBy: { sortOrder: 'asc' } },
+        videos: true,
+        wilaya: true,
+        municipality: true,
+        amenities: { include: { amenity: true } },
+        houseRules: true,
+        host: { select: { id: true, fullName: true, avatarUrl: true, hostProfile: true, createdAt: true } },
+        reviews: {
+          where: { direction: 'guest_to_host' },
+          include: { author: { select: { fullName: true, avatarUrl: true } } },
+          orderBy: { createdAt: 'desc' },
+          take: 10,
+        },
       },
-    },
-  });
-}
+    }),
+  ['property-by-slug'],
+  { revalidate: 60, tags: [PROPERTIES_TAG] },
+);
 
 export interface PropertyAvailability {
   blockedDays: string[];

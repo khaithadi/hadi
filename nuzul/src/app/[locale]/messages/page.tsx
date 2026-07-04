@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { getLocale, getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link, redirect } from '@/lib/i18n/navigation';
 import { getSession } from '@/lib/auth/session';
@@ -28,7 +29,7 @@ export default async function MessagesPage({ params: { locale } }: { params: { l
             <li key={c.id}>
               <Link href={`/messages/${c.id}`} className="lift card flex items-center gap-3 p-3">
                 <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-sand-100">
-                  {c.image && <img src={c.image} alt="" className="h-full w-full object-cover" />}
+                  {c.image && <Image src={c.image} alt="" width={48} height={48} className="h-full w-full object-cover" />}
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-2">

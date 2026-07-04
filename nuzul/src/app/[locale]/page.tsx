@@ -1,22 +1,15 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '@/lib/i18n/navigation';
-import { prisma } from '@/lib/db';
 import { WILAYAS } from '@/lib/constants';
+import { getFeaturedProperties } from '@/lib/services/properties';
 import SearchBar from '@/components/SearchBar';
 import ListingCard from '@/components/ListingCard';
-
-export const dynamic = 'force-dynamic';
 
 export default async function HomePage({ params: { locale } }: { params: { locale: string } }) {
   setRequestLocale(locale);
   const t = await getTranslations('home');
 
-  const featured = await prisma.property.findMany({
-    where: { status: 'approved' },
-    orderBy: [{ isFeatured: 'desc' }, { ratingAvg: 'desc' }],
-    take: 8,
-    include: { images: { take: 1, orderBy: { sortOrder: 'asc' } }, wilaya: true },
-  });
+  const featured = await getFeaturedProperties();
 
   const topWilayas = WILAYAS.filter((w) => [16, 42, 31, 15, 6, 23, 9, 47].includes(w.id));
 

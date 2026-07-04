@@ -1,6 +1,8 @@
+import { revalidateTag } from 'next/cache';
 import { prisma } from '@/lib/db';
 import { requireUser } from '@/lib/auth/rbac';
 import { reviewCreateSchema } from '@/lib/validators';
+import { PROPERTIES_TAG } from '@/lib/services/properties';
 import { ok, fail, handle } from '@/lib/api';
 
 // Verified reviews only: a review can be left exactly once, by the guest of a
@@ -41,6 +43,7 @@ export async function POST(req: Request) {
       where: { id: booking.propertyId },
       data: { ratingAvg: agg._avg.rating ?? 0, reviewsCount: agg._count },
     });
+    revalidateTag(PROPERTIES_TAG);
 
     return ok(review, 201);
   });

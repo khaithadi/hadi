@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { getLocale, getTranslations, setRequestLocale } from 'next-intl/server';
 import { redirect } from '@/lib/i18n/navigation';
 import { prisma } from '@/lib/db';
@@ -51,7 +52,7 @@ export default async function TripsPage({ params: { locale } }: { params: { loca
           {bookings.map((b) => (
             <div key={b.id} className="card overflow-hidden p-3">
               <div className="flex gap-3">
-                {b.property.images[0] && <img src={b.property.images[0].url} alt="" className="h-20 w-24 rounded-lg object-cover" />}
+                {b.property.images[0] && <Image src={b.property.images[0].url} alt="" width={96} height={80} className="h-20 w-24 rounded-lg object-cover" />}
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
                     <h3 className="line-clamp-1 text-sm font-bold">{b.property.title}</h3>
