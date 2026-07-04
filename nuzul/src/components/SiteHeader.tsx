@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import { Link } from '@/lib/i18n/navigation';
 import type { SessionPayload } from '@/lib/auth/session';
 import Logo from './Logo';
+import NotificationBell from './NotificationBell';
 
 export default async function SiteHeader({ session }: { session: SessionPayload | null }) {
   const t = await getTranslations('nav');
@@ -22,7 +23,10 @@ export default async function SiteHeader({ session }: { session: SessionPayload 
 
         <div className="flex items-center gap-2">
           {session ? (
-            <Link href="/account" className="btn-ghost px-3 py-1.5 text-xs">{session.name.split(' ')[0]}</Link>
+            <>
+              <NotificationBell />
+              <Link href="/account" className="btn-ghost px-3 py-1.5 text-xs">{session.name.split(' ')[0]}</Link>
+            </>
           ) : (
             <>
               <Link href="/login" className="hidden text-xs font-semibold text-ink/70 hover:text-brand-700 sm:inline">{t('login')}</Link>

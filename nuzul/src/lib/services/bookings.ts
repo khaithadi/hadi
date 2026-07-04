@@ -51,10 +51,10 @@ export async function createBooking(guestId: string, input: BookingCreateInput) 
   // Instant-book properties skip host approval and confirm on successful deposit.
   const isInstant = property.bookingMode === 'instant';
   const offlineMethod = isOfflineMethod(input.method);
-  // Offline request bookings give the guest 24h to deliver the deposit before the
-  // host must confirm receipt (see setBookingStatus); instant/online bookings don't need it.
-  const depositDeadline =
-    !isInstant && offlineMethod ? new Date(Date.now() + 24 * 60 * 60 * 1000) : null;
+  // Every request (non-instant) booking gets a 24h window for the guest to deliver the
+  // deposit off-app before the host confirms receipt (see setBookingStatus). Instant-book
+  // confirms immediately, so it needs no window.
+  const depositDeadline = !isInstant ? new Date(Date.now() + 24 * 60 * 60 * 1000) : null;
 
   const result = await prisma.$transaction(async (tx) => {
     const seq = await tx.booking.count();

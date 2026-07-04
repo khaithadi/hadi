@@ -11,9 +11,13 @@
     "register": "إنشاء حساب",
     "logout": "تسجيل الخروج",
     "admin": "الإدارة",
-    "messages": "الرسائل"
+    "messages": "الرسائل",
+    "bookings": "الحجوزات",
+    "users": "المستخدمون",
+    "listings": "الإعلانات"
   },
   "messages": { "title": "الرسائل", "empty": "لا توجد محادثات بعد", "noMessages": "لا توجد رسائل بعد", "send": "إرسال", "placeholder": "اكتب رسالة…", "messageHost": "مراسلة المضيف", "messageGuest": "مراسلة الضيف", "back": "رجوع", "startConversation": "ابدأ المحادثة" },
+  "notifications": { "title": "الإشعارات", "empty": "لا توجد إشعارات بعد", "justNow": "الآن" },
   "home": {
     "heroTitle": "اكتشف إقامتك القادمة في الجزائر",
     "heroSubtitle": "شقق، فيلات، شاليهات ومنازل — محجوزة بأمان وبأسعار بالدينار",
@@ -47,13 +51,13 @@
   "auth": {
     "loginTitle": "تسجيل الدخول", "registerTitle": "إنشاء حساب جديد", "identifier": "البريد أو رقم الهاتف", "password": "كلمة المرور",
     "fullName": "الاسم الكامل", "email": "البريد الإلكتروني", "phone": "رقم الهاتف", "asGuest": "كضيف", "asHost": "كمضيف",
-    "submit": "متابعة", "haveAccount": "لديك حساب؟", "noAccount": "ليس لديك حساب؟", "orOtp": "أو عبر رمز الهاتف", "demo": "حسابات تجريبية"
+    "submit": "متابعة", "haveAccount": "لديك حساب؟", "noAccount": "ليس لديك حساب؟", "orOtp": "أو عبر رمز الهاتف", "demo": "حسابات تجريبية", "showPassword": "إظهار كلمة المرور", "hidePassword": "إخفاء كلمة المرور"
   },
   "host": {
     "dashboard": "لوحة المضيف", "earnings": "الأرباح", "occupancy": "نسبة الإشغال", "listings": "عقاراتي", "incoming": "الحجوزات الواردة",
-    "newListing": "أضف عقاراً", "accept": "قبول", "decline": "رفض", "publish": "نشر العقار", "pendingReview": "قيد المراجعة", "editListing": "تعديل العقار", "save": "حفظ التغييرات", "edit": "تعديل", "confirmAfterDeposit": "أكّد فقط بعد استلام العربون"
+    "newListing": "أضف عقاراً", "accept": "قبول", "decline": "رفض", "publish": "نشر العقار", "pendingReview": "قيد المراجعة", "editListing": "تعديل العقار", "save": "حفظ التغييرات", "edit": "تعديل", "confirmAfterDeposit": "أكّد فقط بعد استلام العربون", "upcomingBookings": "الحجوزات القادمة", "noUpcoming": "لا توجد حجوزات قادمة", "pastBookings": "حجوزات سابقة", "hide": "إخفاء", "show": "إظهار", "delete": "حذف", "confirmDelete": "متأكد من حذف هذا العقار؟", "deleteHasBookings": "لا يمكن حذف عقار له حجوزات — أخفِه بدلاً من ذلك", "bookingsShort": "حجز"
   },
-  "admin": { "dashboard": "لوحة الإدارة", "moderation": "مراجعة العقارات", "users": "المستخدمون", "hosts": "المضيفون", "listings": "العقارات", "bookings": "الحجوزات", "deposits": "العرابين", "approve": "موافقة", "reject": "رفض", "kpis": "المؤشرات" },
+  "admin": { "dashboard": "لوحة الإدارة", "moderation": "مراجعة العقارات", "users": "المستخدمون", "hosts": "المضيفون", "listings": "العقارات", "bookings": "الحجوزات", "deposits": "العرابين", "approve": "موافقة", "reject": "رفض", "kpis": "المؤشرات", "suspend": "إيقاف", "reactivate": "تفعيل", "restore": "استرجاع", "suspended": "موقوف", "you": "أنت", "roleGuest": "ضيف", "roleHost": "مضيف", "roleAdmin": "مدير", "filter_all": "الكل", "filter_pending": "قيد المراجعة", "filter_approved": "مقبول", "filter_suspended": "موقوف", "filter_rejected": "مرفوض", "filter_draft": "مخفي" },
   "account": { "title": "حسابي", "language": "اللغة", "becomeHost": "انشر مسكنك واربح", "favorites": "الوجهات المفضّلة", "transactions": "معاملاتي", "security": "الحساب وكلمة المرور", "terms": "الشروط والأحكام", "privacy": "سياسة الخصوصية", "editProfile": "تعديل الملف الشخصي", "name": "الاسم الكامل", "phone": "رقم الهاتف", "changePassword": "تغيير كلمة المرور", "currentPassword": "كلمة المرور الحالية", "newPassword": "كلمة المرور الجديدة", "save": "حفظ", "saved": "تم الحفظ" },
   "common": { "install": "ثبّت التطبيق", "offline": "أنت غير متصل بالإنترنت", "loading": "جاري التحميل…", "back": "رجوع", "save": "حفظ", "cancel": "إلغاء" }
 }

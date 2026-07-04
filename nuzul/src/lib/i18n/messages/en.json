@@ -2,9 +2,11 @@
   "brand": { "name": "Nuzul", "tagline": "Trusted stays across Algeria" },
   "nav": {
     "explore": "Explore", "trips": "Trips", "favorites": "Favorites", "account": "Account",
-    "host": "Become a host", "dashboard": "Dashboard", "login": "Log in", "register": "Sign up", "logout": "Log out", "admin": "Admin", "messages": "Messages"
+    "host": "Become a host", "dashboard": "Dashboard", "login": "Log in", "register": "Sign up", "logout": "Log out", "admin": "Admin", "messages": "Messages",
+    "bookings": "Bookings", "users": "Users", "listings": "Listings"
   },
   "messages": { "title": "Messages", "empty": "No conversations yet", "noMessages": "No messages yet", "send": "Send", "placeholder": "Type a message…", "messageHost": "Message host", "messageGuest": "Message guest", "back": "Back", "startConversation": "Start the conversation" },
+  "notifications": { "title": "Notifications", "empty": "No notifications yet", "justNow": "Just now" },
   "home": {
     "heroTitle": "Find your next stay in Algeria",
     "heroSubtitle": "Apartments, villas, chalets and houses — booked securely, priced in dinars",
@@ -32,13 +34,13 @@
   "auth": {
     "loginTitle": "Log in", "registerTitle": "Create account", "identifier": "Email or phone", "password": "Password",
     "fullName": "Full name", "email": "Email", "phone": "Phone", "asGuest": "As guest", "asHost": "As host",
-    "submit": "Continue", "haveAccount": "Have an account?", "noAccount": "No account?", "orOtp": "Or via SMS code", "demo": "Demo accounts"
+    "submit": "Continue", "haveAccount": "Have an account?", "noAccount": "No account?", "orOtp": "Or via SMS code", "demo": "Demo accounts", "showPassword": "Show password", "hidePassword": "Hide password"
   },
   "host": {
     "dashboard": "Host dashboard", "earnings": "Earnings", "occupancy": "Occupancy", "listings": "My listings", "incoming": "Incoming bookings",
-    "newListing": "Add a listing", "accept": "Accept", "decline": "Decline", "publish": "Publish listing", "pendingReview": "Pending review", "editListing": "Edit listing", "save": "Save changes", "edit": "Edit", "confirmAfterDeposit": "Only confirm once you've received the deposit"
+    "newListing": "Add a listing", "accept": "Accept", "decline": "Decline", "publish": "Publish listing", "pendingReview": "Pending review", "editListing": "Edit listing", "save": "Save changes", "edit": "Edit", "confirmAfterDeposit": "Only confirm once you've received the deposit", "upcomingBookings": "Upcoming bookings", "noUpcoming": "No upcoming bookings", "pastBookings": "Past bookings", "hide": "Hide", "show": "Show", "delete": "Delete", "confirmDelete": "Delete this listing?", "deleteHasBookings": "Can't delete a listing with bookings — hide it instead", "bookingsShort": "bookings"
   },
-  "admin": { "dashboard": "Admin", "moderation": "Moderation", "users": "Users", "hosts": "Hosts", "listings": "Listings", "bookings": "Bookings", "deposits": "Deposits", "approve": "Approve", "reject": "Reject", "kpis": "KPIs" },
+  "admin": { "dashboard": "Admin", "moderation": "Moderation", "users": "Users", "hosts": "Hosts", "listings": "Listings", "bookings": "Bookings", "deposits": "Deposits", "approve": "Approve", "reject": "Reject", "kpis": "KPIs", "suspend": "Suspend", "reactivate": "Reactivate", "restore": "Restore", "suspended": "Suspended", "you": "You", "roleGuest": "Guest", "roleHost": "Host", "roleAdmin": "Admin", "filter_all": "All", "filter_pending": "Pending", "filter_approved": "Approved", "filter_suspended": "Suspended", "filter_rejected": "Rejected", "filter_draft": "Hidden" },
   "account": { "title": "Account", "language": "Language", "becomeHost": "List your place and earn", "favorites": "Favorite destinations", "transactions": "My transactions", "security": "Account & password", "terms": "Terms & conditions", "privacy": "Privacy policy", "editProfile": "Edit profile", "name": "Full name", "phone": "Phone", "changePassword": "Change password", "currentPassword": "Current password", "newPassword": "New password", "save": "Save", "saved": "Saved" },
   "common": { "install": "Install app", "offline": "You are offline", "loading": "Loading…", "back": "Back", "save": "Save", "cancel": "Cancel" }
 }

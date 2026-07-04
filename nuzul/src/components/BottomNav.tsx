@@ -3,12 +3,16 @@
 import { useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/lib/i18n/navigation';
 import type { SessionPayload } from '@/lib/auth/session';
+import { useNotifications } from './NotificationsProvider';
 
 const icons: Record<string, JSX.Element> = {
   explore: <path d="M3 10.5 12 4l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />,
   trips: <path d="M4 7h16M4 12h16M4 17h10" strokeLinecap="round" />,
   messages: <path d="M21 11.5a8.4 8.4 0 0 1-9 8.3l-5 1 1.4-3.6A8.4 8.4 0 1 1 21 11.5z" strokeLinejoin="round" />,
-  favorites: <path d="M12 20s-7-4.3-9.3-8.2C1.2 9 2.4 5.5 5.7 5.5c2 0 3.2 1.3 3.3 1.7.1-.4 1.3-1.7 3.3-1.7 3.3 0 4.5 3.5 3 6.3C19 15.7 12 20 12 20z" />,
+  favorites: <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />,
+  bookings: <path d="M7 4V2m10 2V2M3.5 8h17M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z" strokeLinecap="round" strokeLinejoin="round" />,
+  users: <path d="M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm7 1a2.5 2.5 0 1 0 0-5M3 20a6 6 0 0 1 12 0m1 0a5 5 0 0 0-3-4.6" strokeLinecap="round" strokeLinejoin="round" />,
+  listings: <path d="M4 5h16M4 12h16M4 19h16" strokeLinecap="round" />,
   account: <path d="M4 20a8 8 0 0 1 16 0M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" strokeLinecap="round" />,
   dashboard: <path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-4h6v4" strokeLinecap="round" strokeLinejoin="round" />,
   admin: <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" strokeLinejoin="round" />,
@@ -19,26 +23,34 @@ type Item = { key: string; href: string };
 export default function BottomNav({ session }: { session: SessionPayload | null }) {
   const t = useTranslations('nav');
   const pathname = usePathname();
+  const { unreadMessages } = useNotifications();
 
   const isActive = (href: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href));
 
-  // Forced LTR layout so positions stay consistent in RTL (ar) and LTR alike:
-  // [messages, account]  ·  Explore (raised center)  ·  [favorites, role-tab]
-  const left: Item[] = [
-    { key: 'account', href: session ? '/account' : '/login' },
-    { key: 'messages', href: session ? '/messages' : '/login' },
-  ];
+  const isAdmin = session?.role === 'admin';
 
-  // Right pair adapts to role: hosts get Dashboard, admins get Admin, guests get Trips
-  const right: Item[] =
-    session?.role === 'host'
-      ? [{ key: 'favorites', href: '/favorites' }, { key: 'dashboard', href: '/host' }]
-      : session?.role === 'admin'
-        ? [{ key: 'favorites', href: '/favorites' }, { key: 'admin', href: '/admin' }]
-        : [{ key: 'favorites', href: '/favorites' }, { key: 'trips', href: '/trips' }];
+  // Forced LTR layout so positions stay consistent in RTL (ar) and LTR alike.
+  // Admins get a management-only nav (no explore/messages/favorites); everyone else keeps
+  // [account, messages] · Explore (raised center) · [favorites?, role-tab].
+  const left: Item[] = isAdmin
+    ? [{ key: 'admin', href: '/admin' }, { key: 'users', href: '/admin/users' }]
+    : [
+        { key: 'account', href: session ? '/account' : '/login' },
+        { key: 'messages', href: session ? '/messages' : '/login' },
+      ];
+
+  // Raised center: Explore for guests/hosts, Listings management for admins.
+  const center: Item = isAdmin ? { key: 'listings', href: '/admin/listings' } : { key: 'explore', href: '/' };
+
+  const right: Item[] = isAdmin
+    ? [{ key: 'bookings', href: '/admin/bookings' }, { key: 'account', href: '/account' }]
+    : session?.role === 'host'
+      ? [{ key: 'bookings', href: '/host/bookings' }, { key: 'dashboard', href: '/host' }]
+      : [{ key: 'favorites', href: '/favorites' }, { key: 'trips', href: '/trips' }];
 
   function Tab({ it }: { it: Item }) {
     const active = isActive(it.href);
+    const badge = it.key === 'messages' && unreadMessages > 0 ? unreadMessages : 0;
     return (
       <Link
         href={it.href}
@@ -46,15 +58,22 @@ export default function BottomNav({ session }: { session: SessionPayload | null 
           active ? '-translate-y-1 text-brand-700' : 'text-ink/50'
         }`}
       >
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.1 : 1.7}>
-          {icons[it.key]}
-        </svg>
+        <span className="relative">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.1 : 1.7}>
+            {icons[it.key]}
+          </svg>
+          {badge > 0 && (
+            <span className="absolute -end-2 -top-1.5 grid h-4 min-w-[1rem] place-items-center rounded-full bg-rose-600 px-1 text-[10px] font-bold text-white">
+              {badge > 9 ? '9+' : badge}
+            </span>
+          )}
+        </span>
         {t(it.key)}
       </Link>
     );
   }
 
-  const exploreActive = isActive('/');
+  const centerActive = isActive(center.href);
 
   return (
     <nav dir="ltr" className="fixed inset-x-0 bottom-0 z-30 border-t border-black/5 bg-white/90 backdrop-blur-md md:hidden">
@@ -66,20 +85,20 @@ export default function BottomNav({ session }: { session: SessionPayload | null 
           ))}
         </div>
 
-        {/* Raised center: Explore */}
+        {/* Raised center */}
         <div className="flex w-20 shrink-0 flex-col items-center">
           <Link
-            href="/"
-            aria-label={t('explore')}
+            href={center.href}
+            aria-label={t(center.key)}
             className={`-mt-6 flex h-14 w-14 items-center justify-center rounded-full bg-brand-600 text-white shadow-lg ring-4 ring-sand-50 transition-all duration-300 [transition-timing-function:var(--ease-spring)] active:scale-90 ${
-              exploreActive ? '-translate-y-1 bg-brand-700' : ''
+              centerActive ? '-translate-y-1 bg-brand-700' : ''
             }`}
           >
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9">
-              {icons.explore}
+              {icons[center.key]}
             </svg>
           </Link>
-          <span className={`mt-1 pb-2 text-[11px] ${exploreActive ? 'font-semibold text-brand-700' : 'text-ink/50'}`}>{t('explore')}</span>
+          <span className={`mt-1 pb-2 text-[11px] ${centerActive ? 'font-semibold text-brand-700' : 'text-ink/50'}`}>{t(center.key)}</span>
         </div>
 
         {/* Right pair */}

@@ -10,6 +10,16 @@ export default function AuthForm({ mode }: { mode: 'login' | 'register' }) {
   const [role, setRole] = useState<'guest' | 'host'>('guest');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showPw, setShowPw] = useState(false);
+  // Controlled so we can offer a "@gmail.com" completion; still submitted via name/FormData.
+  const [emailField, setEmailField] = useState('');
+
+  // Suggest "<typed>@gmail.com" while the user is typing a local-part: has letters, no "@"
+  // yet, and isn't a phone number (login's identifier field accepts phones too).
+  const gmailSuggestion =
+    emailField && !emailField.includes('@') && /[a-zA-Z]/.test(emailField) && !/^[+\d]+$/.test(emailField)
+      ? `${emailField}@gmail.com`
+      : null;
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -60,16 +70,51 @@ export default function AuthForm({ mode }: { mode: 'login' | 'register' }) {
             <button type="button" onClick={() => setRole('host')} className={role === 'host' ? 'btn-primary' : 'btn-ghost'}>{t('asHost')}</button>
           </div>
           <div><label className="label">{t('fullName')}</label><input name="fullName" required className="input" /></div>
-          <div><label className="label">{t('email')}</label><input name="email" type="email" className="input" /></div>
+          <div>
+            <label className="label">{t('email')}</label>
+            <input name="email" type="email" className="input" value={emailField} onChange={(e) => setEmailField(e.target.value)} />
+            <GmailSuggest suggestion={gmailSuggestion} onPick={setEmailField} />
+          </div>
           <div><label className="label">{t('phone')}</label><input name="phone" className="input" placeholder="+2137…" /></div>
         </>
       )}
 
       {mode === 'login' && (
-        <div><label className="label">{t('identifier')}</label><input name="identifier" required className="input" /></div>
+        <div>
+          <label className="label">{t('identifier')}</label>
+          <input name="identifier" required className="input" value={emailField} onChange={(e) => setEmailField(e.target.value)} />
+          <GmailSuggest suggestion={gmailSuggestion} onPick={setEmailField} />
+        </div>
       )}
 
-      <div><label className="label">{t('password')}</label><input name="password" type="password" required minLength={mode === 'register' ? 8 : 1} className="input" /></div>
+      <div>
+        <label className="label">{t('password')}</label>
+        <div className="relative">
+          <input
+            name="password"
+            type={showPw ? 'text' : 'password'}
+            required
+            minLength={mode === 'register' ? 8 : 1}
+            className="input pe-11"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPw((s) => !s)}
+            aria-label={showPw ? t('hidePassword') : t('showPassword')}
+            className="absolute inset-y-0 end-0 flex items-center px-3 text-ink/50 transition-colors hover:text-ink/70"
+          >
+            {showPw ? (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 3l18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M9.9 4.2A9.5 9.5 0 0 1 12 4c5 0 9 4.5 10 8a12.6 12.6 0 0 1-2.4 3.6M6.1 6.1A12.7 12.7 0 0 0 2 12c1 3.5 5 8 10 8a9.6 9.6 0 0 0 4-.9" />
+              </svg>
+            ) : (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" /><circle cx="12" cy="12" r="3" />
+              </svg>
+            )}
+          </button>
+        </div>
+      </div>
 
       {error && <p className="text-xs font-medium text-rose-600">{error}</p>}
       <button className="btn-primary btn-block" disabled={busy}>{t('submit')}</button>
@@ -88,5 +133,15 @@ export default function AuthForm({ mode }: { mode: 'login' | 'register' }) {
         </p>
       )}
     </form>
+  );
+}
+
+/** Tap-able "…@gmail.com" completion shown beneath an email/identifier field. */
+function GmailSuggest({ suggestion, onPick }: { suggestion: string | null; onPick: (v: string) => void }) {
+  if (!suggestion) return null;
+  return (
+    <button type="button" onClick={() => onPick(suggestion)} className="chip mt-1.5 text-brand-700" dir="ltr">
+      {suggestion}
+    </button>
   );
 }
