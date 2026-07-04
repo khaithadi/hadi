@@ -73,7 +73,8 @@ export function computePrice(input: PriceInput): PriceBreakdown {
   // subtotal with no added cleaning or service fees ("the price you see is what you pay").
   const commission = Math.round(nightlyTotal * commissionRate);
   const total = nightlyTotal;
-  const depositDue = Math.round(total * depositRate);
+  // Deposits are always rounded up to the nearest 500 DZD (easier cash handoff).
+  const depositDue = Math.ceil((total * depositRate) / 500) * 500;
   const balanceDue = total - depositDue;
   const hostPayout = nightlyTotal - commission;
 

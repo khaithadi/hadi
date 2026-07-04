@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   startOfMonth,
   endOfMonth,
@@ -14,6 +14,7 @@ import {
   isSameDay,
   startOfToday,
   format,
+  parseISO,
 } from 'date-fns';
 import { ar, fr, enUS } from 'date-fns/locale';
 
@@ -33,6 +34,8 @@ export default function DateRangePicker({
   value,
   onChange,
   autoNight = false,
+  blockedDays,
+  bookedRanges,
 }: {
   locale: string;
   value: DateRange;
@@ -43,6 +46,9 @@ export default function DateRangePicker({
    * Used by the booking widget; the search bar keeps the plain two-tap range.
    */
   autoNight?: boolean;
+  /** Property-scoped: dates already booked or manually blocked render disabled. */
+  blockedDays?: string[];
+  bookedRanges?: { checkIn: string; checkOut: string }[];
 }) {
   const today = startOfToday();
   const loc = dfLocale(locale);
@@ -58,6 +64,15 @@ export default function DateRangePicker({
   const weekdays = Array.from({ length: 7 }, (_, i) => format(addDays(weekStart, i), 'EEEEEE', { locale: loc }));
 
   const canGoPrev = isAfter(monthStart, startOfMonth(today));
+
+  const disabledSet = useMemo(() => {
+    const set = new Set<string>(blockedDays ?? []);
+    for (const b of bookedRanges ?? []) {
+      const nights = eachDayOfInterval({ start: parseISO(b.checkIn), end: addDays(parseISO(b.checkOut), -1) });
+      for (const n of nights) set.add(format(n, 'yyyy-MM-dd'));
+    }
+    return set;
+  }, [blockedDays, bookedRanges]);
 
   function pick(day: Date) {
     const { checkIn, checkOut } = value;
@@ -124,6 +139,8 @@ export default function DateRangePicker({
         ))}
         {days.map((day) => {
           const past = isBefore(day, today);
+          const booked = disabledSet.has(format(day, 'yyyy-MM-dd'));
+          const disabled = past || booked;
           const isStart = value.checkIn && isSameDay(day, value.checkIn);
           const isEnd = value.checkOut && isSameDay(day, value.checkOut);
           const inRange =
@@ -133,11 +150,13 @@ export default function DateRangePicker({
             <button
               key={day.toISOString()}
               type="button"
-              disabled={past}
+              disabled={disabled}
               onClick={() => pick(day)}
               className={[
                 'mx-auto flex h-9 w-9 items-center justify-center rounded-full transition duration-150 active:scale-90',
-                past ? 'cursor-default text-ink/25' : 'hover:bg-brand-100',
+                past ? 'cursor-default text-ink/25' : '',
+                booked && !past ? 'cursor-not-allowed text-ink/25 line-through' : '',
+                !disabled ? 'hover:bg-brand-100' : '',
                 inRange ? 'bg-brand-100' : '',
                 selected ? 'scale-105 bg-brand-600 text-white hover:bg-brand-600' : '',
               ].join(' ')}

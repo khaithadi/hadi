@@ -42,7 +42,7 @@
   "booking": {
     "title": "تأكيد الحجز", "paymentMethod": "طريقة الدفع", "pay": "ادفع العربون وأكمل", "success": "تم استلام طلبك بنجاح",
     "pending": "بانتظار موافقة المضيف", "confirmed": "تم تأكيد الحجز", "myTrips": "رحلاتي", "upcoming": "قادمة", "past": "منتهية", "cancelled": "ملغاة",
-    "empty": "ليس لديك أي حجوزات بعد", "reference": "رقم الحجز", "guests": "ضيوف", "leaveReview": "اترك تقييماً", "yourReview": "تقييمك", "comment": "شاركنا تجربتك (اختياري)", "submitReview": "إرسال التقييم"
+    "empty": "ليس لديك أي حجوزات بعد", "reference": "رقم الحجز", "guests": "ضيوف", "leaveReview": "اترك تقييماً", "yourReview": "تقييمك", "comment": "شاركنا تجربتك (اختياري)", "submitReview": "إرسال التقييم", "depositWindowBody": "تواصل مع المضيف لتسليم العربون خلال المدة المتبقية، وإلا يُلغى الطلب تلقائياً"
   },
   "auth": {
     "loginTitle": "تسجيل الدخول", "registerTitle": "إنشاء حساب جديد", "identifier": "البريد أو رقم الهاتف", "password": "كلمة المرور",
@@ -51,7 +51,7 @@
   },
   "host": {
     "dashboard": "لوحة المضيف", "earnings": "الأرباح", "occupancy": "نسبة الإشغال", "listings": "عقاراتي", "incoming": "الحجوزات الواردة",
-    "newListing": "أضف عقاراً", "accept": "قبول", "decline": "رفض", "publish": "نشر العقار", "pendingReview": "قيد المراجعة", "editListing": "تعديل العقار", "save": "حفظ التغييرات", "edit": "تعديل"
+    "newListing": "أضف عقاراً", "accept": "قبول", "decline": "رفض", "publish": "نشر العقار", "pendingReview": "قيد المراجعة", "editListing": "تعديل العقار", "save": "حفظ التغييرات", "edit": "تعديل", "confirmAfterDeposit": "أكّد فقط بعد استلام العربون"
   },
   "admin": { "dashboard": "لوحة الإدارة", "moderation": "مراجعة العقارات", "users": "المستخدمون", "hosts": "المضيفون", "listings": "العقارات", "bookings": "الحجوزات", "deposits": "العرابين", "approve": "موافقة", "reject": "رفض", "kpis": "المؤشرات" },
   "account": { "title": "حسابي", "language": "اللغة", "becomeHost": "انشر مسكنك واربح", "favorites": "الوجهات المفضّلة", "transactions": "معاملاتي", "security": "الحساب وكلمة المرور", "terms": "الشروط والأحكام", "privacy": "سياسة الخصوصية", "editProfile": "تعديل الملف الشخصي", "name": "الاسم الكامل", "phone": "رقم الهاتف", "changePassword": "تغيير كلمة المرور", "currentPassword": "كلمة المرور الحالية", "newPassword": "كلمة المرور الجديدة", "save": "حفظ", "saved": "تم الحفظ" },

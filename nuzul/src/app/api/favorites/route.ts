@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/db';
 import { requireUser } from '@/lib/auth/rbac';
 import { ok, handle } from '@/lib/api';
@@ -26,10 +27,20 @@ export async function POST(req: Request) {
       where: { userId_propertyId: { userId: session.sub, propertyId } },
     });
     if (existing) {
-      await prisma.favorite.delete({ where: { userId_propertyId: { userId: session.sub, propertyId } } });
+      try {
+        await prisma.favorite.delete({ where: { userId_propertyId: { userId: session.sub, propertyId } } });
+      } catch (e) {
+        // Already deleted by a concurrent request — the end state (not favorited) still holds.
+        if (!(e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2025')) throw e;
+      }
       return ok({ favorited: false });
     }
-    await prisma.favorite.create({ data: { userId: session.sub, propertyId } });
+    try {
+      await prisma.favorite.create({ data: { userId: session.sub, propertyId } });
+    } catch (e) {
+      // A concurrent request (double-click, dev double-invoke) already created it.
+      if (!(e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002')) throw e;
+    }
     return ok({ favorited: true });
   });
 }

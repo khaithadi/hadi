@@ -23,8 +23,8 @@ describe('computePrice', () => {
     expect(p.cleaningFee).toBe(0); // no guest cleaning fee
     expect(p.commission).toBe(3564); // 12% of 29700, taken from the host
     expect(p.total).toBe(29700); // guest pays the nightly subtotal only
-    expect(p.depositDue).toBe(5940); // 20% of total
-    expect(p.balanceDue).toBe(23760); // total - deposit
+    expect(p.depositDue).toBe(6000); // 20% of total (5940), rounded up to the nearest 500
+    expect(p.balanceDue).toBe(23700); // total - deposit
     expect(p.hostPayout).toBe(26136); // nightly - commission
   });
 

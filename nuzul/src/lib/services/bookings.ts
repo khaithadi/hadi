@@ -50,6 +50,11 @@ export async function createBooking(guestId: string, input: BookingCreateInput) 
 
   // Instant-book properties skip host approval and confirm on successful deposit.
   const isInstant = property.bookingMode === 'instant';
+  const offlineMethod = isOfflineMethod(input.method);
+  // Offline request bookings give the guest 24h to deliver the deposit before the
+  // host must confirm receipt (see setBookingStatus); instant/online bookings don't need it.
+  const depositDeadline =
+    !isInstant && offlineMethod ? new Date(Date.now() + 24 * 60 * 60 * 1000) : null;
 
   const result = await prisma.$transaction(async (tx) => {
     const seq = await tx.booking.count();
@@ -71,12 +76,13 @@ export async function createBooking(guestId: string, input: BookingCreateInput) 
         total: price.total,
         depositDue: price.depositDue,
         balanceDue: price.balanceDue,
+        depositDeadline,
       },
     });
 
     // Capture the online deposit through the active payment provider. Offline
     // methods (cash / bank transfer) are recorded as pending and settled later.
-    const offline = isOfflineMethod(input.method);
+    const offline = offlineMethod;
     const idempotencyKey = `dep_${booking.id}`;
     const intent = offline
       ? { providerRef: null as string | null, status: 'pending' as const, redirectUrl: null }
@@ -151,7 +157,10 @@ export async function setBookingStatus(
     throw new BookingError('forbidden', 'Not allowed');
   }
 
-  const updated = await prisma.booking.update({ where: { id: bookingId }, data: { status } });
+  const updated = await prisma.booking.update({
+    where: { id: bookingId },
+    data: { status, depositDeadline: status === 'confirmed' ? null : undefined },
+  });
 
   // On confirmation, schedule the host payout record.
   if (status === 'confirmed') {

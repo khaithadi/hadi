@@ -8,6 +8,7 @@ import StatusBadge from '@/components/StatusBadge';
 import MessageButton from '@/components/MessageButton';
 import ReviewForm from '@/components/ReviewForm';
 import Stars from '@/components/Stars';
+import DepositCountdown from '@/components/DepositCountdown';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,6 +25,11 @@ export default async function TripsPage({ params: { locale } }: { params: { loca
   await prisma.booking.updateMany({
     where: { guestId: session!.sub, status: 'confirmed', checkOut: { lt: new Date() } },
     data: { status: 'completed' },
+  });
+  // Requests whose 24h deposit window lapsed without host confirmation expire and free the dates.
+  await prisma.booking.updateMany({
+    where: { guestId: session!.sub, status: 'pending', depositDeadline: { lt: new Date() } },
+    data: { status: 'expired' },
   });
 
   const bookings = await prisma.booking.findMany({
@@ -59,6 +65,14 @@ export default async function TripsPage({ params: { locale } }: { params: { loca
                   </div>
                 </div>
               </div>
+
+              {/* Deposit window: offline (cash/bank-transfer) requests get 24h to deliver the deposit */}
+              {b.status === 'pending' && b.depositDeadline && (
+                <div className="mt-2 flex items-center justify-between gap-2 border-t border-black/5 pt-2 text-xs text-ink/60">
+                  <span>{t('depositWindowBody')}</span>
+                  <DepositCountdown deadline={b.depositDeadline.toISOString()} />
+                </div>
+              )}
 
               {/* Review: prompt after a completed stay, or show the one already left */}
               {b.status === 'completed' && !b.review && <ReviewForm bookingId={b.id} />}
