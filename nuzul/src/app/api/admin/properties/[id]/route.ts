@@ -1,7 +1,9 @@
 import { z } from 'zod';
+import { revalidateTag } from 'next/cache';
 import { prisma } from '@/lib/db';
 import { requireRole } from '@/lib/auth/rbac';
 import { notify } from '@/lib/notifications/service';
+import { PROPERTIES_TAG } from '@/lib/services/properties';
 import { ok, fail, handle } from '@/lib/api';
 
 const schema = z.object({
@@ -21,6 +23,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 
     const status = statusMap[action];
     await prisma.property.update({ where: { id: property.id }, data: { status } });
+    revalidateTag(PROPERTIES_TAG);
     await prisma.adminAction.create({
       data: { adminId: session.sub, action: `${action}_listing`, targetType: 'property', targetId: property.id, note },
     });

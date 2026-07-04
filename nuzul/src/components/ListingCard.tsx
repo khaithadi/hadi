@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { Link } from '@/lib/i18n/navigation';
 import { formatMoney } from '@/lib/format';
@@ -28,7 +29,13 @@ export default async function ListingCard({ p, favorited }: { p: ListingCardData
       <div className="card overflow-hidden transition duration-300 ease-out will-change-transform group-hover:-translate-y-1 group-hover:shadow-lg">
         <div className="skeleton relative aspect-[4/3]">
           {p.images[0] && (
-            <img src={p.images[0].url} alt={p.title} className="relative z-[1] h-full w-full object-cover transition group-hover:scale-[1.03]" loading="lazy" />
+            <Image
+              src={p.images[0].url}
+              alt={p.title}
+              fill
+              sizes="(max-width: 768px) 50vw, 25vw"
+              className="relative z-[1] object-cover transition group-hover:scale-[1.03]"
+            />
           )}
           <div className="absolute end-2 top-2">
             <FavoriteButton propertyId={p.id} initial={favorited} />

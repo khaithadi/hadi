@@ -1,7 +1,8 @@
+import { revalidateTag } from 'next/cache';
 import { prisma } from '@/lib/db';
 import { requireRole } from '@/lib/auth/rbac';
 import { propertySearchSchema, propertyCreateSchema } from '@/lib/validators';
-import { searchProperties } from '@/lib/services/properties';
+import { searchProperties, PROPERTIES_TAG } from '@/lib/services/properties';
 import { slugify } from '@/lib/format';
 import { ok, handle, paginate } from '@/lib/api';
 
@@ -48,6 +49,7 @@ export async function POST(req: Request) {
         houseRules: { create: input.houseRules.map((text) => ({ text })) },
       },
     });
+    revalidateTag(PROPERTIES_TAG);
     return ok(property, 201);
   });
 }

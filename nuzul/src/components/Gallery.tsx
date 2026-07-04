@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useRef, useState } from 'react';
 import FavoriteButton from './FavoriteButton';
 
@@ -41,13 +42,16 @@ export default function Gallery({
       >
         {images.length === 0 && <div className="h-full w-full shrink-0 bg-sand-100" />}
         {images.map((img, i) => (
-          <img
-            key={i}
-            src={img.url}
-            alt=""
-            className="h-full w-full shrink-0 snap-center object-cover"
-            style={{ flexBasis: '100%' }}
-          />
+          <div key={i} className="relative h-full w-full shrink-0 snap-center" style={{ flexBasis: '100%' }}>
+            <Image
+              src={img.url}
+              alt=""
+              fill
+              sizes="100vw"
+              priority={i === 0}
+              className="object-cover"
+            />
+          </div>
         ))}
       </div>
 

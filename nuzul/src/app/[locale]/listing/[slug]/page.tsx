@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getLocale, getTranslations, setRequestLocale } from 'next-intl/server';
@@ -57,7 +58,16 @@ export default async function ListingPage({ params }: { params: { locale: string
       {/* Gallery — desktop grid */}
       <div className="hidden gap-2 overflow-hidden rounded-2xl md:grid md:grid-cols-4 md:grid-rows-2">
         {p.images.slice(0, 5).map((img, i) => (
-          <img key={img.id} src={img.url} alt={p.title} className={`h-full w-full object-cover ${i === 0 ? 'md:col-span-2 md:row-span-2' : 'h-44'}`} />
+          <div key={img.id} className={`relative ${i === 0 ? 'md:col-span-2 md:row-span-2' : 'h-44'}`}>
+            <Image
+              src={img.url}
+              alt={p.title}
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              priority={i === 0}
+              className="object-cover"
+            />
+          </div>
         ))}
         {p.images.length === 0 && <div className="h-60 w-full bg-sand-100 md:col-span-4" />}
       </div>

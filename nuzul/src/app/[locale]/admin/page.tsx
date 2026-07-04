@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { getLocale, getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '@/lib/i18n/navigation';
 import { prisma } from '@/lib/db';
@@ -63,7 +64,7 @@ export default async function AdminDashboard({ params: { locale } }: { params: {
           {pendingList.map((p) => (
             <div key={p.id} className="card flex items-center justify-between gap-3 p-3">
               <div className="flex items-center gap-3">
-                {p.images[0] && <img src={p.images[0].url} alt="" className="h-14 w-16 rounded-lg object-cover" />}
+                {p.images[0] && <Image src={p.images[0].url} alt="" width={64} height={56} className="h-14 w-16 rounded-lg object-cover" />}
                 <div>
                   <p className="text-sm font-bold">{p.title}</p>
                   <p className="text-xs text-ink/50">{p.host.fullName} · {p.wilaya.nameAr} · {formatMoney(p.pricePerNight, loc)}</p>

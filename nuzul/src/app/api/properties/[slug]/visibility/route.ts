@@ -1,5 +1,7 @@
+import { revalidateTag } from 'next/cache';
 import { prisma } from '@/lib/db';
 import { requireUser } from '@/lib/auth/rbac';
+import { PROPERTIES_TAG } from '@/lib/services/properties';
 import { ok, fail, handle } from '@/lib/api';
 
 // Host-facing hide/show: toggles an approved listing to `draft` (hidden from search) and back.
@@ -18,6 +20,7 @@ export async function PATCH(_req: Request, { params }: { params: { slug: string 
     }
     const status = property.status === 'approved' ? 'draft' : 'approved';
     await prisma.property.update({ where: { id: property.id }, data: { status } });
+    revalidateTag(PROPERTIES_TAG);
     return ok({ status });
   });
 }

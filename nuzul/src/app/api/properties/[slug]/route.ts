@@ -1,7 +1,8 @@
+import { revalidateTag } from 'next/cache';
 import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/db';
 import { requireUser } from '@/lib/auth/rbac';
-import { getPropertyBySlug } from '@/lib/services/properties';
+import { getPropertyBySlug, PROPERTIES_TAG } from '@/lib/services/properties';
 import { propertyCreateSchema } from '@/lib/validators';
 import { ok, fail, handle } from '@/lib/api';
 
@@ -53,6 +54,7 @@ export async function PATCH(req: Request, { params }: { params: { slug: string }
         houseRules: { deleteMany: {}, create: input.houseRules.map((text) => ({ text })) },
       },
     });
+    revalidateTag(PROPERTIES_TAG);
     return ok(property);
   });
 }
@@ -74,6 +76,7 @@ export async function DELETE(_req: Request, { params }: { params: { slug: string
       }
       throw e;
     }
+    revalidateTag(PROPERTIES_TAG);
     return ok({ ok: true });
   });
 }
