@@ -6,6 +6,7 @@ import { formatMoney, formatDate } from '@/lib/format';
 import type { Locale } from '@/lib/i18n/config';
 import StatusBadge from '@/components/StatusBadge';
 import HostBookingActions from '@/components/HostBookingActions';
+import HostListingActions from '@/components/HostListingActions';
 import MessageButton from '@/components/MessageButton';
 import DepositCountdown from '@/components/DepositCountdown';
 
@@ -50,9 +51,12 @@ export default async function HostDashboard({ params: { locale } }: { params: { 
 
   return (
     <div className="container-app py-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         <h1 className="text-xl font-extrabold">{t('dashboard')}</h1>
-        <Link href="/host/new" className="btn-primary px-4 py-2 text-sm">＋ {t('newListing')}</Link>
+        <div className="flex items-center gap-2">
+          <Link href="/host/bookings" className="btn-ghost px-3 py-2 text-sm">{t('upcomingBookings')}</Link>
+          <Link href="/host/new" className="btn-primary px-4 py-2 text-sm">＋ {t('newListing')}</Link>
+        </div>
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
@@ -95,23 +99,28 @@ export default async function HostDashboard({ params: { locale } }: { params: { 
         <h2 className="mb-2 font-bold">{t('listings')}</h2>
         <div className="stagger grid gap-3 md:grid-cols-2">
           {listings.map((l) => (
-            <div key={l.id} className="lift card flex items-center gap-3 overflow-hidden p-3">
-              <Link href={`/listing/${l.slug}`} className="flex flex-1 items-center gap-3 overflow-hidden">
-                {l.images[0] && <img src={l.images[0].url} alt="" className="h-16 w-20 shrink-0 rounded-lg object-cover" />}
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="line-clamp-1 text-sm font-bold">{l.title}</p>
-                    <StatusBadge status={l.status} />
+            <div key={l.id} className="card overflow-hidden p-3">
+              <div className="flex items-center gap-3">
+                <Link href={`/listing/${l.slug}`} className="flex flex-1 items-center gap-3 overflow-hidden">
+                  {l.images[0] && <img src={l.images[0].url} alt="" className="h-16 w-20 shrink-0 rounded-lg object-cover" />}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="line-clamp-1 text-sm font-bold">{l.title}</p>
+                      <StatusBadge status={l.status} />
+                    </div>
+                    <p className="mt-1 text-xs text-ink/50">{formatMoney(l.pricePerNight, loc)} · {l._count.bookings} {t('bookingsShort')}</p>
                   </div>
-                  <p className="mt-1 text-xs text-ink/50">{formatMoney(l.pricePerNight, loc)} · {l._count.bookings} bookings</p>
-                </div>
-              </Link>
-              <Link
-                href={`/host/${l.slug}/edit`}
-                className="shrink-0 rounded-lg border border-brand-200 px-3 py-1.5 text-xs font-semibold text-brand-700 transition-colors hover:bg-brand-50"
-              >
-                {t('edit')}
-              </Link>
+                </Link>
+                <Link
+                  href={`/host/${l.slug}/edit`}
+                  className="shrink-0 rounded-lg border border-brand-200 px-3 py-1.5 text-xs font-semibold text-brand-700 transition-colors hover:bg-brand-50"
+                >
+                  {t('edit')}
+                </Link>
+              </div>
+              <div className="mt-2 flex justify-end border-t border-black/5 pt-2">
+                <HostListingActions slug={l.slug} status={l.status} />
+              </div>
             </div>
           ))}
         </div>

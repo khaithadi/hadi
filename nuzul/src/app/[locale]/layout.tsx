@@ -9,6 +9,8 @@ import PageTransition from '@/components/PageTransition';
 import BottomNav from '@/components/BottomNav';
 import InstallPrompt from '@/components/InstallPrompt';
 import ServiceWorkerRegister from '@/components/ServiceWorkerRegister';
+import NumberInputSelect from '@/components/NumberInputSelect';
+import NotificationsProvider from '@/components/NotificationsProvider';
 import '../globals.css';
 
 export function generateStaticParams() {
@@ -54,13 +56,16 @@ export default async function LocaleLayout({
     <html lang={locale} dir={dir}>
       <body className="min-h-dvh pb-16 md:pb-0">
         <NextIntlClientProvider messages={messages}>
-          <SiteHeader session={session} />
-          <main className="min-h-[70vh]">
-            <PageTransition>{children}</PageTransition>
-          </main>
-          <BottomNav session={session} />
+          <NotificationsProvider enabled={!!session}>
+            <SiteHeader session={session} />
+            <main className="min-h-[70vh]">
+              <PageTransition>{children}</PageTransition>
+            </main>
+            <BottomNav session={session} />
+          </NotificationsProvider>
           <InstallPrompt />
           <ServiceWorkerRegister />
+          <NumberInputSelect />
         </NextIntlClientProvider>
       </body>
     </html>

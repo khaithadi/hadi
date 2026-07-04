@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/db';
 import { requireUser } from '@/lib/auth/rbac';
 import { getPropertyBySlug } from '@/lib/services/properties';
@@ -64,7 +65,15 @@ export async function DELETE(_req: Request, { params }: { params: { slug: string
     if (property.hostId !== session.sub && session.role !== 'admin') {
       return fail('forbidden', 'Not allowed', 403);
     }
-    await prisma.property.delete({ where: { id: property.id } });
+    try {
+      await prisma.property.delete({ where: { id: property.id } });
+    } catch (e) {
+      // FK restrict: the listing still has bookings. Ask the host to hide it instead.
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2003') {
+        return fail('has_bookings', 'This listing has bookings and cannot be deleted', 409);
+      }
+      throw e;
+    }
     return ok({ ok: true });
   });
 }

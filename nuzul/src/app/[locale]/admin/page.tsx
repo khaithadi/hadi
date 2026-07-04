@@ -1,4 +1,5 @@
 import { getLocale, getTranslations, setRequestLocale } from 'next-intl/server';
+import { Link } from '@/lib/i18n/navigation';
 import { prisma } from '@/lib/db';
 import { formatMoney } from '@/lib/format';
 import type { Locale } from '@/lib/i18n/config';
@@ -11,7 +12,7 @@ export default async function AdminDashboard({ params: { locale } }: { params: {
   const loc = (await getLocale()) as Locale;
   const t = await getTranslations('admin');
 
-  const [users, hosts, approved, pendingList, bookings, deposits] = await Promise.all([
+  const [users, hosts, approved, pendingList, bookings] = await Promise.all([
     prisma.user.count(),
     prisma.user.count({ where: { role: 'host' } }),
     prisma.property.count({ where: { status: 'approved' } }),
@@ -21,7 +22,6 @@ export default async function AdminDashboard({ params: { locale } }: { params: {
       orderBy: { createdAt: 'asc' },
     }),
     prisma.booking.count(),
-    prisma.payment.aggregate({ where: { type: 'deposit', status: 'succeeded' }, _sum: { amount: true } }),
   ]);
 
   const kpis = [
@@ -29,19 +29,30 @@ export default async function AdminDashboard({ params: { locale } }: { params: {
     { label: t('hosts'), value: String(hosts) },
     { label: t('listings'), value: String(approved) },
     { label: t('bookings'), value: String(bookings) },
-    { label: t('deposits'), value: formatMoney(deposits._sum.amount ?? 0, loc) },
+  ];
+
+  const quickLinks = [
+    { href: '/admin/users', label: t('users') },
+    { href: '/admin/listings', label: t('listings') },
+    { href: '/admin/bookings', label: t('bookings') },
   ];
 
   return (
     <div className="container-app py-6">
       <h1 className="text-xl font-extrabold">{t('dashboard')}</h1>
 
-      <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-5">
+      <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
         {kpis.map((k) => (
           <div key={k.label} className="card p-4">
             <p className="text-xs text-ink/50">{k.label}</p>
             <p className="mt-1 text-lg font-extrabold text-brand-700">{k.value}</p>
           </div>
+        ))}
+      </div>
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        {quickLinks.map((q) => (
+          <Link key={q.href} href={q.href} className="btn-ghost px-4 py-2 text-sm">{q.label}</Link>
         ))}
       </div>
 
