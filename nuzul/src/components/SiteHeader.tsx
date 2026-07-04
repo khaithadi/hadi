@@ -7,7 +7,7 @@ export default async function SiteHeader({ session }: { session: SessionPayload 
   const t = await getTranslations('nav');
 
   return (
-    <header className="sticky top-0 z-30 border-b border-black/5 bg-sand-50/90 backdrop-blur">
+    <header className="sticky top-0 z-30 border-b border-black/5 bg-sand-50/85 backdrop-blur-md">
       <div className="container-app flex h-14 items-center justify-between gap-3">
         <Link href="/" className="text-lg">
           <Logo />

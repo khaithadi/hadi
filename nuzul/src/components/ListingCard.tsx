@@ -26,9 +26,9 @@ export default async function ListingCard({ p, favorited }: { p: ListingCardData
   return (
     <Link href={`/listing/${p.slug}`} className="group block">
       <div className="card overflow-hidden transition duration-300 ease-out will-change-transform group-hover:-translate-y-1 group-hover:shadow-lg">
-        <div className="relative aspect-[4/3] bg-sand-100">
+        <div className="skeleton relative aspect-[4/3]">
           {p.images[0] && (
-            <img src={p.images[0].url} alt={p.title} className="h-full w-full object-cover transition group-hover:scale-[1.03]" loading="lazy" />
+            <img src={p.images[0].url} alt={p.title} className="relative z-[1] h-full w-full object-cover transition group-hover:scale-[1.03]" loading="lazy" />
           )}
           <div className="absolute end-2 top-2">
             <FavoriteButton propertyId={p.id} initial={favorited} />

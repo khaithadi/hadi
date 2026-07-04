@@ -42,7 +42,7 @@ export default function BottomNav({ session }: { session: SessionPayload | null 
     return (
       <Link
         href={it.href}
-        className={`flex flex-1 flex-col items-center gap-1 py-2 text-[11px] transition-transform duration-200 active:scale-95 ${
+        className={`flex flex-1 flex-col items-center gap-1 py-2 text-[11px] transition-all duration-300 [transition-timing-function:var(--ease-spring)] active:scale-95 ${
           active ? '-translate-y-1 text-brand-700' : 'text-ink/50'
         }`}
       >
@@ -57,7 +57,7 @@ export default function BottomNav({ session }: { session: SessionPayload | null 
   const exploreActive = isActive('/');
 
   return (
-    <nav dir="ltr" className="fixed inset-x-0 bottom-0 z-30 border-t border-black/5 bg-white/95 backdrop-blur md:hidden">
+    <nav dir="ltr" className="fixed inset-x-0 bottom-0 z-30 border-t border-black/5 bg-white/90 backdrop-blur-md md:hidden">
       <div className="container-app flex items-end justify-between">
         {/* Left pair */}
         <div className="flex flex-1">
@@ -71,7 +71,7 @@ export default function BottomNav({ session }: { session: SessionPayload | null 
           <Link
             href="/"
             aria-label={t('explore')}
-            className={`-mt-6 flex h-14 w-14 items-center justify-center rounded-full bg-brand-600 text-white shadow-lg ring-4 ring-sand-50 transition-transform duration-200 active:scale-95 ${
+            className={`-mt-6 flex h-14 w-14 items-center justify-center rounded-full bg-brand-600 text-white shadow-lg ring-4 ring-sand-50 transition-all duration-300 [transition-timing-function:var(--ease-spring)] active:scale-90 ${
               exploreActive ? '-translate-y-1 bg-brand-700' : ''
             }`}
           >

@@ -61,7 +61,7 @@ export default async function SearchPage({
         <p className="mt-10 text-center text-ink/50">{t('noResults')}</p>
       ) : (
         <ResultsView pins={pins} listLabel={t('list')} mapLabel={t('map')}>
-          <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-4">
+          <div className="stagger mt-3 grid grid-cols-2 gap-3 md:grid-cols-4">
             {data.map((p) => (
               <ListingCard key={p.id} p={p} />
             ))}

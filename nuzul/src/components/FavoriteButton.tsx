@@ -32,9 +32,10 @@ export default function FavoriteButton({ propertyId, initial = false }: { proper
       onClick={toggle}
       disabled={busy}
       aria-label="favorite"
-      className="grid h-9 w-9 place-items-center rounded-full bg-white/90 shadow ring-1 ring-black/5"
+      className="grid h-9 w-9 place-items-center rounded-full bg-white/90 shadow ring-1 ring-black/5 transition-transform active:scale-90"
     >
-      <svg width="18" height="18" viewBox="0 0 24 24" fill={fav ? '#e11d48' : 'none'} stroke={fav ? '#e11d48' : '#475569'} strokeWidth="1.8">
+      {/* key replays the pop animation on every toggle-on */}
+      <svg key={String(fav)} className={fav ? 'heart-pop' : undefined} width="18" height="18" viewBox="0 0 24 24" fill={fav ? '#e11d48' : 'none'} stroke={fav ? '#e11d48' : '#475569'} strokeWidth="1.8">
         <path d="M12 20s-7-4.3-9.3-8.2C1.2 9 2.4 5.5 5.7 5.5c2 0 3.2 1.3 3.3 1.7.1-.4 1.3-1.7 3.3-1.7 3.3 0 4.5 3.5 3 6.3C19 15.7 12 20 12 20z" />
       </svg>
     </button>
