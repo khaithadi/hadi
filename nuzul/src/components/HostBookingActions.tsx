@@ -22,8 +22,14 @@ export default function HostBookingActions({ bookingId }: { bookingId: string })
 
   return (
     <div className="flex gap-2">
-      <button disabled={busy} onClick={() => act('confirmed')} className="btn-primary px-3 py-1.5 text-xs">{t('accept')}</button>
-      <button disabled={busy} onClick={() => act('declined')} className="btn-ghost px-3 py-1.5 text-xs text-rose-600">{t('decline')}</button>
+      <button disabled={busy} onClick={() => act('confirmed')} className="btn-primary flex items-center gap-1.5 px-3 py-1.5 text-xs">
+        {busy && <span className="h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent" />}
+        {t('accept')}
+      </button>
+      <button disabled={busy} onClick={() => act('declined')} className="btn-ghost flex items-center gap-1.5 px-3 py-1.5 text-xs text-rose-600">
+        {busy && <span className="h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent" />}
+        {t('decline')}
+      </button>
     </div>
   );
 }

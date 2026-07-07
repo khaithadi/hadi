@@ -1,0 +1,32 @@
+name: Nuzul keep-warm
+
+# Pings Nuzul's health endpoint on a schedule to keep the Vercel serverless function and the
+# Supabase pooled DB connection warm, reducing the "cold blip" some requests see when the
+# function/connection has gone idle (see src/lib/db.ts and src/app/api/health/route.ts).
+#
+# This is defense-in-depth, not a guarantee: GitHub Actions schedules are best-effort and can
+# be delayed under load, and GitHub disables scheduled workflows after 60 days of repo
+# inactivity. The retry logic in nuzul/src/lib/db.ts remains the real correctness safety net —
+# this just reduces how often that path gets exercised for real users.
+#
+# Requires a repository variable NUZUL_SITE_URL set to the production URL (e.g.
+# https://your-app.vercel.app) — Settings → Secrets and variables → Actions → Variables.
+# The URL isn't in the repo; it only lives as Vercel's NEXT_PUBLIC_SITE_URL env var.
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping /api/health
+        env:
+          NUZUL_SITE_URL: ${{ vars.NUZUL_SITE_URL }}
+        run: |
+          if [ -z "$NUZUL_SITE_URL" ]; then
+            echo "NUZUL_SITE_URL repo variable is not set — skipping (Settings > Secrets and variables > Actions > Variables)."
+            exit 0
+          fi
+          curl -sf --max-time 15 "$NUZUL_SITE_URL/api/health"

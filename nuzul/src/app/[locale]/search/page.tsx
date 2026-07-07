@@ -10,8 +10,6 @@ import ListingCard from '@/components/ListingCard';
 import ResultsView from '@/components/ResultsView';
 import type { Pin } from '@/components/ResultsMap';
 
-export const dynamic = 'force-dynamic';
-
 export default async function SearchPage({
   params: { locale },
   searchParams,
