@@ -34,8 +34,9 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
         cleanupOutdatedCaches: true,
         navigateFallback: 'index.html',
-        // Never serve Mithaq's shell for the separate Ghabti app at /forest-rental/.
-        navigateFallbackDenylist: [/forest-rental/],
+        // Never serve Mithaq's shell for the separate Ghabti app (/ghabti/,
+        // plus the legacy /forest-rental/ redirect).
+        navigateFallbackDenylist: [/ghabti/, /forest-rental/],
         maximumFileSizeToCacheInBytes: 5_000_000,
       },
     }),
