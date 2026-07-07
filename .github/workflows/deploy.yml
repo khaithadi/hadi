@@ -1,9 +1,10 @@
 name: Deploy to GitHub Pages
 
 # Build both Vite apps and publish them to GitHub Pages on every push to main:
-#   /                → ميثاق Mithaq   (root app)
-#   /forest-rental/  → غابتي Ghabti   (forest & villa rental app)
+#   /         → ميثاق Mithaq   (mithaq/)
+#   /ghabti/  → غابتي Ghabti   (ghabti/, formerly /forest-rental/ — old URL redirects)
 # Both apps use `base: './'`, so their assets resolve correctly under any subpath.
+# نزل Nuzul (nuzul/) deploys separately via Vercel.
 on:
   push:
     branches: [main]
@@ -32,32 +33,55 @@ jobs:
         with:
           node-version: 20
           cache: npm
+          cache-dependency-path: |
+            mithaq/package-lock.json
+            ghabti/package-lock.json
 
-      # ---- Mithaq (root app) → site root ----
+      # ---- Mithaq → site root ----
       - name: Install dependencies (Mithaq)
         run: npm ci
+        working-directory: mithaq
 
       - name: Build Mithaq
         run: npm run build
+        working-directory: mithaq
 
       - name: Stage Mithaq at site root
         run: |
           mkdir -p _site
-          cp -r dist/. _site/
+          cp -r mithaq/dist/. _site/
 
-      # ---- Ghabti (forest-rental) → /forest-rental ----
+      # ---- Ghabti → /ghabti ----
       - name: Install dependencies (Ghabti)
         run: npm ci
-        working-directory: forest-rental
+        working-directory: ghabti
 
       - name: Build Ghabti
         run: npm run build
-        working-directory: forest-rental
+        working-directory: ghabti
 
-      - name: Stage Ghabti at /forest-rental
+      - name: Stage Ghabti at /ghabti
+        run: |
+          mkdir -p _site/ghabti
+          cp -r ghabti/dist/. _site/ghabti/
+
+      # Old Ghabti URL keeps working: /forest-rental/ → /ghabti/
+      - name: Redirect old forest-rental URL
         run: |
           mkdir -p _site/forest-rental
-          cp -r forest-rental/dist/. _site/forest-rental/
+          cat > _site/forest-rental/index.html <<'HTML'
+          <!doctype html>
+          <html lang="ar" dir="rtl">
+          <head>
+            <meta charset="utf-8">
+            <meta http-equiv="refresh" content="0; url=../ghabti/">
+            <title>غابتي — العنوان الجديد</title>
+          </head>
+          <body>
+            <p>انتقلت غابتي إلى عنوان جديد — <a href="../ghabti/">اضغط هنا</a></p>
+          </body>
+          </html>
+          HTML
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

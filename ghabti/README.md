@@ -31,7 +31,7 @@ and books, **مالك (host)** lists properties and manages reservations.
 من DOM ليسهُل اختباره وإعادة استخدامه لاحقاً عند النقل إلى تطبيق جوال أصلي.
 
 ```bash
-cd forest-rental
+cd ghabti
 npm install
 npm run dev          # خادم تطوير محلي
 npm run build        # بناء للإنتاج → dist/
