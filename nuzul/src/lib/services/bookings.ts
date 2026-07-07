@@ -18,7 +18,11 @@ export class BookingError extends Error {
 }
 
 export async function createBooking(guestId: string, input: BookingCreateInput) {
-  const property = await prisma.property.findUnique({ where: { id: input.propertyId } });
+  // Property lookup and rates are independent reads — overlap them instead of serializing.
+  const [property, rates] = await Promise.all([
+    prisma.property.findUnique({ where: { id: input.propertyId } }),
+    getRates(),
+  ]);
   if (!property || property.status !== 'approved') {
     throw new BookingError('not_found', 'Property not available');
   }
@@ -40,7 +44,6 @@ export async function createBooking(guestId: string, input: BookingCreateInput) 
     throw new BookingError('capacity', 'Too many guests for this property');
   }
 
-  const rates = await getRates();
   const price = computePrice({
     pricePerNight: property.pricePerNight,
     nights,
@@ -122,14 +125,16 @@ export async function createBooking(guestId: string, input: BookingCreateInput) 
     return { booking: { ...booking, status }, intent, price };
   });
 
-  // Notify the host of a new request/booking (best-effort, outside the tx).
-  await notify({
+  // Notify the host of a new request/booking (best-effort, outside the tx). Not awaited: the
+  // guest's response shouldn't wait on a notification meant for the host. notify() already
+  // swallows push failures internally; this catch covers the notification-row write itself.
+  notify({
     userId: property.hostId,
     type: result.booking.status === 'confirmed' ? 'booking_confirmed' : 'booking_requested',
     title: result.booking.status === 'confirmed' ? 'حجز جديد مؤكد' : 'طلب حجز جديد',
     body: `${property.title} — ${result.booking.reference}`,
     data: { bookingId: result.booking.id },
-  });
+  }).catch((err) => console.error('[bookings] host notify failed', err));
 
   return result;
 }
