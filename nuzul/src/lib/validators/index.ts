@@ -73,6 +73,17 @@ export const bookingCreateSchema = z.object({
   checkOut: z.string(),
   guests: z.coerce.number().int().min(1),
   method: z.enum(['mock', 'satim_cib', 'edahabia', 'baridimob', 'bank_transfer', 'cash']).default('mock'),
+  guestName: z.string().min(2).max(80).optional(),
+  guestPhone: z.string().min(9).max(20).optional(),
+});
+
+// Params carried from BookingWidget to the confirm page via the URL — nothing is persisted
+// server-side yet at that point, so these are re-validated on arrival.
+export const bookingConfirmParamsSchema = z.object({
+  checkIn: z.string(),
+  checkOut: z.string(),
+  guests: z.coerce.number().int().min(1),
+  method: z.enum(['mock', 'satim_cib', 'edahabia', 'baridimob', 'bank_transfer', 'cash']).default('mock'),
 });
 
 export const reviewCreateSchema = z.object({
@@ -106,3 +117,4 @@ export const accountUpdateSchema = z
 export type PropertySearchParams = z.infer<typeof propertySearchSchema>;
 export type PropertyCreateInput = z.infer<typeof propertyCreateSchema>;
 export type BookingCreateInput = z.infer<typeof bookingCreateSchema>;
+export type BookingConfirmParams = z.infer<typeof bookingConfirmParamsSchema>;

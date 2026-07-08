@@ -5,7 +5,9 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Original Nuzul identity — deep teal + warm sand (NOT the competitor palette)
+        // Original Nuzul identity — deep teal + warm sand (NOT the competitor palette).
+        // Where the redesign reference uses a flat black ("ink") for pill buttons/nav fills,
+        // that maps here to brand-900/950 (deep teal) instead of literal black.
         brand: {
           50: '#eefcfb',
           100: '#d5f6f3',
@@ -35,6 +37,7 @@ const config: Config = {
       borderRadius: {
         xl: '0.9rem',
         '2xl': '1.25rem',
+        '3xl': '1.5rem',
       },
       boxShadow: {
         card: '0 1px 2px rgba(16,40,42,.06), 0 8px 24px rgba(16,40,42,.08)',

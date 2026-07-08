@@ -11,6 +11,7 @@
   "home": {
     "heroTitle": "Find your next stay in Algeria",
     "heroSubtitle": "Apartments, villas, chalets and houses — booked securely, priced in dinars",
+    "greeting": "Hello, {name}", "categoriesAll": "All",
     "searchCta": "Search", "destination": "Destination", "destinationPh": "Wilaya or city",
     "checkIn": "Check-in", "checkOut": "Check-out", "guests": "Guests", "featured": "Featured stays",
     "exploreByWilaya": "Explore by wilaya", "whyTitle": "Why Nuzul?",
@@ -30,7 +31,8 @@
   "booking": {
     "title": "Confirm booking", "paymentMethod": "Payment method", "pay": "Pay deposit & continue", "success": "Request sent",
     "pending": "Awaiting host approval", "confirmed": "Booking confirmed", "myTrips": "My trips", "upcoming": "Upcoming", "past": "Past", "cancelled": "Cancelled",
-    "empty": "You have no bookings yet", "reference": "Reference", "guests": "guests", "leaveReview": "Leave a review", "yourReview": "Your review", "comment": "Share your experience (optional)", "submitReview": "Submit review", "depositWindowBody": "Contact the host to deliver the deposit before time runs out, or the request expires automatically"
+    "empty": "You have no bookings yet", "reference": "Reference", "guests": "guests", "leaveReview": "Leave a review", "yourReview": "Your review", "comment": "Share your experience (optional)", "submitReview": "Submit review", "depositWindowBody": "Contact the host to deliver the deposit before time runs out, or the request expires automatically",
+    "confirmHint": "Your request will be sent to the host, pending confirmation."
   },
   "auth": {
     "loginTitle": "Log in", "registerTitle": "Create account", "identifier": "Email or phone", "password": "Password",

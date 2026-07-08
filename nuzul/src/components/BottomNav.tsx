@@ -6,7 +6,12 @@ import type { SessionPayload } from '@/lib/auth/session';
 import { useNotifications } from './NotificationsProvider';
 
 const icons: Record<string, JSX.Element> = {
-  explore: <path d="M3 10.5 12 4l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />,
+  explore: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="m15.5 8.5-2 5-5 2 2-5 5-2z" strokeLinejoin="round" />
+    </>
+  ),
   trips: <path d="M4 7h16M4 12h16M4 17h10" strokeLinecap="round" />,
   messages: <path d="M21 11.5a8.4 8.4 0 0 1-9 8.3l-5 1 1.4-3.6A8.4 8.4 0 1 1 21 11.5z" strokeLinejoin="round" />,
   favorites: <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />,
@@ -76,7 +81,7 @@ export default function BottomNav({ session }: { session: SessionPayload | null 
   const centerActive = isActive(center.href);
 
   return (
-    <nav dir="ltr" className="fixed inset-x-0 bottom-0 z-30 border-t border-black/5 bg-white/90 backdrop-blur-md md:hidden">
+    <nav dir="ltr" className="fixed inset-x-0 bottom-0 z-30 rounded-t-3xl border-t border-black/5 bg-white/90 shadow-card backdrop-blur-md md:hidden">
       <div className="container-app flex items-end justify-between">
         {/* Left pair */}
         <div className="flex flex-1">

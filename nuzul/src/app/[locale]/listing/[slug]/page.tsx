@@ -193,12 +193,12 @@ export default async function ListingPage({ params }: { params: { locale: string
         <aside id="book" className="scroll-mt-20">
           <BookingWidget
             slug={p.slug}
-            propertyId={p.id}
             pricePerNight={p.pricePerNight}
             cleaningFee={p.cleaningFee}
             minNights={p.minNights}
             capacity={p.capacity}
             instant={p.bookingMode === 'instant'}
+            loggedIn={!!session}
             rates={rates}
             blockedDays={availability.blockedDays}
             bookings={availability.bookings}

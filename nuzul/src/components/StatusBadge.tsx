@@ -1,10 +1,10 @@
 const styles: Record<string, string> = {
   pending: 'badge-amber',
   confirmed: 'badge-green',
-  completed: 'badge-green',
+  completed: 'badge-gray',
   declined: 'badge-red',
   cancelled: 'badge-red',
-  expired: 'badge-red',
+  expired: 'badge-gray',
   approved: 'badge-green',
   rejected: 'badge-red',
   suspended: 'badge-red',
