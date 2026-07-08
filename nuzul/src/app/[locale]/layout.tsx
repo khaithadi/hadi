@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { IBM_Plex_Sans_Arabic, Instrument_Sans } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -12,6 +13,19 @@ import ServiceWorkerRegister from '@/components/ServiceWorkerRegister';
 import NumberInputSelect from '@/components/NumberInputSelect';
 import NotificationsProvider from '@/components/NotificationsProvider';
 import '../globals.css';
+
+const plexArabic = IBM_Plex_Sans_Arabic({
+  subsets: ['arabic'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-plex-arabic',
+  display: 'swap',
+});
+const instrumentSans = Instrument_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-instrument',
+  display: 'swap',
+});
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -53,7 +67,7 @@ export default async function LocaleLayout({
   const dir = isRtl(locale) ? 'rtl' : 'ltr';
 
   return (
-    <html lang={locale} dir={dir}>
+    <html lang={locale} dir={dir} className={`${plexArabic.variable} ${instrumentSans.variable}`}>
       <body className="min-h-dvh pb-16 md:pb-0">
         <NextIntlClientProvider messages={messages}>
           <NotificationsProvider enabled={!!session}>

@@ -72,6 +72,8 @@ export async function createBooking(guestId: string, input: BookingCreateInput) 
         checkOut: new Date(input.checkOut),
         guests: input.guests,
         nights,
+        guestName: input.guestName,
+        guestPhone: input.guestPhone,
         nightlyTotal: price.nightlyTotal,
         cleaningFee: price.cleaningFee,
         serviceFee: price.serviceFee,

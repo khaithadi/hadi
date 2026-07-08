@@ -11,6 +11,7 @@
   "home": {
     "heroTitle": "Trouvez votre prochain séjour en Algérie",
     "heroSubtitle": "Appartements, villas, chalets et maisons — réservés en toute sécurité, en dinars",
+    "greeting": "Bonjour, {name}", "categoriesAll": "Tous",
     "searchCta": "Rechercher", "destination": "Destination", "destinationPh": "Wilaya ou ville",
     "checkIn": "Arrivée", "checkOut": "Départ", "guests": "Voyageurs", "featured": "Séjours en vedette",
     "exploreByWilaya": "Explorer par wilaya", "whyTitle": "Pourquoi Nuzul ?",
@@ -30,7 +31,8 @@
   "booking": {
     "title": "Confirmation", "paymentMethod": "Mode de paiement", "pay": "Payer l’acompte", "success": "Demande envoyée",
     "pending": "En attente de l’hôte", "confirmed": "Réservation confirmée", "myTrips": "Mes voyages", "upcoming": "À venir", "past": "Passés", "cancelled": "Annulés",
-    "empty": "Aucune réservation pour l’instant", "reference": "Référence", "guests": "voyageurs", "leaveReview": "Laisser un avis", "yourReview": "Votre avis", "comment": "Partagez votre expérience (facultatif)", "submitReview": "Envoyer l’avis", "depositWindowBody": "Contactez l’hôte pour remettre l’acompte avant la fin du délai, sinon la demande expire automatiquement"
+    "empty": "Aucune réservation pour l’instant", "reference": "Référence", "guests": "voyageurs", "leaveReview": "Laisser un avis", "yourReview": "Votre avis", "comment": "Partagez votre expérience (facultatif)", "submitReview": "Envoyer l’avis", "depositWindowBody": "Contactez l’hôte pour remettre l’acompte avant la fin du délai, sinon la demande expire automatiquement",
+    "confirmHint": "Votre demande sera envoyée à l’hôte, en attente de confirmation."
   },
   "auth": {
     "loginTitle": "Connexion", "registerTitle": "Créer un compte", "identifier": "Email ou téléphone", "password": "Mot de passe",

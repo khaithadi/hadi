@@ -10,15 +10,16 @@ import { formatMoney } from '@/lib/format';
 import { PAYMENT_METHODS } from '@/lib/constants';
 import type { Locale } from '@/lib/i18n/config';
 import DateRangePicker, { type DateRange } from './DateRangePicker';
+import PriceRow from './PriceRow';
 
 interface Props {
   slug: string;
-  propertyId: string;
   pricePerNight: number;
   cleaningFee: number;
   minNights: number;
   capacity: number;
   instant: boolean;
+  loggedIn: boolean;
   rates: { commissionRate: number; serviceFeeRate: number; depositRate: number };
   blockedDays: string[];
   bookings: { checkIn: string; checkOut: string }[];
@@ -35,8 +36,6 @@ export default function BookingWidget(props: Props) {
   const [showCal, setShowCal] = useState(false);
   const [guests, setGuests] = useState(1);
   const [method, setMethod] = useState('baridimob');
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const range: DateRange = {
     checkIn: checkIn ? parseISO(checkIn) : null,
@@ -64,28 +63,13 @@ export default function BookingWidget(props: Props) {
         })
       : null;
 
-  async function submit() {
-    setError(null);
-    setBusy(true);
-    try {
-      const res = await fetch('/api/bookings', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ propertyId: props.propertyId, checkIn, checkOut, guests, method }),
-      });
-      if (res.status === 401) {
-        router.push(`/login?next=/listing/${props.slug}`);
-        return;
-      }
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data?.error?.message || 'Error');
-        return;
-      }
-      router.push('/trips');
-    } finally {
-      setBusy(false);
+  function goToConfirm() {
+    if (!props.loggedIn) {
+      router.push(`/login?next=/listing/${props.slug}`);
+      return;
     }
+    const params = new URLSearchParams({ checkIn, checkOut, guests: String(guests), method });
+    router.push(`/listing/${props.slug}/confirm?${params.toString()}`);
   }
 
   const mapToMethodEnum = (k: string) => (k === 'satim_cib' ? 'satim_cib' : k);
@@ -144,34 +128,24 @@ export default function BookingWidget(props: Props) {
 
       {nights > 0 && availability?.available && (
         <dl className="mt-4 space-y-1.5 border-t border-black/5 pt-3 text-sm">
-          <Row label={`${formatMoney(props.pricePerNight, locale)} × ${nights} ${t('nights')}`} value={formatMoney(price.nightlyTotal, locale)} />
-          <Row label={t('total')} value={formatMoney(price.total, locale)} strong />
-          <Row label={t('deposit')} value={formatMoney(price.depositDue, locale)} accent />
-          <Row label={t('balance')} value={formatMoney(price.balanceDue, locale)} />
+          <PriceRow label={`${formatMoney(props.pricePerNight, locale)} × ${nights} ${t('nights')}`} value={formatMoney(price.nightlyTotal, locale)} />
+          <PriceRow label={t('total')} value={formatMoney(price.total, locale)} strong />
+          <PriceRow label={t('deposit')} value={formatMoney(price.depositDue, locale)} accent />
+          <PriceRow label={t('balance')} value={formatMoney(price.balanceDue, locale)} />
         </dl>
       )}
 
       {availability && !availability.available && (
         <p className="mt-3 text-xs font-medium text-rose-600">⚠ {availability.reason}</p>
       )}
-      {error && <p className="mt-3 text-xs font-medium text-rose-600">{error}</p>}
 
       <button
         className="btn-primary btn-block mt-4"
-        disabled={busy || nights <= 0 || !availability?.available}
-        onClick={submit}
+        disabled={nights <= 0 || !availability?.available}
+        onClick={goToConfirm}
       >
         {props.instant ? t('reserve') : t('request')}
       </button>
-    </div>
-  );
-}
-
-function Row({ label, value, strong, accent }: { label: string; value: string; strong?: boolean; accent?: boolean }) {
-  return (
-    <div className={`flex justify-between ${strong ? 'font-bold' : ''} ${accent ? 'text-brand-700' : 'text-ink/70'}`}>
-      <dt>{label}</dt>
-      <dd>{value}</dd>
     </div>
   );
 }
