@@ -10,7 +10,7 @@ export default function PriceRow({
   accent?: boolean;
 }) {
   return (
-    <div className={`flex justify-between ${strong ? 'font-bold' : ''} ${accent ? 'text-brand-700' : 'text-ink/70'}`}>
+    <div className={`flex justify-between ${strong ? 'font-bold' : ''} ${accent ? 'text-emerald-700' : 'text-ink/70'}`}>
       <dt>{label}</dt>
       <dd>{value}</dd>
     </div>

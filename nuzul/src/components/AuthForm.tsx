@@ -121,9 +121,9 @@ export default function AuthForm({ mode }: { mode: 'login' | 'register' }) {
 
       <p className="text-center text-xs text-ink/50">
         {mode === 'login' ? (
-          <>{t('noAccount')} <Link href="/register" className="font-semibold text-brand-700">{t('registerTitle')}</Link></>
+          <>{t('noAccount')} <Link href="/register" className="font-semibold text-ink underline">{t('registerTitle')}</Link></>
         ) : (
-          <>{t('haveAccount')} <Link href="/login" className="font-semibold text-brand-700">{t('loginTitle')}</Link></>
+          <>{t('haveAccount')} <Link href="/login" className="font-semibold text-ink underline">{t('loginTitle')}</Link></>
         )}
       </p>
 
@@ -140,7 +140,7 @@ export default function AuthForm({ mode }: { mode: 'login' | 'register' }) {
 function GmailSuggest({ suggestion, onPick }: { suggestion: string | null; onPick: (v: string) => void }) {
   if (!suggestion) return null;
   return (
-    <button type="button" onClick={() => onPick(suggestion)} className="chip mt-1.5 text-brand-700" dir="ltr">
+    <button type="button" onClick={() => onPick(suggestion)} className="chip mt-1.5 text-ink" dir="ltr">
       {suggestion}
     </button>
   );

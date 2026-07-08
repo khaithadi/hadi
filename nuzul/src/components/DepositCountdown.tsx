@@ -24,5 +24,5 @@ export default function DepositCountdown({ deadline }: { deadline: string }) {
   }, [deadline]);
 
   if (ms <= 0) return null;
-  return <span className="font-mono font-bold tabular-nums text-brand-700">{format(ms)}</span>;
+  return <span className="font-mono font-bold tabular-nums text-amber-700">{format(ms)}</span>;
 }

@@ -4,11 +4,11 @@ import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-// Teal map pin as an HTML divIcon (avoids Leaflet's default-marker image asset issue).
+// Ink-colored map pin as an HTML divIcon (avoids Leaflet's default-marker image asset issue).
 const pinIcon = L.divIcon({
   className: '',
   html: `<svg width="30" height="40" viewBox="0 0 24 32" xmlns="http://www.w3.org/2000/svg">
-    <path d="M12 0C5.4 0 0 5.4 0 12c0 8 12 20 12 20s12-12 12-20C24 5.4 18.6 0 12 0z" fill="#0f8585" stroke="#ffffff" stroke-width="1.5"/>
+    <path d="M12 0C5.4 0 0 5.4 0 12c0 8 12 20 12 20s12-12 12-20C24 5.4 18.6 0 12 0z" fill="#13201f" stroke="#ffffff" stroke-width="1.5"/>
     <circle cx="12" cy="12" r="4.3" fill="#ffffff"/>
   </svg>`,
   iconSize: [30, 40],
