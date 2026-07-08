@@ -78,7 +78,7 @@ export default function NotificationBell() {
               {items.map((n) => {
                 const href = hrefFor(n);
                 const row = (
-                  <div className={`rounded-lg px-2 py-2 ${n.readAt ? '' : 'bg-brand-50'}`}>
+                  <div className={`rounded-lg px-2 py-2 ${n.readAt ? '' : 'bg-sand-100'}`}>
                     <div className="flex items-start justify-between gap-2">
                       <p className="text-xs font-bold text-ink/80">{n.title}</p>
                       <span className="shrink-0 text-[10px] text-ink/40">{relativeTime(n.createdAt, locale, t('justNow'))}</span>

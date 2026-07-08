@@ -156,9 +156,9 @@ export default function DateRangePicker({
                 'mx-auto flex h-9 w-9 items-center justify-center rounded-full transition duration-150 active:scale-90',
                 past ? 'cursor-default text-ink/25' : '',
                 booked && !past ? 'cursor-not-allowed text-ink/25 line-through' : '',
-                !disabled ? 'hover:bg-brand-100' : '',
-                inRange ? 'bg-brand-100' : '',
-                selected ? 'scale-105 bg-brand-600 text-white hover:bg-brand-600' : '',
+                !disabled ? 'hover:bg-sand-100' : '',
+                inRange ? 'bg-sand-100' : '',
+                selected ? 'scale-105 bg-ink text-white hover:bg-ink' : '',
               ].join(' ')}
             >
               {format(day, 'd')}

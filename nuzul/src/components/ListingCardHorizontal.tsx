@@ -42,7 +42,7 @@ export default async function ListingCardHorizontal({ p, favorited }: Props) {
           {p.capacity}
         </p>
         <p className="mt-1.5 text-sm">
-          <span className="font-extrabold text-brand-700">{formatMoney(p.pricePerNight, locale)}</span>
+          <span className="font-extrabold text-ink">{formatMoney(p.pricePerNight, locale)}</span>
           <span className="text-ink/50"> {t('perNight')}</span>
         </p>
       </div>

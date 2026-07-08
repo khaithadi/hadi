@@ -76,7 +76,7 @@ export default async function ListingPage({ params }: { params: { locale: string
         {/* Main column */}
         <div>
           {/* Title */}
-          <p className="text-xs font-semibold uppercase tracking-wide text-brand-700">{tp(p.type)}</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-ink/60">{tp(p.type)}</p>
           <h1 className="mt-1 text-2xl font-extrabold leading-tight md:text-3xl">{p.title}</h1>
           <p className="mt-1 flex items-center gap-1.5 text-sm text-ink/50">
             <Pin /> {p.addressLine ? `${p.addressLine} — ${wilayaName}` : wilayaName}
@@ -84,13 +84,13 @@ export default async function ListingPage({ params }: { params: { locale: string
 
           {/* Rating badge */}
           {p.reviewsCount > 0 && (
-            <a href="#reviews" className="mt-4 inline-flex items-center gap-3 rounded-2xl bg-brand-50 p-3 ring-1 ring-brand-100">
-              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-brand-600 text-lg font-extrabold text-white">
+            <a href="#reviews" className="mt-4 inline-flex items-center gap-3 rounded-2xl bg-sand-100 p-3 ring-1 ring-black/5">
+              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-ink text-lg font-extrabold text-white">
                 {p.ratingAvg.toFixed(1)}
               </span>
               <span>
                 <Stars rating={p.ratingAvg} />
-                <span className="mt-0.5 block text-xs font-medium text-brand-700 underline">{p.reviewsCount} {t('reviews')}</span>
+                <span className="mt-0.5 block text-xs font-medium text-ink underline">{p.reviewsCount} {t('reviews')}</span>
               </span>
             </a>
           )}
@@ -106,7 +106,7 @@ export default async function ListingPage({ params }: { params: { locale: string
           {/* Mobile quick-book card */}
           <a href="#book" className="card mt-4 flex items-center justify-between p-4 md:hidden">
             <span>
-              <span className="text-xl font-extrabold text-brand-700">{formatMoney(p.pricePerNight, locale)}</span>
+              <span className="text-xl font-extrabold text-ink">{formatMoney(p.pricePerNight, locale)}</span>
               <span className="text-sm text-ink/50"> {t('perNight')}</span>
             </span>
             <span className="btn-primary px-5 py-2.5">{t('reserve')}</span>
@@ -121,7 +121,7 @@ export default async function ListingPage({ params }: { params: { locale: string
             <div className="grid grid-cols-2 gap-x-4 gap-y-3">
               {p.amenities.map((a) => (
                 <div key={a.amenityId} className="flex items-center gap-2.5 text-sm">
-                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-600">
+                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-sand-100 text-ink">
                     <Check />
                   </span>
                   <span className="leading-tight">{amenityLabel(a)}</span>
@@ -138,7 +138,7 @@ export default async function ListingPage({ params }: { params: { locale: string
               <ul className="space-y-2">
                 {p.houseRules.map((r) => (
                   <li key={r.id} className="flex items-start gap-2 text-sm text-ink/75">
-                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-400" />
+                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-ink/40" />
                     {r.text}
                   </li>
                 ))}
@@ -165,7 +165,7 @@ export default async function ListingPage({ params }: { params: { locale: string
                 <div key={rv.id} className="card p-4">
                   <div className="flex items-center justify-between">
                     <span className="flex items-center gap-2 text-sm font-semibold">
-                      <span className="grid h-8 w-8 place-items-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">{rv.author.fullName.charAt(0)}</span>
+                      <span className="grid h-8 w-8 place-items-center rounded-full bg-sand-100 text-xs font-bold text-ink">{rv.author.fullName.charAt(0)}</span>
                       {rv.author.fullName}
                     </span>
                     <Stars rating={rv.rating} />
@@ -179,7 +179,7 @@ export default async function ListingPage({ params }: { params: { locale: string
 
           {/* Host */}
           <section className="card mt-7 flex items-center gap-3 p-4">
-            <div className="grid h-12 w-12 place-items-center rounded-full bg-brand-100 font-bold text-brand-700">
+            <div className="grid h-12 w-12 place-items-center rounded-full bg-sand-100 font-bold text-ink">
               {p.host.fullName.charAt(0)}
             </div>
             <div>
@@ -219,21 +219,21 @@ function Pin() {
 }
 function Bed() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="text-brand-600" aria-hidden="true">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="text-ink/70" aria-hidden="true">
       <path d="M3 18v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6M3 14h18M3 18v2M21 18v2M7 10V8a1 1 0 0 1 1-1h3v3" strokeLinecap="round" />
     </svg>
   );
 }
 function Bath() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="text-brand-600" aria-hidden="true">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="text-ink/70" aria-hidden="true">
       <path d="M4 12h16v3a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-3zM6 12V6a2 2 0 0 1 2-2 2 2 0 0 1 2 2M6 19l-1 2M19 19l1 2" strokeLinecap="round" />
     </svg>
   );
 }
 function Users() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="text-brand-600" aria-hidden="true">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="text-ink/70" aria-hidden="true">
       <path d="M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM21 20v-1a4 4 0 0 0-3-3.9M16 4.1a4 4 0 0 1 0 7.8" strokeLinecap="round" />
     </svg>
   );

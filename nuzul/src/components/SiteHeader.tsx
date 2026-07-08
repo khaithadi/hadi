@@ -15,10 +15,10 @@ export default async function SiteHeader({ session }: { session: SessionPayload 
         </Link>
 
         <nav className="hidden items-center gap-5 text-sm font-medium text-ink/70 md:flex">
-          <Link href="/" className="hover:text-brand-700">{t('explore')}</Link>
-          {session?.role === 'host' && <Link href="/host" className="hover:text-brand-700">{t('dashboard')}</Link>}
-          {session?.role === 'admin' && <Link href="/admin" className="hover:text-brand-700">{t('admin')}</Link>}
-          {!session && <Link href="/host" className="hover:text-brand-700">{t('host')}</Link>}
+          <Link href="/" className="hover:text-ink">{t('explore')}</Link>
+          {session?.role === 'host' && <Link href="/host" className="hover:text-ink">{t('dashboard')}</Link>}
+          {session?.role === 'admin' && <Link href="/admin" className="hover:text-ink">{t('admin')}</Link>}
+          {!session && <Link href="/host" className="hover:text-ink">{t('host')}</Link>}
         </nav>
 
         <div className="flex items-center gap-2">
@@ -29,7 +29,7 @@ export default async function SiteHeader({ session }: { session: SessionPayload 
             </>
           ) : (
             <>
-              <Link href="/login" className="hidden text-xs font-semibold text-ink/70 hover:text-brand-700 sm:inline">{t('login')}</Link>
+              <Link href="/login" className="hidden text-xs font-semibold text-ink/70 hover:text-ink sm:inline">{t('login')}</Link>
               <Link href="/register" className="btn-primary px-3 py-1.5 text-xs">{t('register')}</Link>
             </>
           )}

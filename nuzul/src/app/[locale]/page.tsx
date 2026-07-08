@@ -18,22 +18,20 @@ export default async function HomePage({ params: { locale } }: { params: { local
   return (
     <div className="pb-10">
       {/* Hero */}
-      <section className="bg-gradient-to-b from-brand-900 to-brand-700 text-white">
-        <div className="container-app py-10 md:py-16">
-          {session ? (
-            <div className="mb-5 flex items-center gap-3">
-              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-white/15 text-lg font-bold">
-                {session.name.charAt(0)}
-              </span>
-              <h1 className="text-xl font-extrabold md:text-2xl">{t('greeting', { name: session.name })}</h1>
-            </div>
-          ) : (
-            <h1 className="max-w-2xl text-2xl font-extrabold leading-tight md:text-4xl">{t('heroTitle')}</h1>
-          )}
-          <p className="mt-2 max-w-xl text-sm text-white/80 md:text-base">{t('heroSubtitle')}</p>
-          <div className="mt-6">
-            <SearchBar wilayas={WILAYAS} locale={locale} />
+      <section className="container-app pt-6 md:pt-10">
+        {session ? (
+          <div className="mb-5 flex items-center gap-3">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-ink text-lg font-bold text-white">
+              {session.name.charAt(0)}
+            </span>
+            <h1 className="text-xl font-extrabold md:text-2xl">{t('greeting', { name: session.name })}</h1>
           </div>
+        ) : (
+          <h1 className="max-w-2xl text-2xl font-extrabold leading-tight md:text-4xl">{t('heroTitle')}</h1>
+        )}
+        <p className="mt-2 max-w-xl text-sm text-ink/60 md:text-base">{t('heroSubtitle')}</p>
+        <div className="mt-6">
+          <SearchBar wilayas={WILAYAS} locale={locale} />
         </div>
       </section>
 
@@ -70,7 +68,7 @@ export default async function HomePage({ params: { locale } }: { params: { local
         <div className="grid gap-3 md:grid-cols-3">
           {[1, 2, 3].map((i) => (
             <div key={i} className="card p-4">
-              <h3 className="font-bold text-brand-700">{t(`why${i}` as 'why1')}</h3>
+              <h3 className="font-bold text-ink">{t(`why${i}` as 'why1')}</h3>
               <p className="mt-1 text-sm text-ink/60">{t(`why${i}d` as 'why1d')}</p>
             </div>
           ))}
