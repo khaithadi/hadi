@@ -2,7 +2,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { redirect } from '@/lib/i18n/navigation';
 import { prisma } from '@/lib/db';
 import { getSession } from '@/lib/auth/session';
-import ListingCard from '@/components/ListingCard';
+import ListingCardHorizontal from '@/components/ListingCardHorizontal';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,9 +24,9 @@ export default async function FavoritesPage({ params: { locale } }: { params: { 
       {favorites.length === 0 ? (
         <p className="mt-10 text-center text-ink/50">—</p>
       ) : (
-        <div className="stagger grid grid-cols-2 gap-3 md:grid-cols-4">
+        <div className="stagger space-y-3">
           {favorites.map((f) => (
-            <ListingCard key={f.propertyId} p={f.property} favorited />
+            <ListingCardHorizontal key={f.propertyId} p={f.property} favorited />
           ))}
         </div>
       )}

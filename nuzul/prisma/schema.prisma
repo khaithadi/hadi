@@ -401,6 +401,11 @@ model Booking {
   guests     Int      @default(1)
   nights     Int
 
+  // Per-booking contact info collected on the confirmation step — may differ from the
+  // guest's account profile at booking time, or fill in a phone the account never set.
+  guestName  String?
+  guestPhone String?
+
   nightlyTotal Int
   cleaningFee  Int @default(0)
   serviceFee   Int @default(0)

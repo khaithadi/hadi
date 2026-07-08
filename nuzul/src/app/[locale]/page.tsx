@@ -2,14 +2,16 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '@/lib/i18n/navigation';
 import { WILAYAS } from '@/lib/constants';
 import { getFeaturedProperties } from '@/lib/services/properties';
+import { getSession } from '@/lib/auth/session';
 import SearchBar from '@/components/SearchBar';
 import ListingCard from '@/components/ListingCard';
+import CategoryPills from '@/components/CategoryPills';
 
 export default async function HomePage({ params: { locale } }: { params: { locale: string } }) {
   setRequestLocale(locale);
   const t = await getTranslations('home');
 
-  const featured = await getFeaturedProperties();
+  const [featured, session] = await Promise.all([getFeaturedProperties(), getSession()]);
 
   const topWilayas = WILAYAS.filter((w) => [16, 42, 31, 15, 6, 23, 9, 47].includes(w.id));
 
@@ -18,13 +20,27 @@ export default async function HomePage({ params: { locale } }: { params: { local
       {/* Hero */}
       <section className="bg-gradient-to-b from-brand-900 to-brand-700 text-white">
         <div className="container-app py-10 md:py-16">
-          <h1 className="max-w-2xl text-2xl font-extrabold leading-tight md:text-4xl">{t('heroTitle')}</h1>
+          {session ? (
+            <div className="mb-5 flex items-center gap-3">
+              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-white/15 text-lg font-bold">
+                {session.name.charAt(0)}
+              </span>
+              <h1 className="text-xl font-extrabold md:text-2xl">{t('greeting', { name: session.name })}</h1>
+            </div>
+          ) : (
+            <h1 className="max-w-2xl text-2xl font-extrabold leading-tight md:text-4xl">{t('heroTitle')}</h1>
+          )}
           <p className="mt-2 max-w-xl text-sm text-white/80 md:text-base">{t('heroSubtitle')}</p>
           <div className="mt-6">
             <SearchBar wilayas={WILAYAS} locale={locale} />
           </div>
         </div>
       </section>
+
+      {/* Categories */}
+      <div className="container-app mt-5">
+        <CategoryPills />
+      </div>
 
       {/* Featured */}
       <section className="container-app mt-8">
