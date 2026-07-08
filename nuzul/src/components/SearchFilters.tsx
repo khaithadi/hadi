@@ -111,7 +111,7 @@ export default function SearchFilters({
               key={s}
               type="button"
               onClick={() => go({ sort: s === 'recommended' ? '' : s })}
-              className={`block w-full rounded-lg px-3 py-2 text-start text-sm ${(params.sort ?? 'recommended') === s ? 'bg-brand-50 font-semibold text-brand-700' : 'hover:bg-sand-100'}`}
+              className={`block w-full rounded-lg px-3 py-2 text-start text-sm ${(params.sort ?? 'recommended') === s ? 'bg-sand-100 font-semibold text-ink' : 'hover:bg-sand-100'}`}
             >
               {sortOptionLabel[s]}
             </button>
@@ -143,7 +143,7 @@ export default function SearchFilters({
                 key={ty}
                 type="button"
                 onClick={() => go({ type: params.type === ty ? '' : ty })}
-                className={`chip cursor-pointer ${params.type === ty ? 'bg-brand-600 text-white' : ''}`}
+                className={`chip cursor-pointer ${params.type === ty ? 'bg-ink text-white' : ''}`}
               >
                 {tp(ty)}
               </button>
@@ -163,7 +163,7 @@ export default function SearchFilters({
                   type="button"
                   aria-pressed={on}
                   onClick={() => setSelected((p) => (p.includes(a.key) ? p.filter((k) => k !== a.key) : [...p, a.key]))}
-                  className={`chip cursor-pointer ${on ? 'bg-brand-600 text-white' : ''}`}
+                  className={`chip cursor-pointer ${on ? 'bg-ink text-white' : ''}`}
                 >
                   {amenityLabel(a)}
                 </button>
@@ -185,7 +185,7 @@ export default function SearchFilters({
               key={o.v || 'any'}
               type="button"
               onClick={() => go({ minRating: o.v })}
-              className={`block w-full rounded-lg px-3 py-2 text-start text-sm ${(params.minRating?.toString() ?? '') === o.v ? 'bg-brand-50 font-semibold text-brand-700' : 'hover:bg-sand-100'}`}
+              className={`block w-full rounded-lg px-3 py-2 text-start text-sm ${(params.minRating?.toString() ?? '') === o.v ? 'bg-sand-100 font-semibold text-ink' : 'hover:bg-sand-100'}`}
             >
               {o.label}
             </button>
@@ -202,7 +202,7 @@ function Pill({ label, value, active, onClick, caret }: { label: string; value?:
       type="button"
       onClick={onClick}
       className={`inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full border px-3.5 py-1.5 text-sm font-medium transition ${
-        active ? 'border-brand-600 bg-brand-600 text-white' : 'border-black/15 bg-white text-ink hover:bg-sand-100'
+        active ? 'border-ink bg-ink text-white' : 'border-black/15 bg-white text-ink hover:bg-sand-100'
       }`}
     >
       {label}

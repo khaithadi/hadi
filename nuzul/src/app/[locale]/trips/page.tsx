@@ -61,7 +61,7 @@ export default async function TripsPage({ params: { locale } }: { params: { loca
                   <p className="text-xs text-ink/50">{formatDate(b.checkIn, loc)} → {formatDate(b.checkOut, loc)} · {b.guests} {t('guests')}</p>
                   <p className="mt-1 text-xs text-ink/40">{t('reference')}: {b.reference}</p>
                   <div className="mt-1 flex items-center justify-between gap-2">
-                    <p className="text-sm font-bold text-brand-700">{formatMoney(b.total, loc)}</p>
+                    <p className="text-sm font-bold text-ink">{formatMoney(b.total, loc)}</p>
                     <MessageButton bookingId={b.id} label={tm('messageHost')} />
                   </div>
                 </div>

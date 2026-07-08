@@ -60,7 +60,7 @@ export default function BottomNav({ session }: { session: SessionPayload | null 
       <Link
         href={it.href}
         className={`flex flex-1 flex-col items-center gap-1 py-2 text-[11px] transition-all duration-300 [transition-timing-function:var(--ease-spring)] active:scale-95 ${
-          active ? '-translate-y-1 text-brand-700' : 'text-ink/50'
+          active ? '-translate-y-1 text-ink' : 'text-ink/50'
         }`}
       >
         <span className="relative">
@@ -95,15 +95,15 @@ export default function BottomNav({ session }: { session: SessionPayload | null 
           <Link
             href={center.href}
             aria-label={t(center.key)}
-            className={`-mt-6 flex h-14 w-14 items-center justify-center rounded-full bg-brand-600 text-white shadow-lg ring-4 ring-sand-50 transition-all duration-300 [transition-timing-function:var(--ease-spring)] active:scale-90 ${
-              centerActive ? '-translate-y-1 bg-brand-700' : ''
+            className={`-mt-6 flex h-14 w-14 items-center justify-center rounded-full bg-ink text-white shadow-lg ring-4 ring-sand-50 transition-all duration-300 [transition-timing-function:var(--ease-spring)] active:scale-90 ${
+              centerActive ? '-translate-y-1 bg-black' : ''
             }`}
           >
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9">
               {icons[center.key]}
             </svg>
           </Link>
-          <span className={`mt-1 pb-2 text-[11px] ${centerActive ? 'font-semibold text-brand-700' : 'text-ink/50'}`}>{t(center.key)}</span>
+          <span className={`mt-1 pb-2 text-[11px] ${centerActive ? 'font-semibold text-ink' : 'text-ink/50'}`}>{t(center.key)}</span>
         </div>
 
         {/* Right pair */}

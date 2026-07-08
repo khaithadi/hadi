@@ -76,7 +76,7 @@ export default function BookingWidget(props: Props) {
 
   return (
     <div className="card sticky top-16 p-4">
-      <p className="text-lg font-extrabold text-brand-700">
+      <p className="text-lg font-extrabold text-ink">
         {formatMoney(props.pricePerNight, locale)} <span className="text-sm font-normal text-ink/50">{t('perNight')}</span>
       </p>
 
