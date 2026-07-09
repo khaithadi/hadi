@@ -26,7 +26,7 @@
     "perNight": "par nuit", "reserve": "Réserver", "request": "Demander à réserver", "guests": "Voyageurs", "nights": "nuits",
     "amenities": "Équipements", "rules": "Règlement intérieur", "reviews": "Avis", "location": "Emplacement", "host": "Hôte",
     "checkIn": "Arrivée", "checkOut": "Départ", "dates": "Dates", "addDates": "Choisir les dates", "total": "Total", "deposit": "Acompte (payé maintenant)", "balance": "Solde à l’arrivée",
-    "serviceFee": "Frais de service", "cleaning": "Frais de ménage", "capacity": "Capacité", "rooms": "chambres", "beds": "lits", "baths": "SdB"
+    "serviceFee": "Frais de service", "cleaning": "Frais de ménage", "capacity": "Capacité", "rooms": "chambres", "beds": "lits", "baths": "SdB", "hostCannotBook": "La réservation se fait depuis un compte voyageur"
   },
   "booking": {
     "title": "Confirmation", "paymentMethod": "Mode de paiement", "pay": "Payer l’acompte", "success": "Demande envoyée",
@@ -42,7 +42,7 @@
   "expenseCat": { "maintenance": "Entretien", "utilities": "Factures", "cleaning": "Ménage", "supplies": "Fournitures", "fees": "Frais", "other": "Autre" },
   "host": {
     "netProfit": "Bénéfice net (revenus − dépenses)", "income": "Revenus totaux", "expenses": "Dépenses totales", "trackExpenses": "Suivi des dépenses", "properties": "Mes annonces", "bookingsCount": "Réservations", "pending": "En attente",
-    "addExpense": "Ajouter une dépense", "expensesTitle": "Dépenses", "expenseAmount": "Montant", "expenseDate": "Date", "expenseNote": "Note (facultatif)", "expenseProperty": "Bien", "expenseCategory": "Catégorie", "allProperties": "Tous les biens", "noExpenses": "Aucune dépense. Appuyez sur + pour en ajouter une.", "generalExpense": "Dépense générale", "listView": "Liste", "calendarView": "Calendrier", "add": "Ajouter",
+    "addExpense": "Ajouter une dépense", "expensesTitle": "Dépenses", "expenseAmount": "Montant", "expenseDate": "Date", "expenseNote": "Note (facultatif)", "expenseProperty": "Bien", "expenseCategory": "Catégorie", "allProperties": "Tous les biens", "noExpenses": "Aucune dépense. Appuyez sur + pour en ajouter une.", "generalExpense": "Dépense générale", "listView": "Liste", "calendarView": "Calendrier", "add": "Ajouter", "viewPublic": "Voir la page publique",
     "dashboard": "Espace hôte", "earnings": "Revenus", "occupancy": "Taux d’occupation", "listings": "Mes annonces", "incoming": "Réservations reçues",
     "newListing": "Ajouter un logement", "accept": "Accepter", "decline": "Refuser", "publish": "Publier", "pendingReview": "En attente de validation", "editListing": "Modifier le logement", "save": "Enregistrer", "edit": "Modifier", "confirmAfterDeposit": "Confirmez seulement après réception de l’acompte", "upcomingBookings": "Réservations à venir", "noUpcoming": "Aucune réservation à venir", "pastBookings": "Réservations passées", "hide": "Masquer", "show": "Afficher", "delete": "Supprimer", "confirmDelete": "Supprimer ce logement ?", "deleteHasBookings": "Impossible de supprimer un logement avec des réservations — masquez-le plutôt", "bookingsShort": "rés."
   },

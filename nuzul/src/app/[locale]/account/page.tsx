@@ -13,14 +13,26 @@ export default async function AccountPage({ params: { locale } }: { params: { lo
   const t = await getTranslations('account');
   const tn = await getTranslations('nav');
 
-  const rows = [
-    { href: '/host', label: t('becomeHost'), highlight: true },
-    { href: '/favorites', label: t('favorites') },
-    { href: '/trips', label: t('transactions') },
-    { href: '/account/settings', label: t('security') },
-    { href: '/legal/terms', label: t('terms') },
-    { href: '/legal/privacy', label: t('privacy') },
-  ];
+  const isHost = session!.role === 'host';
+
+  // Hosts manage properties, not trips — their account tab drops Favorites / My bookings /
+  // Control panel (the dashboard is the center nav tab now), and "host your property" jumps
+  // straight to adding a listing. Guests keep the full set.
+  const rows = isHost
+    ? [
+        { href: '/host/new', label: t('becomeHost'), highlight: true },
+        { href: '/account/settings', label: t('security') },
+        { href: '/legal/privacy', label: t('privacy') },
+        { href: '/legal/terms', label: t('terms') },
+      ]
+    : [
+        { href: '/host', label: t('becomeHost'), highlight: true },
+        { href: '/favorites', label: t('favorites') },
+        { href: '/trips', label: t('transactions') },
+        { href: '/account/settings', label: t('security') },
+        { href: '/legal/terms', label: t('terms') },
+        { href: '/legal/privacy', label: t('privacy') },
+      ];
 
   return (
     <div className="container-app max-w-md py-6">
@@ -30,7 +42,7 @@ export default async function AccountPage({ params: { locale } }: { params: { lo
       </div>
 
       <div className="card mt-4 flex items-center gap-3 p-4">
-        <div className="grid h-12 w-12 place-items-center rounded-full bg-brand-100 font-bold text-brand-700">
+        <div className="grid h-12 w-12 place-items-center rounded-full bg-ink font-bold text-white">
           {session!.name.charAt(0)}
         </div>
         <div>
@@ -41,14 +53,11 @@ export default async function AccountPage({ params: { locale } }: { params: { lo
 
       <div className="mt-4 space-y-2">
         {rows.map((r) => (
-          <Link key={r.label} href={r.href} className={`card flex items-center justify-between p-3.5 text-sm font-medium ${r.highlight ? 'bg-brand-50 text-brand-700' : ''}`}>
+          <Link key={r.label} href={r.href} className={`card flex items-center justify-between p-3.5 text-sm font-medium ${r.highlight ? 'bg-ink text-white' : ''}`}>
             {r.label}
-            <span className="text-ink/30">›</span>
+            <span className={r.highlight ? 'text-white/50' : 'text-ink/30'}>›</span>
           </Link>
         ))}
-        {session!.role === 'host' && (
-          <Link href="/host" className="card flex items-center justify-between p-3.5 text-sm font-medium">{tn('dashboard')} <span className="text-ink/30">›</span></Link>
-        )}
         {session!.role === 'admin' && (
           <Link href="/admin" className="card flex items-center justify-between p-3.5 text-sm font-medium">{tn('admin')} <span className="text-ink/30">›</span></Link>
         )}
