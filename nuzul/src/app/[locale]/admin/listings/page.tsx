@@ -45,7 +45,7 @@ export default async function AdminListingsPage({
           <Link
             key={f}
             href={f === 'all' ? '/admin/listings' : `/admin/listings?status=${f}`}
-            className={`chip ${active === f ? 'bg-brand-600 text-white' : ''}`}
+            className={`chip ${active === f ? 'bg-ink text-white' : ''}`}
           >
             {t(`filter_${f}`)}
           </Link>

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { PROPERTY_TYPES } from '@/lib/constants';
+import { PROPERTY_TYPES, EXPENSE_CATEGORIES } from '@/lib/constants';
 
 export const registerSchema = z.object({
   fullName: z.string().min(2).max(80),
@@ -86,6 +86,14 @@ export const bookingConfirmParamsSchema = z.object({
   method: z.enum(['mock', 'satim_cib', 'edahabia', 'baridimob', 'bank_transfer', 'cash']).default('mock'),
 });
 
+export const expenseCreateSchema = z.object({
+  propertyId: z.string().optional(),
+  category: z.enum(EXPENSE_CATEGORIES),
+  amount: z.coerce.number().int().min(1),
+  note: z.string().max(200).optional(),
+  date: z.string(),
+});
+
 export const reviewCreateSchema = z.object({
   bookingId: z.string(),
   rating: z.coerce.number().int().min(1).max(5),
@@ -118,3 +126,4 @@ export type PropertySearchParams = z.infer<typeof propertySearchSchema>;
 export type PropertyCreateInput = z.infer<typeof propertyCreateSchema>;
 export type BookingCreateInput = z.infer<typeof bookingCreateSchema>;
 export type BookingConfirmParams = z.infer<typeof bookingConfirmParamsSchema>;
+export type ExpenseCreateInput = z.infer<typeof expenseCreateSchema>;

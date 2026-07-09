@@ -57,7 +57,10 @@
     "fullName": "الاسم الكامل", "email": "البريد الإلكتروني", "phone": "رقم الهاتف", "asGuest": "كضيف", "asHost": "كمضيف",
     "submit": "متابعة", "haveAccount": "لديك حساب؟", "noAccount": "ليس لديك حساب؟", "orOtp": "أو عبر رمز الهاتف", "demo": "حسابات تجريبية", "showPassword": "إظهار كلمة المرور", "hidePassword": "إخفاء كلمة المرور"
   },
+  "expenseCat": { "maintenance": "صيانة", "utilities": "فواتير", "cleaning": "تنظيف", "supplies": "مستلزمات", "fees": "رسوم", "other": "أخرى" },
   "host": {
+    "netProfit": "صافي الربح (الدخل − المصاريف)", "income": "إجمالي الدخل", "expenses": "إجمالي المصاريف", "trackExpenses": "تتبّع المصاريف", "properties": "عقاراتي", "bookingsCount": "الحجوزات", "pending": "معلّقة",
+    "addExpense": "إضافة مصروف", "expensesTitle": "المصاريف", "expenseAmount": "المبلغ", "expenseDate": "التاريخ", "expenseNote": "ملاحظة (اختياري)", "expenseProperty": "العقار", "expenseCategory": "الفئة", "allProperties": "كل العقارات", "noExpenses": "لا مصاريف بعد. اضغط + لإضافة مصروف لأحد عقاراتك.", "generalExpense": "مصروف عام", "listView": "قائمة", "calendarView": "تقويم", "add": "إضافة",
     "dashboard": "لوحة المضيف", "earnings": "الأرباح", "occupancy": "نسبة الإشغال", "listings": "عقاراتي", "incoming": "الحجوزات الواردة",
     "newListing": "أضف عقاراً", "accept": "قبول", "decline": "رفض", "publish": "نشر العقار", "pendingReview": "قيد المراجعة", "editListing": "تعديل العقار", "save": "حفظ التغييرات", "edit": "تعديل", "confirmAfterDeposit": "أكّد فقط بعد استلام العربون", "upcomingBookings": "الحجوزات القادمة", "noUpcoming": "لا توجد حجوزات قادمة", "pastBookings": "حجوزات سابقة", "hide": "إخفاء", "show": "إظهار", "delete": "حذف", "confirmDelete": "متأكد من حذف هذا العقار؟", "deleteHasBookings": "لا يمكن حذف عقار له حجوزات — أخفِه بدلاً من ذلك", "bookingsShort": "حجز"
   },

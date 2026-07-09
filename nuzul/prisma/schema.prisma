@@ -159,6 +159,7 @@ model User {
   notifications Notification[]
   payments      Payment[]
   payouts       Payout[]
+  expenses      Expense[]        @relation("HostExpenses")
   disputesRaised Dispute[]       @relation("DisputeRaisedBy")
   tickets       SupportTicket[]
   reportsMade   Report[]         @relation("ReportReporter")
@@ -322,6 +323,7 @@ model Property {
   featured   FeaturedListing[]
   conversations Conversation[]
   reports    Report[]
+  expenses   Expense[]
 
   @@index([wilayaId, status])
   @@index([type, status])
@@ -463,6 +465,33 @@ model Payout {
   createdAt DateTime     @default(now())
 
   @@index([hostId])
+}
+
+// Host-incurred operating costs (maintenance, utilities, cleaning, …), optionally tied to a
+// property. Powers the host dashboard's "net profit = income − expenses" and the expenses page.
+model Expense {
+  id         String          @id @default(cuid())
+  hostId     String
+  host       User            @relation("HostExpenses", fields: [hostId], references: [id])
+  propertyId String?
+  property   Property?       @relation(fields: [propertyId], references: [id])
+  category   ExpenseCategory
+  amount     Int
+  note       String?
+  date       DateTime        @db.Date
+  createdAt  DateTime        @default(now())
+
+  @@index([hostId])
+  @@index([propertyId])
+}
+
+enum ExpenseCategory {
+  maintenance
+  utilities
+  cleaning
+  supplies
+  fees
+  other
 }
 
 // ----------------------------------------------------------------------------

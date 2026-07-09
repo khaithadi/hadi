@@ -39,7 +39,10 @@
     "fullName": "Full name", "email": "Email", "phone": "Phone", "asGuest": "As guest", "asHost": "As host",
     "submit": "Continue", "haveAccount": "Have an account?", "noAccount": "No account?", "orOtp": "Or via SMS code", "demo": "Demo accounts", "showPassword": "Show password", "hidePassword": "Hide password"
   },
+  "expenseCat": { "maintenance": "Maintenance", "utilities": "Utilities", "cleaning": "Cleaning", "supplies": "Supplies", "fees": "Fees", "other": "Other" },
   "host": {
+    "netProfit": "Net profit (income − expenses)", "income": "Total income", "expenses": "Total expenses", "trackExpenses": "Track expenses", "properties": "My listings", "bookingsCount": "Bookings", "pending": "Pending",
+    "addExpense": "Add expense", "expensesTitle": "Expenses", "expenseAmount": "Amount", "expenseDate": "Date", "expenseNote": "Note (optional)", "expenseProperty": "Property", "expenseCategory": "Category", "allProperties": "All properties", "noExpenses": "No expenses yet. Tap + to add one for a property.", "generalExpense": "General expense", "listView": "List", "calendarView": "Calendar", "add": "Add",
     "dashboard": "Host dashboard", "earnings": "Earnings", "occupancy": "Occupancy", "listings": "My listings", "incoming": "Incoming bookings",
     "newListing": "Add a listing", "accept": "Accept", "decline": "Decline", "publish": "Publish listing", "pendingReview": "Pending review", "editListing": "Edit listing", "save": "Save changes", "edit": "Edit", "confirmAfterDeposit": "Only confirm once you've received the deposit", "upcomingBookings": "Upcoming bookings", "noUpcoming": "No upcoming bookings", "pastBookings": "Past bookings", "hide": "Hide", "show": "Show", "delete": "Delete", "confirmDelete": "Delete this listing?", "deleteHasBookings": "Can't delete a listing with bookings — hide it instead", "bookingsShort": "bookings"
   },
