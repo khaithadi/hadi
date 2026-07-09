@@ -30,7 +30,7 @@ export default async function AdminBookingsPage({ params: { locale } }: { params
               <p className="truncate text-xs text-ink/50">
                 {b.guest.fullName} · {formatDate(b.checkIn, loc)} → {formatDate(b.checkOut, loc)} · {b.reference}
               </p>
-              <p className="text-xs font-semibold text-brand-700">{formatMoney(b.total, loc)}</p>
+              <p className="text-xs font-semibold text-ink">{formatMoney(b.total, loc)}</p>
             </div>
             <StatusBadge status={b.status} />
           </div>

@@ -139,7 +139,7 @@ export default function ListingForm({
         <label className="label">Amenities</label>
         <div className="flex flex-wrap gap-2">
           {amenities.map((a) => (
-            <button type="button" key={a.id} onClick={() => toggle(a.id)} className={`chip px-3 py-1.5 ${selected.includes(a.id) ? 'bg-brand-600 text-white' : ''}`}>
+            <button type="button" key={a.id} onClick={() => toggle(a.id)} className={`chip px-3 py-1.5 ${selected.includes(a.id) ? 'bg-ink text-white' : ''}`}>
               {aname(a)}
             </button>
           ))}

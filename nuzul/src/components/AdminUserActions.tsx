@@ -29,7 +29,7 @@ export default function AdminUserActions({ userId, isActive, self }: { userId: s
       disabled={busy}
       onClick={act}
       className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors disabled:opacity-50 ${
-        isActive ? 'border-rose-200 text-rose-600 hover:bg-rose-50' : 'border-brand-200 text-brand-700 hover:bg-brand-50'
+        isActive ? 'border-rose-200 text-rose-600 hover:bg-rose-50' : 'border-black/10 text-ink/70 hover:bg-sand-100'
       }`}
     >
       {isActive ? t('suspend') : t('reactivate')}

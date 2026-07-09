@@ -41,7 +41,7 @@ export default async function HostBookingsPage({ params: { locale } }: { params:
           <p className="text-xs text-ink/50">
             {b.guest.fullName} · {formatDate(b.checkIn, loc)} → {formatDate(b.checkOut, loc)} · {b.guests} {tb('guests')}
           </p>
-          <p className="text-xs font-semibold text-brand-700">{formatMoney(b.total, loc)} · {b.reference}</p>
+          <p className="text-xs font-semibold text-ink">{formatMoney(b.total, loc)} · {b.reference}</p>
         </div>
         <div className="flex shrink-0 flex-col items-end gap-2">
           <StatusBadge status={b.status} />

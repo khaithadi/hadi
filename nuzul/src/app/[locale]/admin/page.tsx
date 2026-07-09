@@ -46,7 +46,7 @@ export default async function AdminDashboard({ params: { locale } }: { params: {
         {kpis.map((k) => (
           <div key={k.label} className="card p-4">
             <p className="text-xs text-ink/50">{k.label}</p>
-            <p className="mt-1 text-lg font-extrabold text-brand-700">{k.value}</p>
+            <p className="mt-1 text-lg font-extrabold text-ink">{k.value}</p>
           </div>
         ))}
       </div>
