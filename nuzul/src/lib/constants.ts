@@ -80,6 +80,16 @@ export const PROPERTY_TYPES = [
   'chalet',
 ] as const;
 
+// Host operating-expense categories (mirror the ExpenseCategory enum in schema.prisma).
+export const EXPENSE_CATEGORIES = [
+  'maintenance',
+  'utilities',
+  'cleaning',
+  'supplies',
+  'fees',
+  'other',
+] as const;
+
 export interface AmenitySeed {
   key: string;
   labelAr: string;
