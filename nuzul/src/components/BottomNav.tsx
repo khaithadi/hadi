@@ -30,13 +30,17 @@ export default function BottomNav({ session }: { session: SessionPayload | null 
   const pathname = usePathname();
   const { unreadMessages } = useNotifications();
 
-  const isActive = (href: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href));
+  // '/' and '/host' (the host dashboard) match exactly so they don't light up on sub-routes
+  // like /host/bookings or /host/expenses.
+  const EXACT = new Set(['/', '/host']);
+  const isActive = (href: string) => (EXACT.has(href) ? pathname === href : pathname.startsWith(href));
 
   const isAdmin = session?.role === 'admin';
+  const isHost = session?.role === 'host';
 
   // Forced LTR layout so positions stay consistent in RTL (ar) and LTR alike.
-  // Admins get a management-only nav (no explore/messages/favorites); everyone else keeps
-  // [account, messages] · Explore (raised center) · [favorites?, role-tab].
+  // Admins get a management-only nav; hosts get the dashboard as the raised center (it's the
+  // hub of the host experience); guests keep Explore in the center.
   const left: Item[] = isAdmin
     ? [{ key: 'admin', href: '/admin' }, { key: 'users', href: '/admin/users' }]
     : [
@@ -44,13 +48,16 @@ export default function BottomNav({ session }: { session: SessionPayload | null 
         { key: 'messages', href: session ? '/messages' : '/login' },
       ];
 
-  // Raised center: Explore for guests/hosts, Listings management for admins.
-  const center: Item = isAdmin ? { key: 'listings', href: '/admin/listings' } : { key: 'explore', href: '/' };
+  const center: Item = isAdmin
+    ? { key: 'listings', href: '/admin/listings' }
+    : isHost
+      ? { key: 'dashboard', href: '/host' }
+      : { key: 'explore', href: '/' };
 
   const right: Item[] = isAdmin
     ? [{ key: 'bookings', href: '/admin/bookings' }, { key: 'account', href: '/account' }]
-    : session?.role === 'host'
-      ? [{ key: 'bookings', href: '/host/bookings' }, { key: 'dashboard', href: '/host' }]
+    : isHost
+      ? [{ key: 'explore', href: '/' }, { key: 'bookings', href: '/host/bookings' }]
       : [{ key: 'favorites', href: '/favorites' }, { key: 'trips', href: '/trips' }];
 
   function Tab({ it }: { it: Item }) {

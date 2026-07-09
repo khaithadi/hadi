@@ -42,7 +42,8 @@ export default function HostListingActions({ slug, status }: { slug: string; sta
         setError(d?.error?.code === 'has_bookings' ? t('deleteHasBookings') : d?.error?.message || 'Error');
         return;
       }
-      router.refresh();
+      // The property page we're on no longer exists — go back to the dashboard.
+      router.push('/host');
     } finally {
       setBusy(false);
     }

@@ -44,6 +44,8 @@ export default async function ListingPage({ params }: { params: { locale: string
       : Promise.resolve(null),
   ]);
   const favorited = Boolean(favorite);
+  // Hosts/admins browse listings but don't book — booking is a guest (or logged-out visitor) action.
+  const canBook = !session || session.role === 'guest';
   const wilayaName = locale === 'fr' ? p.wilaya.nameFr : locale === 'en' ? p.wilaya.nameEn : p.wilaya.nameAr;
   const amenityLabel = (a: (typeof p.amenities)[number]) =>
     locale === 'fr' ? a.amenity.labelFr : locale === 'en' ? a.amenity.labelEn : a.amenity.labelAr;
@@ -103,14 +105,16 @@ export default async function ListingPage({ params }: { params: { locale: string
             <span className="flex items-center gap-2"><Bed /> {p.beds} {t('beds')}</span>
           </div>
 
-          {/* Mobile quick-book card */}
-          <a href="#book" className="card mt-4 flex items-center justify-between p-4 md:hidden">
-            <span>
-              <span className="text-xl font-extrabold text-ink">{formatMoney(p.pricePerNight, locale)}</span>
-              <span className="text-sm text-ink/50"> {t('perNight')}</span>
-            </span>
-            <span className="btn-primary px-5 py-2.5">{t('reserve')}</span>
-          </a>
+          {/* Mobile quick-book card (guests / logged-out only) */}
+          {canBook && (
+            <a href="#book" className="card mt-4 flex items-center justify-between p-4 md:hidden">
+              <span>
+                <span className="text-xl font-extrabold text-ink">{formatMoney(p.pricePerNight, locale)}</span>
+                <span className="text-sm text-ink/50"> {t('perNight')}</span>
+              </span>
+              <span className="btn-primary px-5 py-2.5">{t('reserve')}</span>
+            </a>
+          )}
 
           {/* Description */}
           <p className="mt-5 whitespace-pre-line text-sm leading-relaxed text-ink/80">{p.description}</p>
@@ -189,20 +193,24 @@ export default async function ListingPage({ params }: { params: { locale: string
           </section>
         </div>
 
-        {/* Booking widget */}
+        {/* Booking widget (guests / logged-out only; hosts & admins browse without booking) */}
         <aside id="book" className="scroll-mt-20">
-          <BookingWidget
-            slug={p.slug}
-            pricePerNight={p.pricePerNight}
-            cleaningFee={p.cleaningFee}
-            minNights={p.minNights}
-            capacity={p.capacity}
-            instant={p.bookingMode === 'instant'}
-            loggedIn={!!session}
-            rates={rates}
-            blockedDays={availability.blockedDays}
-            bookings={availability.bookings}
-          />
+          {canBook ? (
+            <BookingWidget
+              slug={p.slug}
+              pricePerNight={p.pricePerNight}
+              cleaningFee={p.cleaningFee}
+              minNights={p.minNights}
+              capacity={p.capacity}
+              instant={p.bookingMode === 'instant'}
+              loggedIn={!!session}
+              rates={rates}
+              blockedDays={availability.blockedDays}
+              bookings={availability.bookings}
+            />
+          ) : (
+            <div className="card p-4 text-center text-sm text-ink/50">{t('hostCannotBook')}</div>
+          )}
         </aside>
       </div>
     </div>

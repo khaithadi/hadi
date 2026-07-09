@@ -44,7 +44,7 @@
     "perNight": "لكل ليلة", "reserve": "احجز الآن", "request": "اطلب الحجز", "guests": "الضيوف", "nights": "ليالٍ",
     "amenities": "المرافق", "rules": "قواعد المنزل", "reviews": "التقييمات", "location": "الموقع", "host": "المضيف",
     "checkIn": "الوصول", "checkOut": "المغادرة", "dates": "التواريخ", "addDates": "اختر التواريخ", "total": "المجموع", "deposit": "العربون (يُدفع الآن)", "balance": "الباقي عند الوصول",
-    "serviceFee": "رسوم الخدمة", "cleaning": "رسوم التنظيف", "capacity": "يتّسع لـ", "rooms": "غرف", "beds": "أسرّة", "baths": "حمّامات"
+    "serviceFee": "رسوم الخدمة", "cleaning": "رسوم التنظيف", "capacity": "يتّسع لـ", "rooms": "غرف", "beds": "أسرّة", "baths": "حمّامات", "hostCannotBook": "الحجز متاح من حساب ضيف"
   },
   "booking": {
     "title": "تأكيد الحجز", "paymentMethod": "طريقة الدفع", "pay": "ادفع العربون وأكمل", "success": "تم استلام طلبك بنجاح",
@@ -60,7 +60,7 @@
   "expenseCat": { "maintenance": "صيانة", "utilities": "فواتير", "cleaning": "تنظيف", "supplies": "مستلزمات", "fees": "رسوم", "other": "أخرى" },
   "host": {
     "netProfit": "صافي الربح (الدخل − المصاريف)", "income": "إجمالي الدخل", "expenses": "إجمالي المصاريف", "trackExpenses": "تتبّع المصاريف", "properties": "عقاراتي", "bookingsCount": "الحجوزات", "pending": "معلّقة",
-    "addExpense": "إضافة مصروف", "expensesTitle": "المصاريف", "expenseAmount": "المبلغ", "expenseDate": "التاريخ", "expenseNote": "ملاحظة (اختياري)", "expenseProperty": "العقار", "expenseCategory": "الفئة", "allProperties": "كل العقارات", "noExpenses": "لا مصاريف بعد. اضغط + لإضافة مصروف لأحد عقاراتك.", "generalExpense": "مصروف عام", "listView": "قائمة", "calendarView": "تقويم", "add": "إضافة",
+    "addExpense": "إضافة مصروف", "expensesTitle": "المصاريف", "expenseAmount": "المبلغ", "expenseDate": "التاريخ", "expenseNote": "ملاحظة (اختياري)", "expenseProperty": "العقار", "expenseCategory": "الفئة", "allProperties": "كل العقارات", "noExpenses": "لا مصاريف بعد. اضغط + لإضافة مصروف لأحد عقاراتك.", "generalExpense": "مصروف عام", "listView": "قائمة", "calendarView": "تقويم", "add": "إضافة", "viewPublic": "عرض الصفحة العامة",
     "dashboard": "لوحة المضيف", "earnings": "الأرباح", "occupancy": "نسبة الإشغال", "listings": "عقاراتي", "incoming": "الحجوزات الواردة",
     "newListing": "أضف عقاراً", "accept": "قبول", "decline": "رفض", "publish": "نشر العقار", "pendingReview": "قيد المراجعة", "editListing": "تعديل العقار", "save": "حفظ التغييرات", "edit": "تعديل", "confirmAfterDeposit": "أكّد فقط بعد استلام العربون", "upcomingBookings": "الحجوزات القادمة", "noUpcoming": "لا توجد حجوزات قادمة", "pastBookings": "حجوزات سابقة", "hide": "إخفاء", "show": "إظهار", "delete": "حذف", "confirmDelete": "متأكد من حذف هذا العقار؟", "deleteHasBookings": "لا يمكن حذف عقار له حجوزات — أخفِه بدلاً من ذلك", "bookingsShort": "حجز"
   },
