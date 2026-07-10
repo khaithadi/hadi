@@ -7,13 +7,21 @@ import { EXPENSE_CATEGORIES } from '@/lib/constants';
 
 type PropertyOption = { id: string; title: string };
 
-export default function ExpenseForm({ properties }: { properties: PropertyOption[] }) {
+export default function ExpenseForm({
+  properties,
+  defaultPropertyId,
+  lockProperty,
+}: {
+  properties: PropertyOption[];
+  defaultPropertyId?: string;
+  lockProperty?: boolean;
+}) {
   const t = useTranslations('host');
   const tc = useTranslations('expenseCat');
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
-  const [propertyId, setPropertyId] = useState('');
+  const [propertyId, setPropertyId] = useState(defaultPropertyId ?? '');
   const [category, setCategory] = useState<(typeof EXPENSE_CATEGORIES)[number]>('maintenance');
   const [amount, setAmount] = useState('');
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
@@ -55,15 +63,17 @@ export default function ExpenseForm({ properties }: { properties: PropertyOption
   return (
     <div className="pop-in card mt-3 p-4">
       <div className="grid grid-cols-2 gap-3">
-        <div className="col-span-2">
-          <label className="label">{t('expenseProperty')}</label>
-          <select className="input" value={propertyId} onChange={(e) => setPropertyId(e.target.value)}>
-            <option value="">{t('generalExpense')}</option>
-            {properties.map((p) => (
-              <option key={p.id} value={p.id}>{p.title}</option>
-            ))}
-          </select>
-        </div>
+        {!lockProperty && (
+          <div className="col-span-2">
+            <label className="label">{t('expenseProperty')}</label>
+            <select className="input" value={propertyId} onChange={(e) => setPropertyId(e.target.value)}>
+              <option value="">{t('generalExpense')}</option>
+              {properties.map((p) => (
+                <option key={p.id} value={p.id}>{p.title}</option>
+              ))}
+            </select>
+          </div>
+        )}
         <div>
           <label className="label">{t('expenseCategory')}</label>
           <select className="input" value={category} onChange={(e) => setCategory(e.target.value as typeof category)}>

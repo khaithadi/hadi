@@ -16,6 +16,7 @@ type Ctx = {
   items: Notif[];
   unread: number;
   unreadMessages: number;
+  pendingBookings: number;
   markAllRead: () => void;
   refresh: () => void;
 };
@@ -24,6 +25,7 @@ const NotificationsContext = createContext<Ctx>({
   items: [],
   unread: 0,
   unreadMessages: 0,
+  pendingBookings: 0,
   markAllRead: () => {},
   refresh: () => {},
 });
@@ -40,6 +42,7 @@ export function useNotifications() {
 export default function NotificationsProvider({ enabled, children }: { enabled: boolean; children: React.ReactNode }) {
   const [items, setItems] = useState<Notif[]>([]);
   const [unread, setUnread] = useState(0);
+  const [pendingBookings, setPendingBookings] = useState(0);
 
   const refresh = useCallback(async () => {
     if (!enabled) return;
@@ -49,6 +52,7 @@ export default function NotificationsProvider({ enabled, children }: { enabled: 
       const json = await res.json();
       setItems(json.data ?? []);
       setUnread(json.unread ?? 0);
+      setPendingBookings(json.pendingBookings ?? 0);
     } catch {
       /* offline / transient — keep the last known state */
     }
@@ -80,7 +84,7 @@ export default function NotificationsProvider({ enabled, children }: { enabled: 
   const unreadMessages = items.filter((n) => n.type === 'message_received' && !n.readAt).length;
 
   return (
-    <NotificationsContext.Provider value={{ items, unread, unreadMessages, markAllRead, refresh }}>
+    <NotificationsContext.Provider value={{ items, unread, unreadMessages, pendingBookings, markAllRead, refresh }}>
       {children}
     </NotificationsContext.Provider>
   );
