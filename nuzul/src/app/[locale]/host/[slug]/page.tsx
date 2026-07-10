@@ -8,6 +8,7 @@ import { formatMoney } from '@/lib/format';
 import type { Locale } from '@/lib/i18n/config';
 import StatusBadge from '@/components/StatusBadge';
 import HostListingActions from '@/components/HostListingActions';
+import ExpenseForm from '@/components/ExpenseForm';
 
 export const dynamic = 'force-dynamic';
 
@@ -76,12 +77,14 @@ export default async function HostPropertyPage({ params: { locale, slug } }: { p
       {/* Actions */}
       <div className="mt-4 space-y-2">
         <Link href={`/host/${property.slug}/edit`} className="btn-primary btn-block">{t('editListing')}</Link>
-        <Link href={`/host/expenses?property=${property.id}`} className="btn-ghost btn-block">{t('addExpense')}</Link>
         <Link href={`/listing/${property.slug}`} className="btn-ghost btn-block">{t('viewPublic')}</Link>
       </div>
 
+      {/* Add an expense for this property */}
+      <ExpenseForm properties={[]} defaultPropertyId={property.id} lockProperty />
+
       {/* Hide / Delete */}
-      <div className="mt-4 flex justify-end border-t border-black/5 pt-4">
+      <div className="mt-6 border-t border-black/5 pt-4">
         <HostListingActions slug={property.slug} status={property.status} />
       </div>
     </div>
