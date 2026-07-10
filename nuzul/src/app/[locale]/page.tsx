@@ -1,5 +1,5 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { Link } from '@/lib/i18n/navigation';
+import { Link, redirect } from '@/lib/i18n/navigation';
 import { WILAYAS } from '@/lib/constants';
 import { getFeaturedProperties } from '@/lib/services/properties';
 import { getSession } from '@/lib/auth/session';
@@ -12,6 +12,10 @@ export default async function HomePage({ params: { locale } }: { params: { local
   const t = await getTranslations('home');
 
   const [featured, session] = await Promise.all([getFeaturedProperties(), getSession()]);
+
+  // Explore isn't part of the admin experience — send admins to their dashboard (also fixes
+  // the installed PWA reopening on this page for an admin).
+  if (session?.role === 'admin') redirect('/admin');
 
   const topWilayas = WILAYAS.filter((w) => [16, 42, 31, 15, 6, 23, 9, 47].includes(w.id));
 
