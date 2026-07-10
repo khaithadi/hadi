@@ -11,14 +11,22 @@ export default async function AccountPage({ params: { locale } }: { params: { lo
   const session = await getSession();
   if (!session) redirect('/login');
   const t = await getTranslations('account');
-  const tn = await getTranslations('nav');
 
   const isHost = session!.role === 'host';
+  const isAdmin = session!.role === 'admin';
 
+  // Admins get only account/legal rows — no guest/host features (Favorites, My bookings,
+  // "list your place") and no Management link (the dashboard lives in the nav now).
   // Hosts manage properties, not trips — their account tab drops Favorites / My bookings /
   // Control panel (the dashboard is the center nav tab now), and "host your property" jumps
   // straight to adding a listing. Guests keep the full set.
-  const rows = isHost
+  const rows = isAdmin
+    ? [
+        { href: '/account/settings', label: t('security') },
+        { href: '/legal/terms', label: t('terms') },
+        { href: '/legal/privacy', label: t('privacy') },
+      ]
+    : isHost
     ? [
         { href: '/host/new', label: t('becomeHost'), highlight: true },
         { href: '/account/settings', label: t('security') },
@@ -58,9 +66,6 @@ export default async function AccountPage({ params: { locale } }: { params: { lo
             <span className={r.highlight ? 'text-white/50' : 'text-ink/30'}>›</span>
           </Link>
         ))}
-        {session!.role === 'admin' && (
-          <Link href="/admin" className="card flex items-center justify-between p-3.5 text-sm font-medium">{tn('admin')} <span className="text-ink/30">›</span></Link>
-        )}
       </div>
 
       <div className="mt-4">

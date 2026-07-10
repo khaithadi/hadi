@@ -30,9 +30,10 @@ export default function BottomNav({ session }: { session: SessionPayload | null 
   const pathname = usePathname();
   const { unreadMessages, pendingBookings } = useNotifications();
 
-  // '/' and '/host' (the host dashboard) match exactly so they don't light up on sub-routes
-  // like /host/bookings or /host/expenses.
-  const EXACT = new Set(['/', '/host']);
+  // '/', '/host' and '/admin' (the dashboards) match exactly so they don't light up on
+  // sub-routes like /host/bookings or /admin/users — otherwise '/admin' being a prefix of
+  // every admin route would keep the dashboard tab highlighted everywhere.
+  const EXACT = new Set(['/', '/host', '/admin']);
   const isActive = (href: string) => (EXACT.has(href) ? pathname === href : pathname.startsWith(href));
 
   const isAdmin = session?.role === 'admin';
@@ -42,7 +43,7 @@ export default function BottomNav({ session }: { session: SessionPayload | null 
   // Admins get a management-only nav; hosts get the dashboard as the raised center (it's the
   // hub of the host experience); guests keep Explore in the center.
   const left: Item[] = isAdmin
-    ? [{ key: 'admin', href: '/admin' }, { key: 'users', href: '/admin/users' }]
+    ? [{ key: 'account', href: '/account' }, { key: 'users', href: '/admin/users' }]
     : [
         { key: 'account', href: session ? '/account' : '/login' },
         { key: 'messages', href: session ? '/messages' : '/login' },
@@ -55,7 +56,7 @@ export default function BottomNav({ session }: { session: SessionPayload | null 
       : { key: 'explore', href: '/' };
 
   const right: Item[] = isAdmin
-    ? [{ key: 'bookings', href: '/admin/bookings' }, { key: 'account', href: '/account' }]
+    ? [{ key: 'bookings', href: '/admin/bookings' }, { key: 'admin', href: '/admin' }]
     : isHost
       ? [{ key: 'explore', href: '/' }, { key: 'bookings', href: '/host/bookings' }]
       : [{ key: 'favorites', href: '/favorites' }, { key: 'trips', href: '/trips' }];
