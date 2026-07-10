@@ -21,7 +21,8 @@ export async function POST(req: Request) {
     if (!(file instanceof File)) return fail('validation', 'No file provided', 422);
     if (file.size > 6 * 1024 * 1024) return fail('too_large', 'Max 6MB', 413);
 
-    const ext = ALLOWED[file.type] ?? 'jpg';
+    const ext = ALLOWED[file.type];
+    if (!ext) return fail('unsupported_type', 'Only JPEG, PNG or WebP images are allowed', 415);
     try {
       const url = await uploadImage(Buffer.from(await file.arrayBuffer()), {
         ext,

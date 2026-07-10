@@ -209,9 +209,22 @@ model OtpCode {
   purpose   String   // login | register | recover
   expiresAt DateTime
   consumedAt DateTime?
+  attempts  Int      @default(0) // failed verify attempts; the code is burned past the max
   createdAt DateTime @default(now())
 
   @@index([target, purpose])
+}
+
+// Fixed-window rate limiter for auth endpoints (login, OTP send/verify). Keyed by a string
+// like "otp_send:<phone>" or "login:ip:<ip>"; `count` accumulates within the window that ends
+// at `expiresAt`, after which the next hit resets it.
+model RateLimit {
+  key       String   @id
+  count     Int      @default(0)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([expiresAt])
 }
 
 model PushSubscription {

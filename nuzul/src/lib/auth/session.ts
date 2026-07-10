@@ -4,7 +4,19 @@ import { SignJWT, jwtVerify } from 'jose';
 import type { Role } from '@prisma/client';
 
 const COOKIE = process.env.SESSION_COOKIE || 'nuzul_session';
-const secret = new TextEncoder().encode(process.env.AUTH_SECRET || 'dev-secret-change-me-please-32+chars');
+
+// Resolve the JWT signing key. In production AUTH_SECRET is mandatory: falling back to a
+// source-visible default would let anyone forge admin sessions, so we fail loudly at boot
+// instead. The dev fallback keeps local/CI running without env setup.
+function resolveSecret(): Uint8Array {
+  const s = process.env.AUTH_SECRET;
+  if (s) return new TextEncoder().encode(s);
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('AUTH_SECRET must be set in production');
+  }
+  return new TextEncoder().encode('dev-secret-change-me-please-32+chars');
+}
+const secret = resolveSecret();
 const MAX_AGE = 60 * 60 * 24 * 30; // 30 days
 
 export interface SessionPayload {
