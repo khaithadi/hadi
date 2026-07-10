@@ -7,7 +7,7 @@
   },
   "messages": { "title": "Messages", "empty": "Aucune conversation", "noMessages": "Pas encore de messages", "send": "Envoyer", "placeholder": "Écrire un message…", "messageHost": "Contacter l'hôte", "messageGuest": "Contacter le voyageur", "back": "Retour", "startConversation": "Démarrez la conversation" },
   "notifications": { "title": "Notifications", "empty": "Aucune notification", "justNow": "À l'instant" },
-  "error": { "title": "Une erreur est survenue", "body": "Réessayez — il s'agit souvent d'une interruption temporaire.", "retry": "Réessayer" },
+  "error": { "title": "Une erreur est survenue", "body": "Réessayez — il s'agit souvent d'une interruption temporaire.", "retry": "Réessayer", "codes": { "fallback": "Une erreur est survenue. Veuillez réessayer.", "rate_limited": "Trop de tentatives. Réessayez dans quelques minutes.", "auth": "Identifiants invalides.", "conflict": "Un compte avec cet e-mail ou ce téléphone existe déjà.", "validation": "Veuillez vérifier les informations saisies.", "unsupported_type": "Seules les images JPEG, PNG ou WebP sont autorisées.", "too_large": "Cette image est trop volumineuse (max 6 Mo).", "bad_password": "Votre mot de passe actuel est incorrect." } },
   "home": {
     "heroTitle": "Trouvez votre prochain séjour en Algérie",
     "heroSubtitle": "Appartements, villas, chalets et maisons — réservés en toute sécurité, en dinars",
