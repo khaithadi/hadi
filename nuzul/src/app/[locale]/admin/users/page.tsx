@@ -33,7 +33,7 @@ export default async function AdminUsersPage({ params: { locale } }: { params: {
               </div>
               <p className="truncate text-xs text-ink/50">{u.email || u.phone || '—'}</p>
             </div>
-            <AdminUserActions userId={u.id} isActive={u.isActive} self={u.id === session.sub} />
+            <AdminUserActions userId={u.id} role={u.role} isActive={u.isActive} self={u.id === session.sub} />
           </div>
         ))}
       </div>

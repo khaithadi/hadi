@@ -68,16 +68,29 @@ export default function AuthForm({ mode }: { mode: 'login' | 'register' }) {
       {mode === 'register' && (
         <>
           <div className="grid grid-cols-2 gap-2">
-            <button type="button" onClick={() => setRole('guest')} className={role === 'guest' ? 'btn-primary' : 'btn-ghost'}>{t('asGuest')}</button>
-            <button type="button" onClick={() => setRole('host')} className={role === 'host' ? 'btn-primary' : 'btn-ghost'}>{t('asHost')}</button>
+            {(['guest', 'host'] as const).map((r) => (
+              <button
+                key={r}
+                type="button"
+                onClick={() => setRole(r)}
+                className={`rounded-2xl border p-3 text-start transition-colors ${
+                  role === r ? 'border-ink bg-ink text-white' : 'border-black/10 hover:bg-sand-100'
+                }`}
+              >
+                <span className="block text-sm font-bold">{t(r === 'guest' ? 'asGuest' : 'asHost')}</span>
+                <span className={`mt-0.5 block text-[11px] leading-tight ${role === r ? 'text-white/70' : 'text-ink/50'}`}>
+                  {t(r === 'guest' ? 'guestDesc' : 'hostDesc')}
+                </span>
+              </button>
+            ))}
           </div>
-          <div><label className="label">{t('fullName')}</label><input name="fullName" required className="input" /></div>
+          <div><label className="label">{t('fullName')}</label><input name="fullName" required autoComplete="name" className="input" /></div>
           <div>
             <label className="label">{t('email')}</label>
-            <input name="email" type="email" className="input" value={emailField} onChange={(e) => setEmailField(e.target.value)} />
+            <input name="email" type="email" autoComplete="email" className="input" value={emailField} onChange={(e) => setEmailField(e.target.value)} />
             <GmailSuggest suggestion={gmailSuggestion} onPick={setEmailField} />
           </div>
-          <div><label className="label">{t('phone')}</label><input name="phone" className="input" placeholder="+2137…" /></div>
+          <div><label className="label">{t('phone')}</label><input name="phone" inputMode="tel" autoComplete="tel" className="input" placeholder="+2137…" /></div>
         </>
       )}
 
@@ -97,6 +110,7 @@ export default function AuthForm({ mode }: { mode: 'login' | 'register' }) {
             type={showPw ? 'text' : 'password'}
             required
             minLength={mode === 'register' ? 8 : 1}
+            autoComplete={mode === 'register' ? 'new-password' : 'current-password'}
             className="input pe-11"
           />
           <button
@@ -121,6 +135,15 @@ export default function AuthForm({ mode }: { mode: 'login' | 'register' }) {
       {error && <p className="text-xs font-medium text-rose-600">{error}</p>}
       <button className="btn-primary btn-block" disabled={busy}>{t('submit')}</button>
 
+      {mode === 'register' && (
+        <p className="text-center text-[11px] leading-relaxed text-ink/50">
+          {t('consentPrefix')}{' '}
+          <Link href="/legal/terms" className="font-semibold text-ink underline">{t('termsLink')}</Link>{' '}
+          {t('consentJoin')}{' '}
+          <Link href="/legal/privacy" className="font-semibold text-ink underline">{t('privacyLink')}</Link>
+        </p>
+      )}
+
       <p className="text-center text-xs text-ink/50">
         {mode === 'login' ? (
           <>{t('noAccount')} <Link href="/register" className="font-semibold text-ink underline">{t('registerTitle')}</Link></>
@@ -129,7 +152,8 @@ export default function AuthForm({ mode }: { mode: 'login' | 'register' }) {
         )}
       </p>
 
-      {mode === 'login' && (
+      {/* Demo-account hint is dev-only — never expose these credentials on the live site. */}
+      {mode === 'login' && process.env.NODE_ENV !== 'production' && (
         <p className="rounded-lg bg-sand-100 p-2 text-center text-[11px] text-ink/50">
           {t('demo')}: guest@nuzul.dz · host@nuzul.dz · admin@nuzul.dz / password123
         </p>
