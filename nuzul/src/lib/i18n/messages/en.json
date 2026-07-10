@@ -7,7 +7,7 @@
   },
   "messages": { "title": "Messages", "empty": "No conversations yet", "noMessages": "No messages yet", "send": "Send", "placeholder": "Type a message…", "messageHost": "Message host", "messageGuest": "Message guest", "back": "Back", "startConversation": "Start the conversation" },
   "notifications": { "title": "Notifications", "empty": "No notifications yet", "justNow": "Just now" },
-  "error": { "title": "Something went wrong", "body": "Please try again — this is usually a temporary hiccup.", "retry": "Try again" },
+  "error": { "title": "Something went wrong", "body": "Please try again — this is usually a temporary hiccup.", "retry": "Try again", "codes": { "fallback": "Something went wrong. Please try again.", "rate_limited": "Too many attempts. Please try again in a few minutes.", "auth": "Invalid credentials.", "conflict": "An account with this email or phone already exists.", "validation": "Please check the details you entered.", "unsupported_type": "Only JPEG, PNG or WebP images are allowed.", "too_large": "This image is too large (max 6MB).", "bad_password": "Your current password is incorrect." } },
   "home": {
     "heroTitle": "Find your next stay in Algeria",
     "heroSubtitle": "Apartments, villas, chalets and houses — booked securely, priced in dinars",

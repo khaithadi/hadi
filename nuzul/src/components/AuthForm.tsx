@@ -3,9 +3,11 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link, useRouter } from '@/lib/i18n/navigation';
+import { apiErrorMessage } from '@/lib/i18n/apiError';
 
 export default function AuthForm({ mode }: { mode: 'login' | 'register' }) {
   const t = useTranslations('auth');
+  const te = useTranslations('error.codes');
   const router = useRouter();
   const [role, setRole] = useState<'guest' | 'host'>('guest');
   const [busy, setBusy] = useState(false);
@@ -40,7 +42,7 @@ export default function AuthForm({ mode }: { mode: 'login' | 'register' }) {
           }),
         });
         const data = await res.json();
-        if (!res.ok) return setError(data?.error?.message || 'Error');
+        if (!res.ok) return setError(apiErrorMessage(te, data));
         router.push(role === 'host' ? '/host' : '/');
         router.refresh();
       } else {
@@ -50,7 +52,7 @@ export default function AuthForm({ mode }: { mode: 'login' | 'register' }) {
           body: JSON.stringify({ identifier: fd.get('identifier'), password: fd.get('password') }),
         });
         const data = await res.json();
-        if (!res.ok) return setError(data?.error?.message || 'Invalid credentials');
+        if (!res.ok) return setError(apiErrorMessage(te, data));
         router.push(data.role === 'host' ? '/host' : data.role === 'admin' ? '/admin' : '/');
         router.refresh();
       }
