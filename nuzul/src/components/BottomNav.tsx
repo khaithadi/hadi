@@ -28,7 +28,7 @@ type Item = { key: string; href: string };
 export default function BottomNav({ session }: { session: SessionPayload | null }) {
   const t = useTranslations('nav');
   const pathname = usePathname();
-  const { unreadMessages } = useNotifications();
+  const { unreadMessages, pendingBookings } = useNotifications();
 
   // '/' and '/host' (the host dashboard) match exactly so they don't light up on sub-routes
   // like /host/bookings or /host/expenses.
@@ -62,7 +62,13 @@ export default function BottomNav({ session }: { session: SessionPayload | null 
 
   function Tab({ it }: { it: Item }) {
     const active = isActive(it.href);
-    const badge = it.key === 'messages' && unreadMessages > 0 ? unreadMessages : 0;
+    // Messages badge for everyone; host bookings tab badges new (pending) booking requests.
+    const badge =
+      it.key === 'messages'
+        ? unreadMessages
+        : isHost && it.key === 'bookings'
+          ? pendingBookings
+          : 0;
     return (
       <Link
         href={it.href}
@@ -88,7 +94,11 @@ export default function BottomNav({ session }: { session: SessionPayload | null 
   const centerActive = isActive(center.href);
 
   return (
-    <nav dir="ltr" className="fixed inset-x-0 bottom-0 z-30 rounded-t-3xl border-t border-black/5 bg-white/90 shadow-card backdrop-blur-md md:hidden">
+    <nav
+      dir="ltr"
+      className="fixed inset-x-0 bottom-0 z-30 rounded-t-3xl border-t border-black/5 bg-white/90 shadow-card backdrop-blur-md md:hidden"
+      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+    >
       <div className="container-app flex items-end justify-between">
         {/* Left pair */}
         <div className="flex flex-1">

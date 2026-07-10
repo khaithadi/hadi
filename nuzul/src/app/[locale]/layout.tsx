@@ -37,6 +37,9 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
+  // Extend under the iOS home indicator so we can pad the bottom nav clear of it via
+  // env(safe-area-inset-bottom).
+  viewportFit: 'cover',
 };
 
 export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
@@ -68,7 +71,7 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} dir={dir} className={`${plexArabic.variable} ${instrumentSans.variable}`}>
-      <body className="min-h-dvh pb-16 md:pb-0">
+      <body className="min-h-dvh pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0">
         <NextIntlClientProvider messages={messages}>
           <NotificationsProvider enabled={!!session}>
             <SiteHeader session={session} />
