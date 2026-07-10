@@ -1,6 +1,8 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
+import { apiErrorMessage } from '@/lib/i18n/apiError';
 
 type Item = { id: string; preview: string; url?: string; uploading: boolean; error?: boolean; errorMsg?: string };
 
@@ -31,6 +33,7 @@ export default function ImageUploader({
   max?: number;
   initialUrls?: string[];
 }) {
+  const te = useTranslations('error.codes');
   const [items, setItems] = useState<Item[]>(() =>
     initialUrls.map((url) => ({ id: url, preview: url, url, uploading: false })),
   );
@@ -56,7 +59,7 @@ export default function ImageUploader({
         const res = await fetch('/api/uploads', { method: 'POST', body: fd });
         if (!res.ok) {
           const body = await res.json().catch(() => null);
-          throw new Error(body?.error?.message || `Upload failed (${res.status})`);
+          throw new Error(apiErrorMessage(te, body));
         }
         const { url } = await res.json();
         setItems((p) => {
