@@ -7,7 +7,7 @@ import { useT } from '../lib/i18n.js';
 export default function PaymentForm({ invoice, onCancel, onSave }) {
   const t = useT();
   const st = invoiceState(invoice);
-  const [amount, setAmount] = useState(st.remaining || '');
+  const [amount, setAmount] = useState('');
   const [date, setDate] = useState(todayISO());
   const [method, setMethod] = useState(PAYMENT_METHODS[0]);
   const [receivedBy, setReceivedBy] = useState('');
