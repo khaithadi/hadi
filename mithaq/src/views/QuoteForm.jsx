@@ -11,11 +11,11 @@ export default function QuoteForm({ initial, presetCustomerId, data, nav, onCanc
   const [customerId, setCustomerId] = useState(q.customerId || presetCustomerId || data.customers[0]?.id || '');
   const [date, setDate] = useState(q.date || todayISO());
   const [status, setStatus] = useState(q.status || 'draft');
-  const [items, setItems] = useState(q.items?.length ? q.items : [{ id: uid(), desc: '', qty: 1, price: 0 }]);
+  const [items, setItems] = useState(q.items?.length ? q.items : [{ id: uid(), desc: '', qty: '', price: '' }]);
   const [applyTax, setApplyTax] = useState(!!q.applyTax);
   const [taxRate, setTaxRate] = useState(q.taxRate ?? defaultRate);
   const [discountType, setDiscountType] = useState(q.discountType || 'percent');
-  const [discountValue, setDiscountValue] = useState(q.discountValue ?? 0);
+  const [discountValue, setDiscountValue] = useState(q.discountValue ?? '');
   const [notes, setNotes] = useState(q.notes || '');
 
   if (data.customers.length === 0) {

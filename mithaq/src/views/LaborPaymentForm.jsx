@@ -7,7 +7,7 @@ import { useT } from '../lib/i18n.js';
 export default function LaborPaymentForm({ entry, onCancel, onSave }) {
   const t = useT();
   const st = laborState(entry);
-  const [amount, setAmount] = useState(st.remaining || '');
+  const [amount, setAmount] = useState('');
   const [date, setDate] = useState(todayISO());
 
   function handleSave() {

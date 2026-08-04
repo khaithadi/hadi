@@ -10,11 +10,11 @@ export default function InvoiceForm({ initial, presetCustomerId, data, nav, onCa
   const defaultRate = data.settings.defaultTaxRate ?? DEFAULT_TAX_RATE;
   const [customerId, setCustomerId] = useState(inv.customerId || presetCustomerId || data.customers[0]?.id || '');
   const [date, setDate] = useState(inv.date || todayISO());
-  const [items, setItems] = useState(inv.items?.length ? inv.items : [{ id: uid(), desc: '', qty: 1, price: 0 }]);
+  const [items, setItems] = useState(inv.items?.length ? inv.items : [{ id: uid(), desc: '', qty: '', price: '' }]);
   const [applyTax, setApplyTax] = useState(!!inv.applyTax);
   const [taxRate, setTaxRate] = useState(inv.taxRate ?? defaultRate);
   const [discountType, setDiscountType] = useState(inv.discountType || 'percent');
-  const [discountValue, setDiscountValue] = useState(inv.discountValue ?? 0);
+  const [discountValue, setDiscountValue] = useState(inv.discountValue ?? '');
   const [notes, setNotes] = useState(inv.notes || '');
 
   if (data.customers.length === 0) {

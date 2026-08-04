@@ -13,7 +13,7 @@ export default function WorkerForm({ initial, onCancel, onSave }) {
   const [payType, setPayType] = useState(w.payType || 'project');
   const [rate, setRate] = useState(w.rate ?? '');
   const [dailySalary, setDailySalary] = useState(w.dailySalary ?? '');
-  const [dailyHours, setDailyHours] = useState(w.dailyHours ?? 8);
+  const [dailyHours, setDailyHours] = useState(w.dailyHours ?? '');
   const [note, setNote] = useState(w.note || '');
 
   function handleSave() {
@@ -58,9 +58,9 @@ export default function WorkerForm({ initial, onCancel, onSave }) {
       {payType === 'monthly' ? (
         <>
           <label className="label">{t('work.dailySalary')}</label>
-          <input className="input" type="number" min="0" inputMode="decimal" value={dailySalary} onChange={(e) => setDailySalary(e.target.value)} placeholder="2200" />
+          <input className="input" type="number" min="0" inputMode="decimal" value={dailySalary} onChange={(e) => setDailySalary(e.target.value)} placeholder={t('work.dailySalaryPh')} />
           <label className="label">{t('work.dailyHours')}</label>
-          <input className="input" type="number" min="0" inputMode="decimal" value={dailyHours} onChange={(e) => setDailyHours(e.target.value)} placeholder="8" />
+          <input className="input" type="number" min="0" inputMode="decimal" value={dailyHours} onChange={(e) => setDailyHours(e.target.value)} placeholder={t('work.dailyHoursPh')} />
         </>
       ) : (
         <>

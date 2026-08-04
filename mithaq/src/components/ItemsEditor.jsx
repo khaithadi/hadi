@@ -13,13 +13,16 @@ export default function ItemsEditor({
 }) {
   const t = useT();
   const update = (id, field, value) => setItems(items.map((it) => (it.id === id ? { ...it, [field]: value } : it)));
-  const addRow = () => setItems([...items, { id: uid(), desc: '', qty: 1, unit: ITEM_UNITS[2], price: 0 }]);
+  // Empty defaults so the placeholder shows through — user types without
+  // first having to delete a preset "1" or "0".
+  const addRow = () => setItems([...items, { id: uid(), desc: '', qty: '', unit: ITEM_UNITS[2], price: '' }]);
   const removeRow = (id) => setItems(items.filter((it) => it.id !== id));
 
   function addFromCatalog(serviceId) {
     const s = services.find((x) => x.id === serviceId);
     if (!s) return;
-    setItems([...items, { id: uid(), desc: s.name, qty: 1, unit: s.unit || ITEM_UNITS[2], price: Number(s.price) || 0 }]);
+    // Catalog price is meaningful user data — carry it over. Qty stays empty.
+    setItems([...items, { id: uid(), desc: s.name, qty: '', unit: s.unit || ITEM_UNITS[2], price: s.price || '' }]);
   }
 
   const subtotal = items.reduce((s, it) => s + (Number(it.qty) || 0) * (Number(it.price) || 0), 0);
