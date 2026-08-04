@@ -23,33 +23,33 @@ export default function Workers({ data, nav }) {
   }
 
   return (
-    <>
+    <div className="page">
       {(data.workers.length > 0) && (
         <input className="input search-input" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={t('work.searchPh')} />
       )}
       {list.length === 0 ? (
         <EmptyState text={t('work.empty')} />
       ) : (
-    <div className="ticket-list">
-      {list.map((w) => {
-        const tm = meta(WORKER_TYPES, w.payType);
-        const rem = owed(w.id);
-        return (
-          <Ticket key={w.id} onClick={() => nav.openWorker(w.id)}>
-            <div className="ticket-row">
-              <span className="ticket-title">{w.name}</span>
-              <StatusBadge label={t('wtype.' + w.payType)} color={w.payType === 'monthly' ? 'var(--indigo)' : 'var(--copper)'} />
-            </div>
-            <div className="ticket-dash" />
-            <div className="ticket-row sub">
-              <span>{w.phone || '—'}</span>
-              {rem > 0 && <span style={{ color: 'var(--danger)', fontWeight: 700 }}>{formatMoney(rem)} {t('work.due')}</span>}
-            </div>
-          </Ticket>
-        );
-      })}
-    </div>
+        <div className="ticket-list">
+          {list.map((w) => {
+            const tm = meta(WORKER_TYPES, w.payType);
+            const rem = owed(w.id);
+            return (
+              <Ticket key={w.id} onClick={() => nav.openWorker(w.id)}>
+                <div className="ticket-row">
+                  <span className="ticket-title">{w.name}</span>
+                  <StatusBadge label={t('wtype.' + w.payType)} color={w.payType === 'monthly' ? 'var(--indigo)' : 'var(--copper)'} />
+                </div>
+                <div className="ticket-dash" />
+                <div className="ticket-row sub">
+                  <span>{w.phone || '—'}</span>
+                  {rem > 0 && <span style={{ color: 'var(--danger)', fontWeight: 700 }}>{formatMoney(rem)} {t('work.due')}</span>}
+                </div>
+              </Ticket>
+            );
+          })}
+        </div>
       )}
-    </>
+    </div>
   );
 }

@@ -103,7 +103,7 @@ export default function DocPrint({ kind, id, paymentId, data, onClose }) {
                 {doc.items.map((it) => (
                   <tr key={it.id}>
                     <td>{it.desc}</td>
-                    <td>{it.qty}</td>
+                    <td>{it.qty}{it.unit ? ' ' + it.unit : ''}</td>
                     <td>{formatMoneyFr(it.price)}</td>
                     <td>{formatMoneyFr(it.qty * it.price)}</td>
                   </tr>

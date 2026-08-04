@@ -1,5 +1,6 @@
 import { Plus, X } from 'lucide-react';
 import { uid, formatMoney } from '../lib/format.js';
+import { ITEM_UNITS } from '../lib/constants.js';
 import { useT } from '../lib/i18n.js';
 
 // Controlled editor for line items + services-catalog picker + configurable
@@ -12,13 +13,13 @@ export default function ItemsEditor({
 }) {
   const t = useT();
   const update = (id, field, value) => setItems(items.map((it) => (it.id === id ? { ...it, [field]: value } : it)));
-  const addRow = () => setItems([...items, { id: uid(), desc: '', qty: 1, price: 0 }]);
+  const addRow = () => setItems([...items, { id: uid(), desc: '', qty: 1, unit: ITEM_UNITS[2], price: 0 }]);
   const removeRow = (id) => setItems(items.filter((it) => it.id !== id));
 
   function addFromCatalog(serviceId) {
     const s = services.find((x) => x.id === serviceId);
     if (!s) return;
-    setItems([...items, { id: uid(), desc: s.name, qty: 1, price: Number(s.price) || 0 }]);
+    setItems([...items, { id: uid(), desc: s.name, qty: 1, unit: s.unit || ITEM_UNITS[2], price: Number(s.price) || 0 }]);
   }
 
   const subtotal = items.reduce((s, it) => s + (Number(it.qty) || 0) * (Number(it.price) || 0), 0);
@@ -36,13 +37,20 @@ export default function ItemsEditor({
     <>
       <label className="label">{t('doc.items')}</label>
       {items.map((it) => (
-        <div className="item-edit-row" key={it.id}>
-          <input className="input flex-grow" placeholder={t('doc.desc')} value={it.desc} onChange={(e) => update(it.id, 'desc', e.target.value)} />
-          <input className="input qty" type="number" min="0" inputMode="decimal" value={it.qty} onChange={(e) => update(it.id, 'qty', e.target.value)} />
-          <input className="input price" type="number" min="0" inputMode="decimal" placeholder={t('set.price')} value={it.price} onChange={(e) => update(it.id, 'price', e.target.value)} />
-          {items.length > 1 && (
-            <button className="icon-btn-sm" onClick={() => removeRow(it.id)} aria-label={t('c.delete')}><X size={16} /></button>
-          )}
+        <div key={it.id} style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 8 }}>
+          <div className="item-edit-row">
+            <input className="input flex-grow" placeholder={t('doc.descExamplePh')} value={it.desc} onChange={(e) => update(it.id, 'desc', e.target.value)} />
+            {items.length > 1 && (
+              <button className="icon-btn-sm" onClick={() => removeRow(it.id)} aria-label={t('c.delete')}><X size={16} /></button>
+            )}
+          </div>
+          <div className="item-edit-row">
+            <input className="input qty" type="number" min="0" inputMode="decimal" placeholder={t('doc.qtyPh')} value={it.qty} onChange={(e) => update(it.id, 'qty', e.target.value)} />
+            <select className="input" style={{ width: 90 }} value={it.unit || ITEM_UNITS[2]} onChange={(e) => update(it.id, 'unit', e.target.value)}>
+              {ITEM_UNITS.map((u) => <option key={u} value={u}>{u}</option>)}
+            </select>
+            <input className="input price" type="number" min="0" inputMode="decimal" placeholder={t('doc.pricePh')} value={it.price} onChange={(e) => update(it.id, 'price', e.target.value)} />
+          </div>
         </div>
       ))}
 

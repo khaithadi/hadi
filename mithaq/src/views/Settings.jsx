@@ -3,6 +3,7 @@ import { Copy, ClipboardPaste, RotateCcw, Trash2, Check, X, Plus, Image as Image
 import { copyText, formatMoney, formatDate } from '../lib/format.js';
 import { exportBackup } from '../lib/storage.js';
 import { imageToThumb } from '../lib/image.js';
+import { ITEM_UNITS } from '../lib/constants.js';
 import { useConfirm } from '../components/ConfirmProvider.jsx';
 import { useT, LANGUAGES } from '../lib/i18n.js';
 
@@ -16,6 +17,7 @@ export default function Settings({ data, actions, onCancel }) {
   const [defaultTaxRate, setDefaultTaxRate] = useState(s.defaultTaxRate ?? 19);
   const [invoiceFooter, setInvoiceFooter] = useState(s.invoiceFooter || '');
   const [svcName, setSvcName] = useState('');
+  const [svcUnit, setSvcUnit] = useState(ITEM_UNITS[2]);
   const [svcPrice, setSvcPrice] = useState('');
   const [copied, setCopied] = useState(false);
   const [restoreText, setRestoreText] = useState('');
@@ -24,7 +26,7 @@ export default function Settings({ data, actions, onCancel }) {
 
   function addService() {
     if (!svcName.trim()) return;
-    actions.addService({ name: svcName.trim(), price: Number(svcPrice) || 0 });
+    actions.addService({ name: svcName.trim(), unit: svcUnit, price: Number(svcPrice) || 0 });
     setSvcName('');
     setSvcPrice('');
   }
@@ -56,13 +58,13 @@ export default function Settings({ data, actions, onCancel }) {
   return (
     <div className="page">
       <label className="label">{t('set.business')}</label>
-      <input className="input" value={businessName} onChange={(e) => setBusinessName(e.target.value)} />
+      <input className="input" value={businessName} onChange={(e) => setBusinessName(e.target.value)} placeholder={t('set.businessPh')} />
       <label className="label">{t('set.owner')}</label>
-      <input className="input" value={ownerName} onChange={(e) => setOwnerName(e.target.value)} />
+      <input className="input" value={ownerName} onChange={(e) => setOwnerName(e.target.value)} placeholder={t('set.ownerPh')} />
       <label className="label">{t('set.phoneOpt')}</label>
-      <input className="input" value={phone} onChange={(e) => setPhone(e.target.value)} />
+      <input className="input" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder={t('set.phonePh')} />
       <label className="label">{t('set.taxRate')}</label>
-      <input className="input" type="number" min="0" inputMode="decimal" value={defaultTaxRate} onChange={(e) => setDefaultTaxRate(e.target.value)} />
+      <input className="input" type="number" min="0" inputMode="decimal" value={defaultTaxRate} onChange={(e) => setDefaultTaxRate(e.target.value)} placeholder={t('set.taxRatePh')} />
 
       <label className="label">{t('set.language')}</label>
       <select className="input" value={s.language || 'ar'} onChange={(e) => actions.saveSettings({ language: e.target.value })}>
@@ -103,7 +105,7 @@ export default function Settings({ data, actions, onCancel }) {
         <div className="cat-list">
           {data.services.map((sv) => (
             <div className="cat-item" key={sv.id}>
-              <span className="ci-name">{sv.name}</span>
+              <span className="ci-name">{sv.name}{sv.unit ? ` (${sv.unit})` : ''}</span>
               <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span className="ci-price">{formatMoney(sv.price)}</span>
                 <button className="btn-ghost-sm" onClick={async () => { if (await confirm(t('set.delService'))) actions.deleteService(sv.id); }} aria-label={t('c.delete')}><X size={14} /></button>
@@ -113,8 +115,11 @@ export default function Settings({ data, actions, onCancel }) {
         </div>
       )}
       <div className="cat-add">
-        <input className="input ci-name-in" placeholder={t('set.serviceName')} value={svcName} onChange={(e) => setSvcName(e.target.value)} />
-        <input className="input ci-price-in" type="number" min="0" inputMode="decimal" placeholder={t('set.price')} value={svcPrice} onChange={(e) => setSvcPrice(e.target.value)} />
+        <input className="input ci-name-in" placeholder={t('set.serviceNamePh')} value={svcName} onChange={(e) => setSvcName(e.target.value)} />
+        <select className="input" style={{ width: 90 }} value={svcUnit} onChange={(e) => setSvcUnit(e.target.value)}>
+          {ITEM_UNITS.map((u) => <option key={u} value={u}>{u}</option>)}
+        </select>
+        <input className="input ci-price-in" type="number" min="0" inputMode="decimal" placeholder={t('set.servicePricePh')} value={svcPrice} onChange={(e) => setSvcPrice(e.target.value)} />
         <button className="btn-secondary sm" onClick={addService}><Plus size={16} /></button>
       </div>
 

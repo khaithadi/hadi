@@ -5,9 +5,8 @@ import { formatMoney, formatDate } from '../lib/format.js';
 import { useT } from '../lib/i18n.js';
 import Ticket, { EmptyState } from '../components/Ticket.jsx';
 import StatusBadge from '../components/StatusBadge.jsx';
-import Workers from './Workers.jsx';
 
-export default function Expenses({ data, nav, actions, subtab = 'expenses', setSubtab }) {
+export default function Expenses({ data, nav, actions }) {
   const t = useT();
   const [filter, setFilter] = useState('all');
   const [confirmId, setConfirmId] = useState(null);
@@ -18,25 +17,8 @@ export default function Expenses({ data, nav, actions, subtab = 'expenses', setS
     .sort((a, b) => new Date(b.date) - new Date(a.date));
   const total = list.reduce((s, e) => s + Number(e.amount), 0);
 
-  const tabs = (
-    <div className="subtabs">
-      <button className={'subtab' + (subtab === 'expenses' ? ' active' : '')} onClick={() => setSubtab && setSubtab('expenses')}>{t('exp.tabExpenses')}</button>
-      <button className={'subtab' + (subtab === 'workers' ? ' active' : '')} onClick={() => setSubtab && setSubtab('workers')}>{t('exp.tabWorkers')}</button>
-    </div>
-  );
-
-  if (subtab === 'workers') {
-    return (
-      <div className="page">
-        {tabs}
-        <Workers data={data} nav={nav} />
-      </div>
-    );
-  }
-
   return (
     <div className="page">
-      {tabs}
       <div className="total-preview">
         <span>{t('exp.total')}</span>
         <span style={{ color: 'var(--indigo)' }}>{formatMoney(total)}</span>

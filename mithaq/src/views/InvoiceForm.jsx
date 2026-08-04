@@ -54,7 +54,7 @@ export default function InvoiceForm({ initial, presetCustomerId, data, nav, onCa
       />
 
       <label className="label">{t('c.notesOpt')}</label>
-      <textarea className="input" rows={2} value={notes} onChange={(e) => setNotes(e.target.value)} />
+      <textarea className="input" rows={2} value={notes} onChange={(e) => setNotes(e.target.value)} placeholder={t('doc.notesPh')} />
 
       <div className="form-actions">
         <button className="btn-secondary" onClick={onCancel}>{t('c.cancel')}</button>

@@ -12,7 +12,7 @@ export function buildDocText(kind, doc, customer, settings) {
   lines.push(`Client : ${customer ? customer.name : ''}`);
   lines.push('—'.repeat(20));
   (doc.items || []).forEach((it) => {
-    lines.push(`${it.desc} × ${it.qty} = ${formatMoneyFr(it.qty * it.price)}`);
+    lines.push(`${it.desc} × ${it.qty}${it.unit ? ' ' + it.unit : ''} = ${formatMoneyFr(it.qty * it.price)}`);
   });
   lines.push('—'.repeat(20));
   const t = docTotals(doc);

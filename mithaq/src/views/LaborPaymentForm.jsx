@@ -24,7 +24,7 @@ export default function LaborPaymentForm({ entry, onCancel, onSave }) {
       </div>
 
       <label className="label">{t('work.paidAmount')}</label>
-      <input className="input" type="number" min="0" inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} />
+      <input className="input" type="number" min="0" inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder={t('pay.amountPh')} />
 
       <label className="label">{t('c.date')}</label>
       <input className="input" type="date" value={date} onChange={(e) => setDate(e.target.value)} />

@@ -36,19 +36,19 @@ export default function WorkerForm({ initial, onCancel, onSave }) {
   return (
     <div className="page">
       <label className="label">{t('work.name')}</label>
-      <input className="input" value={name} onChange={(e) => setName(e.target.value)} />
+      <input className="input" value={name} onChange={(e) => setName(e.target.value)} placeholder={t('work.namePh')} />
 
       <label className="label">{t('c.phone')}</label>
       <input className="input" type="tel" inputMode="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="05XX XX XX XX" />
 
       <label className="label">{t('work.emergName')}</label>
-      <input className="input" value={emergencyName} onChange={(e) => setEmergencyName(e.target.value)} />
+      <input className="input" value={emergencyName} onChange={(e) => setEmergencyName(e.target.value)} placeholder={t('work.emergNamePh')} />
 
       <label className="label">{t('work.emergPhone')}</label>
-      <input className="input" type="tel" inputMode="tel" value={emergencyPhone} onChange={(e) => setEmergencyPhone(e.target.value)} />
+      <input className="input" type="tel" inputMode="tel" value={emergencyPhone} onChange={(e) => setEmergencyPhone(e.target.value)} placeholder={t('work.emergPhonePh')} />
 
       <label className="label">{t('work.idNumber')}</label>
-      <input className="input" inputMode="numeric" value={idNumber} onChange={(e) => setIdNumber(e.target.value)} />
+      <input className="input" inputMode="numeric" value={idNumber} onChange={(e) => setIdNumber(e.target.value)} placeholder={t('work.idNumberPh')} />
 
       <label className="label">{t('work.type')}</label>
       <select className="input" value={payType} onChange={(e) => setPayType(e.target.value)}>
@@ -65,12 +65,12 @@ export default function WorkerForm({ initial, onCancel, onSave }) {
       ) : (
         <>
           <label className="label">{t('work.defaultRate')}</label>
-          <input className="input" type="number" min="0" inputMode="decimal" value={rate} onChange={(e) => setRate(e.target.value)} />
+          <input className="input" type="number" min="0" inputMode="decimal" value={rate} onChange={(e) => setRate(e.target.value)} placeholder={t('work.ratePh')} />
         </>
       )}
 
       <label className="label">{t('c.notes')}</label>
-      <textarea className="input" rows={2} value={note} onChange={(e) => setNote(e.target.value)} />
+      <textarea className="input" rows={2} value={note} onChange={(e) => setNote(e.target.value)} placeholder={t('work.notePh')} />
 
       <div className="form-actions">
         <button className="btn-secondary" onClick={onCancel}>{t('c.cancel')}</button>
