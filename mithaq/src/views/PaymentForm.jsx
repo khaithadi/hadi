@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { todayISO, formatMoney } from '../lib/format.js';
+import { todayISO, formatMoney, parseDecimal } from '../lib/format.js';
 import { invoiceState } from '../lib/calc.js';
 import { PAYMENT_METHODS } from '../lib/constants.js';
 import { useT } from '../lib/i18n.js';
@@ -13,7 +13,7 @@ export default function PaymentForm({ invoice, onCancel, onSave }) {
   const [receivedBy, setReceivedBy] = useState('');
 
   function handleSave() {
-    const amt = Number(amount) || 0;
+    const amt = parseDecimal(amount);
     if (amt <= 0) return;
     onSave({ amount: amt, date, method, receivedBy: receivedBy.trim() });
   }
@@ -26,7 +26,7 @@ export default function PaymentForm({ invoice, onCancel, onSave }) {
       </div>
 
       <label className="label">{t('c.amount')}</label>
-      <input className="input" type="number" min="0" inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder={t('pay.amountPh')} />
+      <input className="input" type="text" inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder={t('pay.amountPh')} />
 
       <label className="label">{t('c.date')}</label>
       <input className="input" type="date" value={date} onChange={(e) => setDate(e.target.value)} />

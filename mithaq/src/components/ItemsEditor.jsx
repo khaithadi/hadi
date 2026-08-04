@@ -1,5 +1,5 @@
 import { Plus, X } from 'lucide-react';
-import { uid, formatMoney } from '../lib/format.js';
+import { uid, formatMoney, parseDecimal } from '../lib/format.js';
 import { ITEM_UNITS } from '../lib/constants.js';
 import { useT } from '../lib/i18n.js';
 
@@ -25,16 +25,16 @@ export default function ItemsEditor({
     setItems([...items, { id: uid(), desc: s.name, qty: '', unit: s.unit || ITEM_UNITS[2], price: s.price || '' }]);
   }
 
-  const subtotal = items.reduce((s, it) => s + (Number(it.qty) || 0) * (Number(it.price) || 0), 0);
+  const subtotal = items.reduce((s, it) => s + parseDecimal(it.qty) * parseDecimal(it.price), 0);
   let discount = 0;
-  if (discountType && Number(discountValue) > 0) {
+  if (discountType && parseDecimal(discountValue) > 0) {
     discount = discountType === 'percent'
-      ? Math.round((subtotal * (Number(discountValue) || 0)) / 100)
-      : Number(discountValue) || 0;
+      ? Math.round((subtotal * parseDecimal(discountValue)) / 100)
+      : parseDecimal(discountValue);
   }
   discount = Math.min(discount, subtotal);
   const taxedBase = subtotal - discount;
-  const tax = applyTax ? Math.round((taxedBase * (Number(taxRate) || 0)) / 100) : 0;
+  const tax = applyTax ? Math.round((taxedBase * parseDecimal(taxRate)) / 100) : 0;
 
   return (
     <>
@@ -48,11 +48,24 @@ export default function ItemsEditor({
             )}
           </div>
           <div className="item-edit-row">
-            <input className="input qty" type="number" min="0" inputMode="decimal" placeholder={t('doc.qtyPh')} value={it.qty} onChange={(e) => update(it.id, 'qty', e.target.value)} />
+            {/* When the unit is 'قطعة' (piece), keep the qty a whole number —
+                you can't have 4.5 pieces — via type="number" + step="1". For
+                measurable units (م²/م.ط) it's a text+decimal input so mobile
+                keypads let the user type comma OR dot. */}
+            <input
+              className="input qty"
+              type={it.unit === 'قطعة' ? 'number' : 'text'}
+              inputMode={it.unit === 'قطعة' ? 'numeric' : 'decimal'}
+              step={it.unit === 'قطعة' ? '1' : undefined}
+              min="0"
+              placeholder={t('doc.qtyPh')}
+              value={it.qty}
+              onChange={(e) => update(it.id, 'qty', e.target.value)}
+            />
             <select className="input" style={{ width: 90 }} value={it.unit || ITEM_UNITS[2]} onChange={(e) => update(it.id, 'unit', e.target.value)}>
               {ITEM_UNITS.map((u) => <option key={u} value={u}>{u}</option>)}
             </select>
-            <input className="input price" type="number" min="0" inputMode="decimal" placeholder={t('doc.pricePh')} value={it.price} onChange={(e) => update(it.id, 'price', e.target.value)} />
+            <input className="input price" type="text" inputMode="decimal" placeholder={t('doc.pricePh')} value={it.price} onChange={(e) => update(it.id, 'price', e.target.value)} />
           </div>
         </div>
       ))}
@@ -78,7 +91,7 @@ export default function ItemsEditor({
           <option value="percent">{t('doc.percent')}</option>
           <option value="amount">{t('doc.fixed')}</option>
         </select>
-        <input className="input tax-rate" type="number" min="0" inputMode="decimal" placeholder="0" value={discountValue} onChange={(e) => setDiscountValue(e.target.value)} />
+        <input className="input tax-rate" type="text" inputMode="decimal" placeholder="0" value={discountValue} onChange={(e) => setDiscountValue(e.target.value)} />
       </div>
 
       {/* Tax */}
@@ -92,7 +105,7 @@ export default function ItemsEditor({
       {applyTax && (
         <div className="tax-row">
           <label className="label" style={{ marginTop: 0 }}>{t('doc.taxRate')}</label>
-          <input className="input tax-rate" type="number" min="0" inputMode="decimal" value={taxRate} onChange={(e) => setTaxRate(e.target.value)} />
+          <input className="input tax-rate" type="text" inputMode="decimal" value={taxRate} onChange={(e) => setTaxRate(e.target.value)} />
         </div>
       )}
 
@@ -107,7 +120,7 @@ export default function ItemsEditor({
         )}
         {applyTax && (
           <div className="ticket-row" style={{ width: '100%', fontSize: 13, color: 'var(--ink-soft)', fontWeight: 600 }}>
-            <span>TVA ({Number(taxRate) || 0}%)</span><span>{formatMoney(tax)}</span>
+            <span>TVA ({parseDecimal(taxRate)}%)</span><span>{formatMoney(tax)}</span>
           </div>
         )}
         <div className="ticket-row" style={{ width: '100%' }}>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { WORKER_TYPES } from '../lib/constants.js';
+import { parseDecimal } from '../lib/format.js';
 import { useT } from '../lib/i18n.js';
 
 export default function WorkerForm({ initial, onCancel, onSave }) {
@@ -26,9 +27,9 @@ export default function WorkerForm({ initial, onCancel, onSave }) {
       emergencyPhone: emergencyPhone.trim(),
       idNumber: idNumber.trim(),
       payType,
-      rate: Number(rate) || 0,
-      dailySalary: Number(dailySalary) || 0,
-      dailyHours: Number(dailyHours) || 0,
+      rate: parseDecimal(rate),
+      dailySalary: parseDecimal(dailySalary),
+      dailyHours: parseDecimal(dailyHours),
       note: note.trim(),
     });
   }
@@ -58,14 +59,14 @@ export default function WorkerForm({ initial, onCancel, onSave }) {
       {payType === 'monthly' ? (
         <>
           <label className="label">{t('work.dailySalary')}</label>
-          <input className="input" type="number" min="0" inputMode="decimal" value={dailySalary} onChange={(e) => setDailySalary(e.target.value)} placeholder={t('work.dailySalaryPh')} />
+          <input className="input" type="text" inputMode="decimal" value={dailySalary} onChange={(e) => setDailySalary(e.target.value)} placeholder={t('work.dailySalaryPh')} />
           <label className="label">{t('work.dailyHours')}</label>
-          <input className="input" type="number" min="0" inputMode="decimal" value={dailyHours} onChange={(e) => setDailyHours(e.target.value)} placeholder={t('work.dailyHoursPh')} />
+          <input className="input" type="text" inputMode="decimal" value={dailyHours} onChange={(e) => setDailyHours(e.target.value)} placeholder={t('work.dailyHoursPh')} />
         </>
       ) : (
         <>
           <label className="label">{t('work.defaultRate')}</label>
-          <input className="input" type="number" min="0" inputMode="decimal" value={rate} onChange={(e) => setRate(e.target.value)} placeholder={t('work.ratePh')} />
+          <input className="input" type="text" inputMode="decimal" value={rate} onChange={(e) => setRate(e.target.value)} placeholder={t('work.ratePh')} />
         </>
       )}
 

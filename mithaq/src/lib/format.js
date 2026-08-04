@@ -23,6 +23,15 @@ export function todayISO() {
   return new Date().toISOString().slice(0, 10);
 }
 
+// Parse a decimal that may use ',' or '.' as the separator — Algerian/French
+// keypads commonly type '4,5'. Returns a plain Number, or 0 for empty/invalid
+// input. Use this instead of `Number(v) || 0` on every numeric form field.
+export function parseDecimal(v) {
+  if (v == null || v === '') return 0;
+  const n = Number(String(v).replace(',', '.'));
+  return Number.isFinite(n) ? n : 0;
+}
+
 export function uid() {
   return Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
 }
