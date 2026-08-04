@@ -3,14 +3,14 @@
 
 export function formatMoney(n) {
   const num = Number(n) || 0;
-  return num.toLocaleString('en-US') + ' دج';
+  return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' دج';
 }
 
 // French/Latin variant used on the printed Facture/Devis (DA = Dinar Algérien),
 // e.g. 300000 -> "300 000 DA".
 export function formatMoneyFr(n) {
   const num = Number(n) || 0;
-  return num.toLocaleString('fr-FR').replace(/ | /g, ' ') + ' DA';
+  return num.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/ | /g, ' ') + ' DA';
 }
 
 export function formatDate(iso) {

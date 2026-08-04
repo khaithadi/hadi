@@ -1,4 +1,4 @@
-import { LayoutDashboard, Users, ClipboardList, ReceiptText, Wallet } from 'lucide-react';
+import { LayoutDashboard, Users, ClipboardList, ReceiptText, Wallet, HardHat } from 'lucide-react';
 import { useT } from '../lib/i18n.js';
 
 const TABS = [
@@ -7,6 +7,7 @@ const TABS = [
   { key: 'quotes', tkey: 'nav.quotes', icon: ClipboardList },
   { key: 'invoices', tkey: 'nav.invoices', icon: ReceiptText },
   { key: 'expenses', tkey: 'nav.expenses', icon: Wallet },
+  { key: 'workers', tkey: 'nav.workers', icon: HardHat },
 ];
 
 // Maps any sub-view to its owning tab (e.g. customer profile → customers).
@@ -14,7 +15,8 @@ function tabFor(view) {
   if (view.startsWith('customer')) return 'customers';
   if (view.startsWith('quote')) return 'quotes';
   if (view.startsWith('invoice')) return 'invoices';
-  if (view.startsWith('expense') || view.startsWith('worker') || view.startsWith('labor')) return 'expenses';
+  if (view.startsWith('worker') || view.startsWith('labor') || view === 'timesheetForm' || view === 'periodPay') return 'workers';
+  if (view.startsWith('expense')) return 'expenses';
   return view;
 }
 

@@ -30,13 +30,13 @@ export default function CustomerForm({ initial, onCancel, onSave }) {
   return (
     <div className="page">
       <label className="label">{t('cust.fullName')}</label>
-      <input className="input" value={name} onChange={(e) => setName(e.target.value)} />
+      <input className="input" value={name} onChange={(e) => setName(e.target.value)} placeholder={t('cust.namePh')} />
 
       <label className="label">{t('c.phone')}</label>
       <input className="input" type="tel" inputMode="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="05XX XX XX XX" />
 
       <label className="label">{t('cust.address')}</label>
-      <textarea className="input" rows={2} value={address} onChange={(e) => setAddress(e.target.value)} />
+      <textarea className="input" rows={2} value={address} onChange={(e) => setAddress(e.target.value)} placeholder={t('cust.addressPh')} />
 
       <label className="label">{t('cust.serviceType')}</label>
       <select className="input" value={serviceType} onChange={(e) => setServiceType(e.target.value)}>
@@ -54,7 +54,7 @@ export default function CustomerForm({ initial, onCancel, onSave }) {
       </select>
 
       <label className="label">{t('c.notes')}</label>
-      <textarea className="input" rows={3} value={notes} onChange={(e) => setNotes(e.target.value)} />
+      <textarea className="input" rows={3} value={notes} onChange={(e) => setNotes(e.target.value)} placeholder={t('cust.notesPh')} />
 
       <div className="form-actions">
         <button className="btn-secondary" onClick={onCancel}>{t('c.cancel')}</button>

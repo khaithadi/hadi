@@ -37,7 +37,7 @@ export default function InvoiceDetail({ invoice, data, nav, actions }) {
         <div className="ticket-dash" />
         {invoice.items.map((it) => (
           <div className="item-row" key={it.id}>
-            <span>{it.desc} <span className="muted">× {it.qty}</span></span>
+            <span>{it.desc} <span className="muted">× {it.qty}{it.unit ? ' ' + it.unit : ''}</span></span>
             <span>{formatMoney(it.qty * it.price)}</span>
           </div>
         ))}

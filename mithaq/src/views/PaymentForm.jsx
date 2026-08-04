@@ -26,7 +26,7 @@ export default function PaymentForm({ invoice, onCancel, onSave }) {
       </div>
 
       <label className="label">{t('c.amount')}</label>
-      <input className="input" type="number" min="0" inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} />
+      <input className="input" type="number" min="0" inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder={t('pay.amountPh')} />
 
       <label className="label">{t('c.date')}</label>
       <input className="input" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
@@ -37,7 +37,7 @@ export default function PaymentForm({ invoice, onCancel, onSave }) {
       </select>
 
       <label className="label">{t('pay.receivedBy')}</label>
-      <input className="input" value={receivedBy} onChange={(e) => setReceivedBy(e.target.value)} />
+      <input className="input" value={receivedBy} onChange={(e) => setReceivedBy(e.target.value)} placeholder={t('pay.receivedByPh')} />
 
       <div className="form-actions">
         <button className="btn-secondary" onClick={onCancel}>{t('c.cancel')}</button>

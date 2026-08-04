@@ -23,6 +23,7 @@ import InvoiceDetail from './views/InvoiceDetail.jsx';
 import PaymentForm from './views/PaymentForm.jsx';
 import Expenses from './views/Expenses.jsx';
 import ExpenseForm from './views/ExpenseForm.jsx';
+import Workers from './views/Workers.jsx';
 import WorkerForm from './views/WorkerForm.jsx';
 import WorkerDetail from './views/WorkerDetail.jsx';
 import LaborForm from './views/LaborForm.jsx';
@@ -46,6 +47,7 @@ const TITLE_KEYS = {
   paymentForm: 't.paymentForm',
   expenses: 'nav.expenses',
   expenseForm: (e) => (e ? 't.expenseEdit' : 't.expenseNew'),
+  workers: 'nav.workers',
   workerDetail: 't.workerDetail',
   workerForm: (e) => (e ? 't.workerEdit' : 't.workerNew'),
   laborForm: 't.laborForm',
@@ -55,7 +57,7 @@ const TITLE_KEYS = {
   settings: 't.settings',
 };
 
-const TAB_VIEWS = ['dashboard', 'customers', 'quotes', 'invoices', 'expenses'];
+const TAB_VIEWS = ['dashboard', 'customers', 'quotes', 'invoices', 'expenses', 'workers'];
 // Views where the bottom nav is hidden to protect unsaved form input.
 const FORM_VIEWS = ['customerForm', 'quoteForm', 'invoiceForm', 'expenseForm', 'paymentForm',
   'workerForm', 'laborForm', 'laborPayment', 'timesheetForm', 'periodPay', 'settings'];
@@ -71,7 +73,6 @@ export default function App() {
   const [editing, setEditing] = useState(null); // entity being edited (forms)
   const [preset, setPreset] = useState(null); // preset customerId for new docs
   const [print, setPrint] = useState(null); // { kind, id, paymentId }
-  const [expTab, setExpTab] = useState('expenses'); // expenses screen sub-tab: 'expenses' | 'workers'
 
   useEffect(() => {
     setData(loadData());
@@ -412,6 +413,11 @@ export default function App() {
     openQuote(id) { setActive((a) => ({ ...a, quoteId: id })); push('quoteDetail'); },
     openInvoice(id) { setActive((a) => ({ ...a, invoiceId: id })); push('invoiceDetail'); },
 
+    // Swap the current view for another at the SAME depth (no browser push/pop).
+    // Used when a form's Save produces the view "under" it (e.g. quoteForm →
+    // quoteDetail) so the form never stays buried in the stack.
+    replace(v) { setHistory((h) => [...h.slice(0, -1), v]); },
+
     newCustomer() { setEditing(null); push('customerForm'); },
     editCustomer(c) { setEditing(c); push('customerForm'); },
 
@@ -436,6 +442,15 @@ export default function App() {
 
     // The print overlay gets its own history entry so swipe-back dismisses it.
     print(kind, id, paymentId) { setPrint({ kind, id, paymentId }); pushBrowser(); },
+    // Same overlay, but replacing the current view at the same depth (no extra
+    // push) — used right after a payment is saved, where the print overlay
+    // takes the place of the paymentForm screen instead of stacking on top.
+    // Pops paymentForm off the stack now so that closing the overlay (which
+    // pops one browser entry) reveals invoiceDetail, not the stale form.
+    printReplace(kind, id, paymentId) {
+      setHistory((h) => h.slice(0, -1));
+      setPrint({ kind, id, paymentId });
+    },
     closePrint() { window.history.back(); },
     settings() { push('settings'); },
 
@@ -455,7 +470,8 @@ export default function App() {
     if (view === 'customers') return nav.newCustomer();
     if (view === 'quotes') return nav.newQuote();
     if (view === 'invoices') return nav.newInvoice();
-    if (view === 'expenses') return expTab === 'workers' ? nav.newWorker() : nav.newExpense();
+    if (view === 'expenses') return nav.newExpense();
+    if (view === 'workers') return nav.newWorker();
     return nav.newInvoice(); // dashboard default
   }
 
@@ -521,7 +537,7 @@ export default function App() {
               onSave={(c) => {
                 const saved = actions.saveCustomer(c);
                 if (editing) nav.back();
-                else nav.openCustomer(saved.id);
+                else { setActive((a) => ({ ...a, customerId: saved.id })); nav.replace('customer'); }
               }}
             />
           )}
@@ -536,7 +552,8 @@ export default function App() {
               onCancel={nav.back}
               onSave={(q) => {
                 const saved = actions.saveQuote(q);
-                nav.openQuote(saved.id);
+                if (editing) nav.back();
+                else { setActive((a) => ({ ...a, quoteId: saved.id })); nav.replace('quoteDetail'); }
               }}
             />
           )}
@@ -554,7 +571,8 @@ export default function App() {
               onCancel={nav.back}
               onSave={(inv) => {
                 const saved = actions.saveInvoice(inv);
-                nav.openInvoice(saved.id);
+                if (editing) nav.back();
+                else { setActive((a) => ({ ...a, invoiceId: saved.id })); nav.replace('invoiceDetail'); }
               }}
             />
           )}
@@ -567,14 +585,13 @@ export default function App() {
               onCancel={nav.back}
               onSave={(p) => {
                 const created = actions.addPayment(activeInvoice.id, p);
-                nav.back();
-                nav.print('receipt', activeInvoice.id, created.id);
+                nav.printReplace('receipt', activeInvoice.id, created.id);
               }}
             />
           )}
 
           {view === 'expenses' && (
-            <Expenses data={data} nav={nav} actions={actions} subtab={expTab} setSubtab={setExpTab} />
+            <Expenses data={data} nav={nav} actions={actions} />
           )}
           {view === 'expenseForm' && (
             <ExpenseForm
@@ -589,6 +606,7 @@ export default function App() {
             />
           )}
 
+          {view === 'workers' && <Workers data={data} nav={nav} />}
           {view === 'workerDetail' && activeWorker && (
             <WorkerDetail worker={activeWorker} data={data} nav={nav} actions={actions} />
           )}
@@ -599,7 +617,7 @@ export default function App() {
               onSave={(w) => {
                 const saved = actions.saveWorker(w);
                 if (editing) nav.back();
-                else nav.openWorker(saved.id);
+                else { setActive((a) => ({ ...a, workerId: saved.id })); nav.replace('workerDetail'); }
               }}
             />
           )}

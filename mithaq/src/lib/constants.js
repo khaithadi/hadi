@@ -64,6 +64,10 @@ export const WORKER_TYPES = [
 // Units for a "measured" labor due (quantity × unit price).
 export const LABOR_UNITS = ['م²', 'م.ط', 'متر', 'ساعة', 'يوم', 'قطعة', 'مخصّص'];
 
+// Units for a quote/invoice line item or a catalog service: square meter,
+// linear meter, or piece.
+export const ITEM_UNITS = ['م²', 'م.ط', 'قطعة'];
+
 // Overtime is paid at this multiple of the normal hourly rate.
 export const OVERTIME_MULTIPLIER = 1.5;
 

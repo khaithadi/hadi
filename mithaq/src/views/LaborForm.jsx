@@ -66,15 +66,15 @@ export default function LaborForm({ worker, data, onCancel, onSave }) {
           {items.map((it) => (
             <div key={it.id} style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 8 }}>
               <div className="item-edit-row">
-                <input className="input flex-grow" placeholder={t('doc.desc')} value={it.desc} onChange={(e) => updateItem(it.id, 'desc', e.target.value)} />
+                <input className="input flex-grow" placeholder={t('doc.descExamplePh')} value={it.desc} onChange={(e) => updateItem(it.id, 'desc', e.target.value)} />
                 {items.length > 1 && <button className="icon-btn-sm" onClick={() => removeRow(it.id)} aria-label={t('c.delete')}><X size={16} /></button>}
               </div>
               <div className="item-edit-row">
-                <input className="input flex-grow" type="number" min="0" inputMode="decimal" placeholder={t('c.amount')} value={it.quantity} onChange={(e) => updateItem(it.id, 'quantity', e.target.value)} />
+                <input className="input flex-grow" type="number" min="0" inputMode="decimal" placeholder={t('doc.qtyPh')} value={it.quantity} onChange={(e) => updateItem(it.id, 'quantity', e.target.value)} />
                 <select className="input" style={{ width: 90 }} value={it.unit} onChange={(e) => updateItem(it.id, 'unit', e.target.value)}>
                   {LABOR_UNITS.map((u) => <option key={u} value={u}>{u}</option>)}
                 </select>
-                <input className="input" style={{ width: 100 }} type="number" min="0" inputMode="decimal" placeholder={t('set.price')} value={it.price} onChange={(e) => updateItem(it.id, 'price', e.target.value)} />
+                <input className="input" style={{ width: 100 }} type="number" min="0" inputMode="decimal" placeholder={t('doc.pricePh')} value={it.price} onChange={(e) => updateItem(it.id, 'price', e.target.value)} />
               </div>
             </div>
           ))}
@@ -87,7 +87,7 @@ export default function LaborForm({ worker, data, onCancel, onSave }) {
       <input className="input" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
 
       <label className="label">{t('c.notesOpt')}</label>
-      <input className="input" value={note} onChange={(e) => setNote(e.target.value)} />
+      <input className="input" value={note} onChange={(e) => setNote(e.target.value)} placeholder={t('work.laborNotePh')} />
 
       <div className="form-actions">
         <button className="btn-secondary" onClick={onCancel}>{t('c.cancel')}</button>
