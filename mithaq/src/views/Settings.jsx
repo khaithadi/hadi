@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Copy, ClipboardPaste, RotateCcw, Trash2, Check, X, Plus, Image as ImageIcon, ShieldCheck } from 'lucide-react';
-import { copyText, formatMoney, formatDate } from '../lib/format.js';
+import { copyText, formatMoney, formatDate, parseDecimal } from '../lib/format.js';
 import { exportBackup } from '../lib/storage.js';
 import { imageToThumb } from '../lib/image.js';
 import { ITEM_UNITS } from '../lib/constants.js';
@@ -26,7 +26,7 @@ export default function Settings({ data, actions, onCancel }) {
 
   function addService() {
     if (!svcName.trim()) return;
-    actions.addService({ name: svcName.trim(), unit: svcUnit, price: Number(svcPrice) || 0 });
+    actions.addService({ name: svcName.trim(), unit: svcUnit, price: parseDecimal(svcPrice) });
     setSvcName('');
     setSvcPrice('');
   }
@@ -64,7 +64,7 @@ export default function Settings({ data, actions, onCancel }) {
       <label className="label">{t('set.phoneOpt')}</label>
       <input className="input" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder={t('set.phonePh')} />
       <label className="label">{t('set.taxRate')}</label>
-      <input className="input" type="number" min="0" inputMode="decimal" value={defaultTaxRate} onChange={(e) => setDefaultTaxRate(e.target.value)} placeholder={t('set.taxRatePh')} />
+      <input className="input" type="text" inputMode="decimal" value={defaultTaxRate} onChange={(e) => setDefaultTaxRate(e.target.value)} placeholder={t('set.taxRatePh')} />
 
       <label className="label">{t('set.language')}</label>
       <select className="input" value={s.language || 'ar'} onChange={(e) => actions.saveSettings({ language: e.target.value })}>
@@ -96,7 +96,7 @@ export default function Settings({ data, actions, onCancel }) {
 
       <div className="form-actions">
         <button className="btn-secondary" onClick={onCancel}>{t('c.cancel')}</button>
-        <button className="btn-primary" onClick={() => { actions.saveSettings({ businessName, ownerName, phone, defaultTaxRate: Number(defaultTaxRate) || 0, invoiceFooter: invoiceFooter.trim() }); onCancel(); }}>{t('c.save')}</button>
+        <button className="btn-primary" onClick={() => { actions.saveSettings({ businessName, ownerName, phone, defaultTaxRate: parseDecimal(defaultTaxRate), invoiceFooter: invoiceFooter.trim() }); onCancel(); }}>{t('c.save')}</button>
       </div>
 
       <div className="section-title" style={{ marginTop: 18 }}>{t('set.services')}</div>
@@ -119,7 +119,7 @@ export default function Settings({ data, actions, onCancel }) {
         <select className="input" style={{ width: 90 }} value={svcUnit} onChange={(e) => setSvcUnit(e.target.value)}>
           {ITEM_UNITS.map((u) => <option key={u} value={u}>{u}</option>)}
         </select>
-        <input className="input ci-price-in" type="number" min="0" inputMode="decimal" placeholder={t('set.servicePricePh')} value={svcPrice} onChange={(e) => setSvcPrice(e.target.value)} />
+        <input className="input ci-price-in" type="text" inputMode="decimal" placeholder={t('set.servicePricePh')} value={svcPrice} onChange={(e) => setSvcPrice(e.target.value)} />
         <button className="btn-secondary sm" onClick={addService}><Plus size={16} /></button>
       </div>
 

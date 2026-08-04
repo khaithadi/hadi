@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { todayISO, formatMoney } from '../lib/format.js';
+import { todayISO, formatMoney, parseDecimal } from '../lib/format.js';
 import { laborState } from '../lib/calc.js';
 import { useT } from '../lib/i18n.js';
 
@@ -11,7 +11,7 @@ export default function LaborPaymentForm({ entry, onCancel, onSave }) {
   const [date, setDate] = useState(todayISO());
 
   function handleSave() {
-    const amt = Number(amount) || 0;
+    const amt = parseDecimal(amount);
     if (amt <= 0) return;
     onSave({ amount: amt, date });
   }
@@ -24,7 +24,7 @@ export default function LaborPaymentForm({ entry, onCancel, onSave }) {
       </div>
 
       <label className="label">{t('work.paidAmount')}</label>
-      <input className="input" type="number" min="0" inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder={t('pay.amountPh')} />
+      <input className="input" type="text" inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder={t('pay.amountPh')} />
 
       <label className="label">{t('c.date')}</label>
       <input className="input" type="date" value={date} onChange={(e) => setDate(e.target.value)} />

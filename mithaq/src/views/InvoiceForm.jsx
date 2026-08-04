@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { uid, todayISO } from '../lib/format.js';
+import { uid, todayISO, parseDecimal } from '../lib/format.js';
 import { DEFAULT_TAX_RATE } from '../lib/constants.js';
 import { useT } from '../lib/i18n.js';
 import ItemsEditor from '../components/ItemsEditor.jsx';
@@ -24,13 +24,16 @@ export default function InvoiceForm({ initial, presetCustomerId, data, nav, onCa
   }
 
   function handleSave() {
-    const clean = items.filter((it) => it.desc.trim()).map((it) => ({ ...it, qty: Number(it.qty) || 0, price: Number(it.price) || 0 }));
+    const clean = items.filter((it) => it.desc.trim()).map((it) => {
+      const q = parseDecimal(it.qty);
+      return { ...it, qty: it.unit === 'قطعة' ? Math.trunc(q) : q, price: parseDecimal(it.price) };
+    });
     if (!customerId || clean.length === 0) return;
     onSave({
       ...(initial ? { id: initial.id, number: initial.number, payments: initial.payments, quoteId: initial.quoteId } : {}),
       customerId, date,
-      items: clean, applyTax, taxRate: Number(taxRate) || 0,
-      discountType, discountValue: Number(discountValue) || 0,
+      items: clean, applyTax, taxRate: parseDecimal(taxRate),
+      discountType, discountValue: parseDecimal(discountValue),
       notes: notes.trim(),
     });
   }

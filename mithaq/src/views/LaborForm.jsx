@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Plus, X } from 'lucide-react';
-import { uid, todayISO, formatMoney } from '../lib/format.js';
+import { uid, todayISO, formatMoney, parseDecimal } from '../lib/format.js';
 import { LABOR_UNITS } from '../lib/constants.js';
 import { useT } from '../lib/i18n.js';
 
@@ -21,19 +21,22 @@ export default function LaborForm({ worker, data, onCancel, onSave }) {
   const addRow = () => setItems([...items, { id: uid(), desc: '', quantity: '', unit: LABOR_UNITS[0], price: worker.rate || '' }]);
   const removeRow = (id) => setItems(items.filter((it) => it.id !== id));
 
-  const itemsTotal = items.reduce((s, it) => s + (Number(it.quantity) || 0) * (Number(it.price) || 0), 0);
-  const computedDue = basis === 'measured' ? itemsTotal : Number(amount) || 0;
+  const itemsTotal = items.reduce((s, it) => s + parseDecimal(it.quantity) * parseDecimal(it.price), 0);
+  const computedDue = basis === 'measured' ? itemsTotal : parseDecimal(amount);
 
   function handleSave() {
     if (computedDue <= 0) return;
     if (basis === 'measured') {
       const clean = items
-        .filter((it) => (Number(it.quantity) || 0) > 0 && (Number(it.price) || 0) > 0)
-        .map((it) => ({ id: it.id, desc: it.desc.trim(), quantity: Number(it.quantity) || 0, unit: it.unit, price: Number(it.price) || 0 }));
+        .filter((it) => parseDecimal(it.quantity) > 0 && parseDecimal(it.price) > 0)
+        .map((it) => {
+          const q = parseDecimal(it.quantity);
+          return { id: it.id, desc: it.desc.trim(), quantity: it.unit === 'قطعة' ? Math.trunc(q) : q, unit: it.unit, price: parseDecimal(it.price) };
+        });
       if (!clean.length) return;
       onSave({ workerId: worker.id, customerId: customerId || null, basis: 'measured', items: clean, date, note: note.trim() });
     } else {
-      onSave({ workerId: worker.id, customerId: customerId || null, basis: 'amount', due: Number(amount) || 0, date, note: note.trim() });
+      onSave({ workerId: worker.id, customerId: customerId || null, basis: 'amount', due: parseDecimal(amount), date, note: note.trim() });
     }
   }
 
@@ -58,7 +61,7 @@ export default function LaborForm({ worker, data, onCancel, onSave }) {
       {basis === 'amount' ? (
         <>
           <label className="label">{t('work.dueAmount')}</label>
-          <input className="input" type="number" min="0" inputMode="decimal" placeholder="0" value={amount} onChange={(e) => setAmount(e.target.value)} />
+          <input className="input" type="text" inputMode="decimal" placeholder="0" value={amount} onChange={(e) => setAmount(e.target.value)} />
         </>
       ) : (
         <>
@@ -70,11 +73,20 @@ export default function LaborForm({ worker, data, onCancel, onSave }) {
                 {items.length > 1 && <button className="icon-btn-sm" onClick={() => removeRow(it.id)} aria-label={t('c.delete')}><X size={16} /></button>}
               </div>
               <div className="item-edit-row">
-                <input className="input flex-grow" type="number" min="0" inputMode="decimal" placeholder={t('doc.qtyPh')} value={it.quantity} onChange={(e) => updateItem(it.id, 'quantity', e.target.value)} />
+                <input
+                  className="input flex-grow"
+                  type={it.unit === 'قطعة' ? 'number' : 'text'}
+                  inputMode={it.unit === 'قطعة' ? 'numeric' : 'decimal'}
+                  step={it.unit === 'قطعة' ? '1' : undefined}
+                  min="0"
+                  placeholder={t('doc.qtyPh')}
+                  value={it.quantity}
+                  onChange={(e) => updateItem(it.id, 'quantity', e.target.value)}
+                />
                 <select className="input" style={{ width: 90 }} value={it.unit} onChange={(e) => updateItem(it.id, 'unit', e.target.value)}>
                   {LABOR_UNITS.map((u) => <option key={u} value={u}>{u}</option>)}
                 </select>
-                <input className="input" style={{ width: 100 }} type="number" min="0" inputMode="decimal" placeholder={t('doc.pricePh')} value={it.price} onChange={(e) => updateItem(it.id, 'price', e.target.value)} />
+                <input className="input" style={{ width: 100 }} type="text" inputMode="decimal" placeholder={t('doc.pricePh')} value={it.price} onChange={(e) => updateItem(it.id, 'price', e.target.value)} />
               </div>
             </div>
           ))}

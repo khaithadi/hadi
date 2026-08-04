@@ -1,5 +1,6 @@
 // Lightweight assertions for the pure calculation layer (run: npm run test:calc).
 import { docTotals, invoiceState, customerFinance, dashboardMetrics, laborState, laborDue, workerRates, dayHours, dayAmount, periodSummary } from '../src/lib/calc.js';
+import { parseDecimal } from '../src/lib/format.js';
 
 let fails = 0;
 const ok = (name, cond) => { console.log((cond ? 'OK  ' : 'XX  ') + name); if (!cond) fails++; };
@@ -108,6 +109,16 @@ const ps = periodSummary(ts, 'w1', '2026-06-01', '2026-06-30', rates, { unpaidOn
 eq('period days (unpaid in range)', ps.days.length, 2);
 eq('period regular hours', ps.regular, 14.5);
 eq('period amount rounded', ps.amount, Math.round(14.5 * 275)); // 3988
+
+// ---- parseDecimal: accepts both '.' and ',' separators ----
+eq('parseDecimal("4.5")', parseDecimal('4.5'), 4.5);
+eq('parseDecimal("4,5")', parseDecimal('4,5'), 4.5);
+eq('parseDecimal("12,75")', parseDecimal('12,75'), 12.75);
+eq('parseDecimal("")', parseDecimal(''), 0);
+eq('parseDecimal(null)', parseDecimal(null), 0);
+eq('parseDecimal("abc")', parseDecimal('abc'), 0);
+eq('parseDecimal(0)', parseDecimal(0), 0);
+eq('parseDecimal(3200)', parseDecimal(3200), 3200);
 
 console.log(fails === 0 ? '\nALL CALC TESTS PASSED' : `\n${fails} FAILURES`);
 process.exit(fails ? 1 : 0);

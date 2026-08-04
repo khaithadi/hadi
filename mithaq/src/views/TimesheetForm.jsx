@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { todayISO } from '../lib/format.js';
+import { todayISO, parseDecimal } from '../lib/format.js';
 import { dayHours } from '../lib/calc.js';
 import { useT } from '../lib/i18n.js';
 
@@ -12,11 +12,13 @@ export default function TimesheetForm({ worker, onCancel, onSave }) {
   const [end, setEnd] = useState('17:00');
   const [overtime, setOvertime] = useState('');
 
-  const h = dayHours({ start, end, overtime });
+  // Pre-normalize the overtime string so the live-hours preview reads a
+  // "1,5" input the same as "1.5" (Algerian/French decimal-comma habit).
+  const h = dayHours({ start, end, overtime: parseDecimal(overtime) });
 
   function handleSave() {
     if (h.total <= 0) return;
-    onSave({ workerId: worker.id, date, start, end, overtime: Number(overtime) || 0, paid: false, paymentId: null });
+    onSave({ workerId: worker.id, date, start, end, overtime: parseDecimal(overtime), paid: false, paymentId: null });
   }
 
   return (
@@ -36,7 +38,7 @@ export default function TimesheetForm({ worker, onCancel, onSave }) {
       </div>
 
       <label className="label">{t('work.overtimeOpt')}</label>
-      <input className="input" type="number" min="0" inputMode="decimal" placeholder="0" value={overtime} onChange={(e) => setOvertime(e.target.value)} />
+      <input className="input" type="text" inputMode="decimal" placeholder="0" value={overtime} onChange={(e) => setOvertime(e.target.value)} />
 
       <div className="total-preview">
         <span>{t('work.dayHours')}</span>

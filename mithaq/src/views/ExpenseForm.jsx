@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
-import { todayISO } from '../lib/format.js';
+import { todayISO, parseDecimal } from '../lib/format.js';
 import { imageToThumb } from '../lib/image.js';
 import { EXPENSE_CATEGORIES } from '../lib/constants.js';
 import { useT } from '../lib/i18n.js';
@@ -22,12 +22,13 @@ export default function ExpenseForm({ initial, presetCustomerId, data, onCancel,
   }
 
   function handleSave() {
-    if (!amount || Number(amount) <= 0) return;
+    const amt = parseDecimal(amount);
+    if (amt <= 0) return;
     onSave({
       ...(initial ? { id: initial.id } : {}),
       customerId: customerId || null,
       category,
-      amount: Number(amount),
+      amount: amt,
       description: description.trim(),
       date,
       receipt,
@@ -53,7 +54,7 @@ export default function ExpenseForm({ initial, presetCustomerId, data, onCancel,
       </div>
 
       <label className="label">{t('c.amount')}</label>
-      <input className="input" type="number" min="0" inputMode="decimal" placeholder="0" value={amount} onChange={(ev) => setAmount(ev.target.value)} />
+      <input className="input" type="text" inputMode="decimal" placeholder="0" value={amount} onChange={(ev) => setAmount(ev.target.value)} />
 
       <label className="label">{t('doc.descOpt')}</label>
       <input className="input" placeholder={t('exp.descPh')} value={description} onChange={(ev) => setDescription(ev.target.value)} />
