@@ -297,6 +297,68 @@ export const DICT = {
 
   'wtype.project': { ar: 'بالمشروع', fr: 'Au projet', en: 'Per project' },
   'wtype.monthly': { ar: 'شهري (راتب)', fr: 'Mensuel (salaire)', en: 'Monthly (salary)' },
+
+  // ---- brand / splash ----
+  'brand.name':   { ar: 'مِيثاق', fr: 'Mithaq', en: 'Mithaq' },
+  'brand.tag':    { ar: 'مساعدك اليومي في إدارة ورشتك', fr: 'Votre assistant quotidien pour votre atelier', en: 'Your daily workshop assistant' },
+
+  // ---- onboarding ----
+  'onb.skip':               { ar: 'تخطي', fr: 'Passer', en: 'Skip' },
+  'onb.next':               { ar: 'التالي', fr: 'Suivant', en: 'Next' },
+  'onb.startNow':           { ar: 'ابدأ الآن', fr: 'Commencer', en: 'Start now' },
+  'onb.invoices.title':     { ar: 'أنشئ فواتيرك بسهولة', fr: 'Créez vos factures facilement', en: 'Create invoices with ease' },
+  'onb.invoices.body':      { ar: 'صمّم فواتير احترافية لعملائك في ثوانٍ، وأرسلها وتابع حالة الدفع أولًا بأول.', fr: 'Créez des factures professionnelles en quelques secondes et suivez les paiements en temps réel.', en: 'Design professional invoices in seconds and track payments as they come in.' },
+  'onb.customers.title':    { ar: 'نظّم قائمة عملائك', fr: 'Organisez vos clients', en: 'Organize your customers' },
+  'onb.customers.body':     { ar: 'احتفظ بمعلومات عملائك وسجّل تعاملاتك معهم كاملًا في مكان واحد يسهل الرجوع إليه.', fr: 'Gardez toutes les infos et l\'historique de vos clients au même endroit.', en: 'Keep every customer detail and history in one easy place.' },
+  'onb.profits.title':      { ar: 'تابع دخلك ومصاريفك', fr: 'Suivez vos revenus et dépenses', en: 'Track your income & expenses' },
+  'onb.profits.body':       { ar: 'راقب أرباحك ومصاريفك اليومية بوضوح، واعرف وضعك المالي في أي لحظة، أينما كنت.', fr: 'Surveillez vos revenus et dépenses au quotidien, où que vous soyez.', en: 'Watch your daily profit and expenses clearly — anywhere, anytime.' },
+
+  // ---- auth ----
+  'auth.welcome':        { ar: 'مرحبًا بعودتك', fr: 'Content de vous revoir', en: 'Welcome back' },
+  'auth.welcomeSub':     { ar: 'سجّل الدخول لمتابعة إدارة فواتيرك وعملائك.', fr: 'Connectez-vous pour continuer.', en: 'Sign in to continue managing your workshop.' },
+  'auth.newAccount':     { ar: 'إنشاء حساب جديد', fr: 'Créer un compte', en: 'Create a new account' },
+  'auth.newAccountSub':  { ar: 'ابدأ بإدارة فواتيرك ومصاريفك في دقائق.', fr: 'Commencez en quelques minutes.', en: 'Start managing your invoices in minutes.' },
+  'auth.fullName':       { ar: 'الاسم الكامل', fr: 'Nom complet', en: 'Full name' },
+  'auth.namePh':         { ar: 'الاسم واللقب', fr: 'Nom et prénom', en: 'First and last name' },
+  'auth.phone':          { ar: 'رقم الهاتف', fr: 'Numéro de téléphone', en: 'Phone number' },
+  'auth.phoneOrEmail':   { ar: 'رقم الهاتف أو البريد الإلكتروني', fr: 'Téléphone ou email', en: 'Phone or email' },
+  'auth.phonePh':        { ar: '0550 12 34 56', fr: '0550 12 34 56', en: '0550 12 34 56' },
+  'auth.password':       { ar: 'كلمة المرور', fr: 'Mot de passe', en: 'Password' },
+  'auth.confirmPw':      { ar: 'تأكيد كلمة المرور', fr: 'Confirmer le mot de passe', en: 'Confirm password' },
+  'auth.showPw':         { ar: 'إظهار كلمة المرور', fr: 'Afficher le mot de passe', en: 'Show password' },
+  'auth.hidePw':         { ar: 'إخفاء كلمة المرور', fr: 'Masquer le mot de passe', en: 'Hide password' },
+  'auth.forgot':         { ar: 'نسيت كلمة المرور؟', fr: 'Mot de passe oublié ?', en: 'Forgot password?' },
+  'auth.signIn':         { ar: 'تسجيل الدخول', fr: 'Se connecter', en: 'Sign in' },
+  'auth.signUp':         { ar: 'إنشاء حساب', fr: "S'inscrire", en: 'Sign up' },
+  'auth.createAccount':  { ar: 'إنشاء الحساب', fr: 'Créer le compte', en: 'Create account' },
+  'auth.noAccount':      { ar: 'ليس لديك حساب؟', fr: 'Pas encore de compte ?', en: "Don't have an account?" },
+  'auth.haveAccount':    { ar: 'لديك حساب بالفعل؟', fr: 'Déjà un compte ?', en: 'Already have an account?' },
+  'auth.tryGuest':       { ar: 'تصفّح بدون حساب', fr: 'Continuer sans compte', en: 'Browse without account' },
+  'auth.termsPre':       { ar: 'أوافق على', fr: "J'accepte les", en: 'I agree to the' },
+  'auth.termsLink':      { ar: 'الشروط والأحكام', fr: 'conditions', en: 'terms of service' },
+  'auth.termsAnd':       { ar: 'و', fr: 'et', en: 'and' },
+  'auth.privacyLink':    { ar: 'سياسة الخصوصية', fr: 'politique de confidentialité', en: 'privacy policy' },
+  'auth.working':        { ar: 'لحظة…', fr: 'Un instant…', en: 'One moment…' },
+
+  // auth errors — all string constants used by signIn/signUp
+  'auth.err.name_required':    { ar: 'أدخل اسمك الكامل', fr: 'Entrez votre nom', en: 'Enter your name' },
+  'auth.err.phone_invalid':    { ar: 'رقم الهاتف غير صحيح', fr: 'Numéro invalide', en: 'Invalid phone number' },
+  'auth.err.password_short':   { ar: 'كلمة المرور قصيرة جدًا (6 أحرف على الأقل)', fr: 'Mot de passe trop court (6 caractères min.)', en: 'Password too short (min 6 characters)' },
+  'auth.err.phone_taken':      { ar: 'هذا الرقم مستخدم مسبقًا', fr: 'Ce numéro est déjà utilisé', en: 'This number is already in use' },
+  'auth.err.missing_fields':   { ar: 'أدخل رقم الهاتف/البريد وكلمة المرور', fr: 'Renseignez tous les champs', en: 'Fill in all fields' },
+  'auth.err.no_such_account':  { ar: 'لا يوجد حساب بهذه البيانات', fr: 'Aucun compte trouvé', en: 'No account found' },
+  'auth.err.wrong_password':   { ar: 'كلمة المرور غير صحيحة', fr: 'Mot de passe incorrect', en: 'Wrong password' },
+  'auth.err.terms_required':   { ar: 'يجب الموافقة على الشروط والأحكام', fr: 'Vous devez accepter les conditions', en: 'You must accept the terms' },
+  'auth.err.pw_mismatch':      { ar: 'كلمتا المرور غير متطابقتين', fr: 'Les mots de passe ne correspondent pas', en: 'Passwords do not match' },
+
+  // ---- guest banner ----
+  'guest.banner':        { ar: 'أنت في وضع التصفّح — أنشئ حسابًا مجانيًا لحفظ عملك', fr: 'Mode invité — créez un compte pour sauvegarder', en: 'Guest mode — create a free account to save your work' },
+  'guest.cta':           { ar: 'حساب مجاني', fr: 'Créer', en: 'Sign up' },
+
+  // ---- account card (Settings) ----
+  'acct.signOut':        { ar: 'تسجيل خروج', fr: 'Déconnexion', en: 'Sign out' },
+  'acct.upgradeTitle':   { ar: 'أنشئ حسابًا مجانيًا', fr: 'Créez un compte gratuit', en: 'Create a free account' },
+  'acct.upgradeSub':     { ar: 'لحفظ فواتيرك وعملائك على حسابك', fr: 'Pour sauvegarder votre travail', en: 'To save your invoices and customers' },
 };
 
 export const LangContext = createContext('ar');
