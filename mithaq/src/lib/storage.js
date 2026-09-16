@@ -4,8 +4,13 @@
 import { uid, todayISO } from './format.js';
 import { DEFAULT_TAX_RATE } from './constants.js';
 
-const KEY = 'craftsman-billing-data-v2';
-const LEGACY_KEY = 'craftsman-billing-data-v1';
+// Build-time namespace so a preview build (VITE_APP_NAMESPACE="preview-") gets
+// its own isolated localStorage — the preview cannot see or modify the
+// production site's data even though both live on the same origin. Empty in
+// normal production builds.
+const NS = import.meta.env.VITE_APP_NAMESPACE || '';
+const KEY = NS + 'craftsman-billing-data-v2';
+const LEGACY_KEY = NS + 'craftsman-billing-data-v1';
 
 export function defaultData() {
   return {

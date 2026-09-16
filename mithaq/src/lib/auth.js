@@ -16,8 +16,11 @@
 
 import { uid } from './format.js';
 
-const SESSION_KEY = 'mithaq-session-v1';
-const ACCOUNTS_KEY = 'mithaq-accounts-v1';   // { [phone]: {account, passwordHash} }
+// Namespaced by VITE_APP_NAMESPACE so a preview build's accounts/sessions
+// never mix with production. See lib/storage.js for the same pattern.
+const NS = import.meta.env.VITE_APP_NAMESPACE || '';
+const SESSION_KEY = NS + 'mithaq-session-v1';
+const ACCOUNTS_KEY = NS + 'mithaq-accounts-v1';   // { [phone]: {account, passwordHash} }
 
 // --- helpers ---------------------------------------------------------------
 async function sha256(text) {

@@ -71,7 +71,10 @@ const FORM_VIEWS = ['customerForm', 'quoteForm', 'invoiceForm', 'expenseForm', '
 // Pre-app stages the user goes through before the main shell renders.
 // 'main' means the shell itself takes over (guest OR authed).
 const PRE_APP_STAGES = ['splash', 'onboarding', 'signin', 'signup'];
-const ONB_SEEN_KEY = 'mithaq-onb-seen-v1';
+// Namespaced by VITE_APP_NAMESPACE so a preview build has its own onboarding
+// flag — the preview always starts fresh from the splash regardless of what
+// the production site may have set.
+const ONB_SEEN_KEY = (import.meta.env.VITE_APP_NAMESPACE || '') + 'mithaq-onb-seen-v1';
 
 export default function App() {
   const [data, setData] = useState(defaultData());
