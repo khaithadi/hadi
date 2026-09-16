@@ -3,12 +3,18 @@ import { loadData, saveData, normalize, seedDemo, defaultData } from './lib/stor
 import { uid, todayISO } from './lib/format.js';
 import { convertQuoteToInvoice } from './lib/convert.js';
 import { laborState, workerRates, periodSummary } from './lib/calc.js';
+import { loadSession, saveSession, enterGuest, signOut, isReadOnly } from './lib/auth.js';
 
 import TopBar from './components/TopBar.jsx';
 import BottomNav from './components/BottomNav.jsx';
 import Fab from './components/Fab.jsx';
 import ConfirmProvider from './components/ConfirmProvider.jsx';
 import { LangContext, t as translate } from './lib/i18n.js';
+
+import Splash from './views/Splash.jsx';
+import Onboarding from './views/Onboarding.jsx';
+import SignIn from './views/SignIn.jsx';
+import SignUp from './views/SignUp.jsx';
 
 import Dashboard from './views/Dashboard.jsx';
 import Customers from './views/Customers.jsx';
@@ -62,6 +68,14 @@ const TAB_VIEWS = ['dashboard', 'customers', 'quotes', 'invoices', 'expenses', '
 const FORM_VIEWS = ['customerForm', 'quoteForm', 'invoiceForm', 'expenseForm', 'paymentForm',
   'workerForm', 'laborForm', 'laborPayment', 'timesheetForm', 'periodPay', 'settings'];
 
+// Pre-app stages the user goes through before the main shell renders.
+// 'main' means the shell itself takes over (guest OR authed).
+const PRE_APP_STAGES = ['splash', 'onboarding', 'signin', 'signup'];
+// Namespaced by VITE_APP_NAMESPACE so a preview build has its own onboarding
+// flag — the preview always starts fresh from the splash regardless of what
+// the production site may have set.
+const ONB_SEEN_KEY = (import.meta.env.VITE_APP_NAMESPACE || '') + 'mithaq-onb-seen-v1';
+
 export default function App() {
   const [data, setData] = useState(defaultData());
   const [loading, setLoading] = useState(true);
@@ -74,7 +88,20 @@ export default function App() {
   const [preset, setPreset] = useState(null); // preset customerId for new docs
   const [print, setPrint] = useState(null); // { kind, id, paymentId }
 
+  // Auth/session state. `stage` is the pre-app screen currently showing, or
+  // 'main' once the shell takes over. Session-in-storage decides where a
+  // returning user lands.
+  const [session, setSession] = useState({ mode: 'none' });
+  const [stage, setStage] = useState('splash');
+  const readOnly = isReadOnly(session);
+
   useEffect(() => {
+    const s = loadSession();
+    setSession(s);
+    if (s.mode === 'authed' || s.mode === 'guest') {
+      // Returning user: skip splash+onboarding, jump straight to the app.
+      setStage('main');
+    }
     setData(loadData());
     setLoading(false);
   }, []);
@@ -149,6 +176,10 @@ export default function App() {
   }, [data.settings.language]);
 
   function persist(next) {
+    // Guest mode is view-only: swallow every mutation. The banner + hidden
+    // FAB + hidden add-buttons should already prevent most attempts, this is
+    // the belt-and-braces safety net.
+    if (readOnly) return;
     setData(next);
     saveData(next);
   }
@@ -475,11 +506,75 @@ export default function App() {
     return nav.newInvoice(); // dashboard default
   }
 
+  /* ------- pre-app auth stages ------- */
+  const onbSeen = () => {
+    try { return localStorage.getItem(ONB_SEEN_KEY) === '1'; } catch (e) { return false; }
+  };
+  const markOnbSeen = () => {
+    try { localStorage.setItem(ONB_SEEN_KEY, '1'); } catch (e) { /* ignore */ }
+  };
+  const goStage = (s) => setStage(s);
+  const finishSplash = () => {
+    // First launch → onboarding. Returning → sign-in.
+    if (onbSeen()) goStage('signin');
+    else goStage('onboarding');
+  };
+  const finishOnboarding = () => {
+    markOnbSeen();
+    goStage('signin');
+  };
+  const handleAuthed = (s) => {
+    // Sign in / sign up succeeded: enter main app with a fresh session.
+    setSession(s);
+    setData(loadData());
+    setStage('main');
+  };
+  const handleGuest = () => {
+    const s = enterGuest();
+    setSession(s);
+    // Seed demo data so the guest sees real-looking rows to browse.
+    const seeded = seedDemo();
+    setData(seeded);
+    saveData(seeded);
+    setStage('main');
+  };
+  const handleSignOut = () => {
+    signOut();
+    setSession({ mode: 'none' });
+    setStage('signin');
+  };
+
   if (loading) {
     return (
       <div className="app-root">
         <div className="loading-screen">جاري التحميل…</div>
       </div>
+    );
+  }
+
+  const lang = data.settings.language || 'ar';
+  if (PRE_APP_STAGES.includes(stage)) {
+    return (
+      <LangContext.Provider value={lang}>
+        <div className="app-root">
+          {stage === 'splash' && <Splash onDone={finishSplash} />}
+          {stage === 'onboarding' && <Onboarding onDone={finishOnboarding} />}
+          {stage === 'signin' && (
+            <SignIn
+              onSuccess={handleAuthed}
+              onGoSignUp={() => goStage('signup')}
+              onGoGuest={handleGuest}
+            />
+          )}
+          {stage === 'signup' && (
+            <SignUp
+              onSuccess={handleAuthed}
+              onGoSignIn={() => goStage('signin')}
+              onGoGuest={handleGuest}
+            />
+          )}
+        </div>
+      </LangContext.Provider>
     );
   }
 
@@ -499,7 +594,6 @@ export default function App() {
   const activeLabor = data.labor.find((l) => l.id === active.laborId);
 
   const showBack = !TAB_VIEWS.includes(view);
-  const lang = data.settings.language || 'ar';
   let title;
   if (view === 'dashboard') {
     title = data.settings.businessName || translate(lang, 'nav.dashboard');
@@ -665,12 +759,28 @@ export default function App() {
           )}
 
           {view === 'settings' && (
-            <Settings data={data} actions={actions} onCancel={() => nav.go('dashboard')} />
+            <Settings
+              data={data}
+              actions={actions}
+              onCancel={() => nav.go('dashboard')}
+              session={session}
+              onSignOut={handleSignOut}
+              onGoSignUp={() => goStage('signup')}
+            />
           )}
           </div>
         </div>
 
-        {TAB_VIEWS.includes(view) && <Fab onClick={fabAction} />}
+        {readOnly && TAB_VIEWS.includes(view) && (
+          <div className="guest-banner">
+            <span>{translate(lang, 'guest.banner')}</span>
+            <button className="guest-banner-cta" onClick={() => goStage('signup')}>
+              {translate(lang, 'guest.cta')}
+            </button>
+          </div>
+        )}
+
+        {!readOnly && TAB_VIEWS.includes(view) && <Fab onClick={fabAction} />}
         {!FORM_VIEWS.includes(view) && <BottomNav active={view} onChange={nav.go} />}
       </div>
     </div>

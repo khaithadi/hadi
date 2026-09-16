@@ -2,13 +2,19 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
+// A preview build (PREVIEW=1 in the env, set by the /preview deploy workflow)
+// skips the PWA plugin entirely. Otherwise the preview and production sites
+// both register service workers on the same origin and their scopes fight
+// — the /preview/ page ends up stuck on stale cached HTML. No SW = no fight.
+const isPreview = !!process.env.PREVIEW;
+
 // base: './' so the production build works when served from any static host / subpath
 // (the app is published under /hadi/ on GitHub Pages).
 export default defineConfig({
   base: './',
   plugins: [
     react(),
-    VitePWA({
+    ...(isPreview ? [] : [VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
       includeAssets: ['apple-touch-icon.png', 'favicon.svg'],
@@ -39,6 +45,6 @@ export default defineConfig({
         navigateFallbackDenylist: [/ghabti/, /forest-rental/],
         maximumFileSizeToCacheInBytes: 5_000_000,
       },
-    }),
+    })]),
   ],
 });

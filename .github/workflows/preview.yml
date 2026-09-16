@@ -1,0 +1,122 @@
+name: Deploy preview to /hadi/preview
+
+# Puts a preview build of the current feature branch under /hadi/preview
+# WITHOUT touching the live site. Every deploy re-derives the live
+# content from the `main` branch itself, so `/hadi/` and `/hadi/ghabti/`
+# always reflect exactly what's in main — the preview only ADDS content.
+#
+# Runs on pushes to this one feature branch, and can be fired manually.
+# When the PR is merged / the branch is deleted, this file goes with it
+# and the next normal main-deploy naturally drops the /preview folder.
+
+on:
+  push:
+    branches:
+      - claude/mithaq-mvp-improvements-l4g8d7
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Share the concurrency group with deploy.yml so a preview deploy and a
+# main deploy never race each other.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # --- Two working trees: one for main (live site), one for the feature ---
+      - name: Checkout feature branch (preview source)
+        uses: actions/checkout@v4
+        with:
+          path: feature
+
+      - name: Checkout main branch (live-site source)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: main
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: |
+            main/mithaq/package-lock.json
+            main/ghabti/package-lock.json
+            feature/mithaq/package-lock.json
+
+      # -------------- Re-derive the live site from main --------------
+      - name: Install & build Mithaq from main → site root
+        run: |
+          cd main/mithaq
+          npm ci
+          npm run build
+
+      - name: Install & build Ghabti from main → /ghabti
+        run: |
+          cd main/ghabti
+          npm ci
+          npm run build
+
+      # -------------- Build the preview from the feature branch --------------
+      # PREVIEW=1 disables the PWA plugin (avoids service-worker conflicts
+      # with the production site on the same origin).
+      # VITE_APP_NAMESPACE prefixes every localStorage key so preview data
+      # is isolated from any data the user has in the production site.
+      - name: Install & build Mithaq from feature branch → /preview
+        env:
+          PREVIEW: '1'
+          VITE_APP_NAMESPACE: 'preview-'
+        run: |
+          cd feature/mithaq
+          npm ci
+          npm run build
+
+      # -------------- Stage everything into one artifact --------------
+      - name: Stage the combined site
+        run: |
+          mkdir -p _site _site/ghabti _site/preview _site/forest-rental
+          cp -r main/mithaq/dist/. _site/
+          cp -r main/ghabti/dist/. _site/ghabti/
+          cp -r feature/mithaq/dist/. _site/preview/
+          cat > _site/forest-rental/index.html <<'HTML'
+          <!doctype html>
+          <html lang="ar" dir="rtl">
+          <head>
+            <meta charset="utf-8">
+            <meta http-equiv="refresh" content="0; url=../ghabti/">
+            <title>غابتي — العنوان الجديد</title>
+          </head>
+          <body>
+            <p>انتقلت غابتي إلى عنوان جديد — <a href="../ghabti/">اضغط هنا</a></p>
+          </body>
+          </html>
+          HTML
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

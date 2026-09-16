@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Copy, ClipboardPaste, RotateCcw, Trash2, Check, X, Plus, Image as ImageIcon, ShieldCheck } from 'lucide-react';
+import { Copy, ClipboardPaste, RotateCcw, Trash2, Check, X, Plus, Image as ImageIcon, ShieldCheck, LogOut, User as UserIcon } from 'lucide-react';
 import { copyText, formatMoney, formatDate, parseDecimal } from '../lib/format.js';
 import { exportBackup } from '../lib/storage.js';
 import { imageToThumb } from '../lib/image.js';
@@ -7,7 +7,7 @@ import { ITEM_UNITS } from '../lib/constants.js';
 import { useConfirm } from '../components/ConfirmProvider.jsx';
 import { useT, LANGUAGES } from '../lib/i18n.js';
 
-export default function Settings({ data, actions, onCancel }) {
+export default function Settings({ data, actions, onCancel, session, onSignOut, onGoSignUp }) {
   const t = useT();
   const confirm = useConfirm();
   const s = data.settings;
@@ -57,6 +57,29 @@ export default function Settings({ data, actions, onCancel }) {
 
   return (
     <div className="page">
+      {/* Account card at the top: sign-out for authed, upgrade prompt for guest. */}
+      {session && session.mode === 'authed' && session.account && (
+        <div className="acct-card">
+          <div className="acct-icon"><UserIcon size={20} /></div>
+          <div className="acct-body">
+            <div className="acct-name">{session.account.name}</div>
+            <div className="acct-sub">{session.account.phone || session.account.email || ''}</div>
+          </div>
+          <button className="btn-ghost-sm" onClick={onSignOut} aria-label={t('acct.signOut')}>
+            <LogOut size={16} /> {t('acct.signOut')}
+          </button>
+        </div>
+      )}
+      {session && session.mode === 'guest' && (
+        <button className="acct-upgrade" onClick={onGoSignUp}>
+          <UserIcon size={18} />
+          <div>
+            <div className="acct-upgrade-title">{t('acct.upgradeTitle')}</div>
+            <div className="acct-upgrade-sub">{t('acct.upgradeSub')}</div>
+          </div>
+        </button>
+      )}
+
       <label className="label">{t('set.business')}</label>
       <input className="input" value={businessName} onChange={(e) => setBusinessName(e.target.value)} placeholder={t('set.businessPh')} />
       <label className="label">{t('set.owner')}</label>
